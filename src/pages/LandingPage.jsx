@@ -1,4 +1,3 @@
-import { Users, Calendar, Globe, Shield, Zap, Heart } from "lucide-react"
 import HeroSection from "../features/landing/HeroSection"
 import StatsSection from "../features/landing/StatsSection"
 import FeaturesSection from "../features/landing/FeaturesSection"

@@ -1,9 +1,8 @@
-"use client"
-
 import { useState } from "react"
 import { Link, useLocation } from "react-router-dom"
-import { Menu, X, Users, Globe } from "lucide-react"
+import { Menu, X, Globe } from "lucide-react"
 import { navigationData, footerData } from "../data/navigationData"
+import Logo from "./Logo"
 
 export default function AppLayout({ children }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -21,14 +20,13 @@ export default function AppLayout({ children }) {
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <div className="flex items-center">
-              <Link to="/" className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-                  <Users className="w-5 h-5 text-white" />
-                </div>
-                <span className="text-xl font-bold text-gray-900">Growtly</span>
+              <Link to="/" className="flex items-center space-x-2 group">
+                <Logo />
+                <span className="text-xl font-bold text-gray-900 group-hover:text-primary-600 transition-colors">
+                  Growtly
+                </span>
               </Link>
             </div>
-
             {/* Desktop Navigation */}
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">
@@ -37,8 +35,8 @@ export default function AppLayout({ children }) {
                     key={item.name}
                     to={item.href}
                     className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive(item.href)
-                        ? "bg-blue-100 text-blue-700"
-                        : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                      ? "bg-blue-100 text-blue-700"
+                      : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
                       }`}
                   >
                     {item.name}
@@ -81,8 +79,8 @@ export default function AppLayout({ children }) {
                   key={item.name}
                   to={item.href}
                   className={`block px-3 py-2 rounded-md text-base font-medium ${isActive(item.href)
-                      ? "bg-blue-100 text-blue-700"
-                      : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                    ? "bg-blue-100 text-blue-700"
+                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
                     }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
@@ -120,9 +118,7 @@ export default function AppLayout({ children }) {
             {/* Company Info */}
             <div className="col-span-1 md:col-span-2">
               <div className="flex items-center space-x-2 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-                  <Users className="w-5 h-5 text-white" />
-                </div>
+                <Logo />
                 <span className="text-xl font-bold">{footerData.company.name}</span>
               </div>
               <p className="text-gray-300 mb-4 max-w-md">{footerData.company.description}</p>
