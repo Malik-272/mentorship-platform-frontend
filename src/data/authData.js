@@ -72,6 +72,10 @@ export const validationRules = {
     required: "Name is required",
     minLength: { value: 3, message: "Name must be at least 3 characters" },
     maxLength: { value: 50, message: "Name must not exceed 50 characters" },
+    pattern: {
+      value: /^[a-zA-Z\s]+$/,
+      message: "Name can only contain letters and spaces",
+    },
   },
   id: {
     required: "Username is required",
@@ -91,6 +95,7 @@ export const validationRules = {
   },
   headline: {
     required: "Headline is required",
+    minLength: { value: 5, message: "Headline must be at least 5 characters" },
     maxLength: { value: 50, message: "Headline must not exceed 50 characters" },
   },
   password: {
@@ -108,12 +113,16 @@ export const validationRules = {
   country: {
     required: "Country is required",
     validate: (value) => {
+      if (!value) return "Please select a country"
       const isValid = countryCodes.some((country) => country.code === value)
       return isValid || "Please select a valid country"
     },
   },
   role: {
     required: "Please select your role",
-    validate: (value) => ["mentee", "mentor"].includes(value) || "Role must be either mentee or mentor",
+    validate: (value) => {
+      if (!value) return "Please select whether you want to be a mentee or mentor"
+      return ["mentee", "mentor"].includes(value) || "Role must be either mentee or mentor"
+    },
   },
 }

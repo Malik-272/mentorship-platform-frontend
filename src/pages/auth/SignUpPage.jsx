@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { Link } from "react-router-dom"
-import { User, UserCheck } from "lucide-react"
+import { User, UserCheck, AlertCircle } from "lucide-react"
 import { useSignup } from "../../hooks/useAuth"
 import { validationRules, countryCodes } from "../../data/authData"
 import FormField from "../../features/Authenticaion/FormField"
@@ -10,18 +10,37 @@ import Logo from "../../ui/Logo"
 
 export default function SignupPage() {
   const [selectedRole, setSelectedRole] = useState("")
+
   const {
     register,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors, isSubmitting },
-  } = useForm()
+  } = useForm({
+    defaultValues: {
+      name: "",
+      id: "",
+      email: "",
+      headline: "",
+      password: "",
+      country: "",
+      role: "",
+    },
+  })
 
   const signupMutation = useSignup()
   const watchPassword = watch("password", "")
 
+  // Handle role selection
+  const handleRoleSelect = (role) => {
+    setSelectedRole(role)
+    setValue("role", role, { shouldValidate: true })
+  }
+
   const onSubmit = async (data) => {
     try {
+      console.log("Submitting signup data:", data)
       await signupMutation.mutateAsync(data)
     } catch (error) {
       console.error("Signup failed:", error)
@@ -115,7 +134,7 @@ export default function SignupPage() {
               <div className="grid grid-cols-2 gap-3">
                 <button
                   type="button"
-                  onClick={() => setSelectedRole("mentee")}
+                  onClick={() => handleRoleSelect("mentee")}
                   className={`p-4 border-2 rounded-lg text-center transition-all ${selectedRole === "mentee"
                     ? "border-blue-500 bg-blue-50 text-blue-700"
                     : "border-gray-200 hover:border-gray-300"
@@ -127,7 +146,7 @@ export default function SignupPage() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setSelectedRole("mentor")}
+                  onClick={() => handleRoleSelect("mentor")}
                   className={`p-4 border-2 rounded-lg text-center transition-all ${selectedRole === "mentor"
                     ? "border-blue-500 bg-blue-50 text-blue-700"
                     : "border-gray-200 hover:border-gray-300"
@@ -138,9 +157,13 @@ export default function SignupPage() {
                   <div className="text-xs text-gray-500">Sharing expertise</div>
                 </button>
               </div>
+
+              {/* Hidden input for role */}
               <input type="hidden" {...register("role", validationRules.role)} value={selectedRole} />
+
               {errors.role && (
                 <div className="flex items-center space-x-1 text-red-600 text-sm">
+                  <AlertCircle className="w-4 h-4" />
                   <span>{errors.role.message}</span>
                 </div>
               )}
@@ -172,9 +195,22 @@ export default function SignupPage() {
             {/* Error Message */}
             {signupMutation.error && (
               <div className="rounded-md bg-red-50 p-4">
-                <div className="text-sm text-red-700">{signupMutation.error.message}</div>
+                <div className="flex">
+                  <AlertCircle className="h-5 w-5 text-red-400" />
+                  <div className="ml-3">
+                    <div className="text-sm text-red-700">{signupMutation.error.message}</div>
+                  </div>
+                </div>
               </div>
             )}
+
+            {/* Debug Info (remove in production) */}
+            {/* {process.env.NODE_ENV === "development" && (
+              <div className="mt-4 p-3 bg-gray-100 rounded text-xs">
+                <strong>Debug Info:</strong>
+                <pre>{JSON.stringify({ selectedRole, errors }, null, 2)}</pre>
+              </div>
+            )} */}
           </form>
 
           <div className="mt-6">

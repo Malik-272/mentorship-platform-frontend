@@ -8,10 +8,16 @@ export const useSignup = () => {
   return useMutation({
     mutationFn: authApi.signup,
     onSuccess: (data) => {
-      navigate("/signup-confirmation", { state: { email: data.email } })
+      console.log("Signup successful:", data)
+      navigate("/signup-confirmation", {
+        state: {
+          email: data.email || "your email",
+        },
+      })
     },
     onError: (error) => {
-      console.error("Signup error:", error.message)
+      console.error("Signup error:", error)
+      // Error is handled by the component
     },
   })
 }
@@ -23,6 +29,8 @@ export const useLogin = () => {
   return useMutation({
     mutationFn: authApi.login,
     onSuccess: (data) => {
+      console.log("Login successful:", data)
+
       if (data.requires2FA) {
         navigate("/2fa-verification")
       } else {
@@ -31,7 +39,8 @@ export const useLogin = () => {
       }
     },
     onError: (error) => {
-      console.error("Login error:", error.message)
+      console.error("Login error:", error)
+      // Error is handled by the component
     },
   })
 }
@@ -40,7 +49,8 @@ export const useForgotPassword = () => {
   return useMutation({
     mutationFn: authApi.forgotPassword,
     onError: (error) => {
-      console.error("Forgot password error:", error.message)
+      console.error("Forgot password error:", error)
+      // Error is handled by the component
     },
   })
 }
@@ -51,10 +61,15 @@ export const useResetPassword = () => {
   return useMutation({
     mutationFn: ({ token, newPassword }) => authApi.resetPassword(token, newPassword),
     onSuccess: () => {
-      navigate("/login", { state: { message: "Password reset successfully. Please log in." } })
+      navigate("/login", {
+        state: {
+          message: "Password reset successfully. Please log in with your new password.",
+        },
+      })
     },
     onError: (error) => {
-      console.error("Reset password error:", error.message)
+      console.error("Reset password error:", error)
+      // Error is handled by the component
     },
   })
 }
@@ -66,11 +81,13 @@ export const useVerify2FA = () => {
   return useMutation({
     mutationFn: authApi.verify2FA,
     onSuccess: (data) => {
+      console.log("2FA verification successful:", data)
       queryClient.setQueryData(["user"], data.user)
       navigate("/dashboard")
     },
     onError: (error) => {
-      console.error("2FA verification error:", error.message)
+      console.error("2FA verification error:", error)
+      // Error is handled by the component
     },
   })
 }
@@ -79,7 +96,8 @@ export const useResend2FA = () => {
   return useMutation({
     mutationFn: authApi.resend2FA,
     onError: (error) => {
-      console.error("Resend 2FA error:", error.message)
+      console.error("Resend 2FA error:", error)
+      // Error is handled by the component
     },
   })
 }
