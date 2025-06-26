@@ -8,8 +8,9 @@ import FormField from "../../features/Authenticaion/FormField"
 import PasswordStrengthIndicator from "../../features/Authenticaion/PasswordStrengthIndicator"
 import Logo from "../../ui/Logo"
 
+
 export default function SignupPage() {
-  const [selectedRole, setSelectedRole] = useState("")
+  const [selectedRole, setSelectedRole] = useState("");
 
   const {
     register,
@@ -120,9 +121,9 @@ export default function SignupPage() {
                   }`}
               >
                 <option value="">Select your country</option>
-                {countryCodes.map((country) => (
-                  <option key={country.code} value={country.code}>
-                    {country.name}
+                {Object.entries(countryCodes).map(([key, country]) => (
+                  <option key={key} value={key}>
+                    {country}
                   </option>
                 ))}
               </select>
@@ -203,14 +204,6 @@ export default function SignupPage() {
                 </div>
               </div>
             )}
-
-            {/* Debug Info (remove in production) */}
-            {/* {process.env.NODE_ENV === "development" && (
-              <div className="mt-4 p-3 bg-gray-100 rounded text-xs">
-                <strong>Debug Info:</strong>
-                <pre>{JSON.stringify({ selectedRole, errors }, null, 2)}</pre>
-              </div>
-            )} */}
           </form>
 
           <div className="mt-6">

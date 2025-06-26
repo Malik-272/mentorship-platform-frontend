@@ -140,7 +140,7 @@ export const authApi = {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ code }),
-        // credentials: "include",
+        credentials: "include",
       })
 
       const data = await response.json()
