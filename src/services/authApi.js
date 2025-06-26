@@ -40,6 +40,7 @@ export const authApi = {
   // Login
   login: async (credentials) => {
     console.log("API: Sending login request")
+    console.log("API: Credentials:", credentials)
 
     try {
       const response = await fetch(`${API_BASE_URL}/auth/login`, {
@@ -48,10 +49,12 @@ export const authApi = {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(credentials),
-        credentials: "include",
+        // credentials: "include",
       })
 
       const data = await response.json()
+
+      console.log(data);
 
       if (!response.ok) {
         throw new Error(data.message || "Login failed")
@@ -129,6 +132,7 @@ export const authApi = {
 
   // Verify 2FA
   verify2FA: async (code) => {
+    console.log("API: Verifying 2FA code:", code)
     try {
       const response = await fetch(`${API_BASE_URL}/auth/verify-2fa`, {
         method: "POST",
@@ -136,7 +140,7 @@ export const authApi = {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ code }),
-        credentials: "include",
+        // credentials: "include",
       })
 
       const data = await response.json()
