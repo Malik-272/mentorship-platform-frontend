@@ -3,6 +3,7 @@ import { Link, Outlet, useLocation } from "react-router-dom"
 import { Menu, X, Globe } from "lucide-react"
 import { navigationData, footerData } from "../data/navigationData"
 import Logo from "./Logo"
+import { useAuth, useLogout } from "../hooks/useAuth"
 
 export default function AppLayout() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -118,7 +119,7 @@ export default function AppLayout() {
             {/* Company Info */}
             <div className="col-span-1 md:col-span-2">
               <div className="flex items-center space-x-2 mb-4">
-                <Logo />
+                <Logo withLink={true} />
                 <span className="text-xl font-bold">{footerData.company.name}</span>
               </div>
               <p className="text-gray-300 mb-4 max-w-md">{footerData.company.description}</p>
