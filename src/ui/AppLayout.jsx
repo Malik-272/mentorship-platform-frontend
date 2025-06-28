@@ -1,10 +1,11 @@
 import { useState } from "react"
-import { Link, useLocation } from "react-router-dom"
+import { Link, Outlet, useLocation } from "react-router-dom"
 import { Menu, X, Globe } from "lucide-react"
 import { navigationData, footerData } from "../data/navigationData"
 import Logo from "./Logo"
+import { useAuth, useLogout } from "../hooks/useAuth"
 
-export default function AppLayout({ children }) {
+export default function AppLayout() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const location = useLocation()
 
@@ -51,7 +52,7 @@ export default function AppLayout({ children }) {
                 Sign In
               </Link>
               <Link
-                to="/register"
+                to="/signup"
                 className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
               >
                 Get Started
@@ -96,7 +97,7 @@ export default function AppLayout({ children }) {
                   Sign In
                 </Link>
                 <Link
-                  to="/register"
+                  to="/signup"
                   className="block px-3 py-2 rounded-md text-base font-medium bg-blue-600 text-white hover:bg-blue-700 mt-2"
                   onClick={() => setIsMenuOpen(false)}
                 >
@@ -109,7 +110,7 @@ export default function AppLayout({ children }) {
       </nav>
 
       {/* Main Content */}
-      <main className="flex-1">{children}</main>
+      <main className="flex-1"><Outlet /></main>
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white">
@@ -118,7 +119,7 @@ export default function AppLayout({ children }) {
             {/* Company Info */}
             <div className="col-span-1 md:col-span-2">
               <div className="flex items-center space-x-2 mb-4">
-                <Logo />
+                <Logo withLink={true} />
                 <span className="text-xl font-bold">{footerData.company.name}</span>
               </div>
               <p className="text-gray-300 mb-4 max-w-md">{footerData.company.description}</p>

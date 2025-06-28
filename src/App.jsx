@@ -37,7 +37,7 @@ function App() {
           <Route path="/2fa-verification" element={<TwoFactorPage />} />
 
           {/* Main App Routes (with AppLayout) */}
-          <Route
+          {/* <Route
             path="/*"
             element={
               <AppLayout>
@@ -57,7 +57,25 @@ function App() {
                 </Routes>
               </AppLayout>
             }
-          />
+          /> */}
+
+          <Route element={
+            <AppLayout />
+          }>
+            {/* <Route index element={<Navigate replace to="/" />} /> */}
+            <Route path="/" element={<LandingPage />} />
+            <Route path="mentors" element={<div className="p-8 text-center">Mentors page coming soon...</div>} />
+            <Route
+              path="communities"
+              element={<div className="p-8 text-center">Communities page coming soon...</div>}
+            />
+            <Route
+              path="how-it-works"
+              element={<div className="p-8 text-center">How it works page coming soon...</div>}
+            />
+            <Route path="about" element={<div className="p-8 text-center">About page coming soon...</div>} />
+            <Route path="dashboard" element={<div className="p-8 text-center">Dashboard coming soon...</div>} />
+          </Route>
         </Routes>
       </Router>
     </QueryClientProvider>
@@ -66,3 +84,4 @@ function App() {
 }
 
 export default App
+

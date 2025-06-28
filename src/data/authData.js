@@ -1,71 +1,13 @@
-export const countryCodes = [
-  { code: "AFG", name: "Afghanistan" },
-  { code: "ALB", name: "Albania" },
-  { code: "DZA", name: "Algeria" },
-  { code: "AND", name: "Andorra" },
-  { code: "AGO", name: "Angola" },
-  { code: "ARG", name: "Argentina" },
-  { code: "ARM", name: "Armenia" },
-  { code: "AUS", name: "Australia" },
-  { code: "AUT", name: "Austria" },
-  { code: "AZE", name: "Azerbaijan" },
-  { code: "BHR", name: "Bahrain" },
-  { code: "BGD", name: "Bangladesh" },
-  { code: "BLR", name: "Belarus" },
-  { code: "BEL", name: "Belgium" },
-  { code: "BRA", name: "Brazil" },
-  { code: "BGR", name: "Bulgaria" },
-  { code: "CAN", name: "Canada" },
-  { code: "CHN", name: "China" },
-  { code: "COL", name: "Colombia" },
-  { code: "CZE", name: "Czech Republic" },
-  { code: "DNK", name: "Denmark" },
-  { code: "EGY", name: "Egypt" },
-  { code: "EST", name: "Estonia" },
-  { code: "FIN", name: "Finland" },
-  { code: "FRA", name: "France" },
-  { code: "DEU", name: "Germany" },
-  { code: "GRC", name: "Greece" },
-  { code: "HUN", name: "Hungary" },
-  { code: "IND", name: "India" },
-  { code: "IDN", name: "Indonesia" },
-  { code: "IRN", name: "Iran" },
-  { code: "IRQ", name: "Iraq" },
-  { code: "IRL", name: "Ireland" },
-  { code: "ISR", name: "Israel" },
-  { code: "ITA", name: "Italy" },
-  { code: "JPN", name: "Japan" },
-  { code: "JOR", name: "Jordan" },
-  { code: "KWT", name: "Kuwait" },
-  { code: "LBN", name: "Lebanon" },
-  { code: "LBY", name: "Libya" },
-  { code: "MAR", name: "Morocco" },
-  { code: "NLD", name: "Netherlands" },
-  { code: "NZL", name: "New Zealand" },
-  { code: "NOR", name: "Norway" },
-  { code: "OMN", name: "Oman" },
-  { code: "PAK", name: "Pakistan" },
-  { code: "PSE", name: "Palestine" },
-  { code: "POL", name: "Poland" },
-  { code: "PRT", name: "Portugal" },
-  { code: "QAT", name: "Qatar" },
-  { code: "ROU", name: "Romania" },
-  { code: "RUS", name: "Russia" },
-  { code: "SAU", name: "Saudi Arabia" },
-  { code: "SGP", name: "Singapore" },
-  { code: "ZAF", name: "South Africa" },
-  { code: "KOR", name: "South Korea" },
-  { code: "ESP", name: "Spain" },
-  { code: "SWE", name: "Sweden" },
-  { code: "CHE", name: "Switzerland" },
-  { code: "SYR", name: "Syria" },
-  { code: "TUN", name: "Tunisia" },
-  { code: "TUR", name: "Turkey" },
-  { code: "ARE", name: "United Arab Emirates" },
-  { code: "GBR", name: "United Kingdom" },
-  { code: "USA", name: "United States" },
-  { code: "YEM", name: "Yemen" },
-]
+import countries from 'i18n-iso-countries';
+import enLocale from 'i18n-iso-countries/langs/en.json';
+
+// Register the English locale for country names
+countries.registerLocale(enLocale);
+const countryNames = countries.getNames("en");
+
+export const countryCodes = Object.fromEntries(
+  Object.entries(countryNames).map(([key, value]) => [countries.alpha2ToAlpha3(key), value])
+);
 
 export const validationRules = {
   name: {
@@ -114,7 +56,7 @@ export const validationRules = {
     required: "Country is required",
     validate: (value) => {
       if (!value) return "Please select a country"
-      const isValid = countryCodes.some((country) => country.code === value)
+      const isValid = Object.keys(countryCodes).some((key) => key === value)
       return isValid || "Please select a valid country"
     },
   },

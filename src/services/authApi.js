@@ -2,10 +2,28 @@ const API_BASE_URL = "http://localhost:3000/api/v1"
 
 // Auth API functions
 export const authApi = {
+  // Get current user
+  getCurrentUser: async () => {
+    const response = await fetch(`${API_BASE_URL}/auth/me`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        throw new Error("Not authenticated")
+      }
+      const error = await response.json()
+      throw new Error(error.message || "Failed to get user info")
+    }
+
+    return response.json()
+  },
   // Signup
   signup: async (userData) => {
-    console.log("API: Sending signup request with data:", userData)
-
     try {
       const response = await fetch(`${API_BASE_URL}/auth/signup`, {
         method: "POST",
@@ -15,10 +33,7 @@ export const authApi = {
         body: JSON.stringify(userData),
       })
 
-      console.log("API: Response status:", response.status)
-
       const data = await response.json()
-      console.log("API: Response data:", data)
 
       if (!response.ok) {
         throw new Error(data.message || `HTTP error! status: ${response.status}`)
@@ -39,8 +54,6 @@ export const authApi = {
 
   // Login
   login: async (credentials) => {
-    console.log("API: Sending login request")
-
     try {
       const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: "POST",
@@ -69,8 +82,24 @@ export const authApi = {
     }
   },
 
+  // Logout
+  logout: async () => {
+    const response = await fetch(`${API_BASE_URL}/auth/logout`, {
+      method: "POST",
+      credentials: "include",
+    })
+
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.message || "Logout failed")
+    }
+
+    return response.json()
+  },
+
   // Forgot Password
   forgotPassword: async (email) => {
+    console.log("API: Sending forgot password request for email:", email)
     try {
       const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
         method: "POST",
@@ -82,6 +111,7 @@ export const authApi = {
 
       const data = await response.json()
 
+      console.log("API: Forgot password response:", data)
       if (!response.ok) {
         throw new Error(data.message || "Failed to send reset email")
       }
@@ -106,7 +136,7 @@ export const authApi = {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ token, newPassword }),
+        body: JSON.stringify({ token, password: newPassword }),
       })
 
       const data = await response.json()
@@ -127,8 +157,24 @@ export const authApi = {
     }
   },
 
+  // Resend verification email
+  resendVerification: async () => {
+    const response = await fetch(`${API_BASE_URL}/auth/resend-verification`, {
+      method: "POST",
+      credentials: "include",
+    })
+
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.message || "Failed to resend verification email")
+    }
+
+    return response.json()
+  },
+
   // Verify 2FA
   verify2FA: async (code) => {
+    console.log("API: Verifying 2FA code:", code)
     try {
       const response = await fetch(`${API_BASE_URL}/auth/verify-2fa`, {
         method: "POST",

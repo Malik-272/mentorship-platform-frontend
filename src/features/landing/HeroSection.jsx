@@ -24,12 +24,12 @@ export default function HeroSection() {
               <span>{heroData.cta.primary.text}</span>
               <ArrowRight className="w-5 h-5" />
             </Link>
-            <Link
+            {/* <Link
               to={heroData.cta.secondary.link}
               className="border border-gray-300 hover:border-gray-400 text-gray-700 px-8 py-4 rounded-lg text-lg font-semibold transition-colors"
             >
               {heroData.cta.secondary.text}
-            </Link>
+            </Link> */}
           </div>
           <p className="text-sm text-gray-500 mt-4">{heroData.badges.join(" • ")}</p>
         </div>

@@ -11,7 +11,7 @@ export const heroData = {
   cta: {
     primary: {
       text: "Get Started Free",
-      link: "/register",
+      link: "/signup",
     },
     secondary: {
       text: "Browse Mentors",
@@ -175,7 +175,7 @@ export const ctaData = {
   cta: {
     primary: {
       text: "Start Your Journey",
-      link: "/register",
+      link: "/signup",
     },
     secondary: {
       text: "Have Questions?",
