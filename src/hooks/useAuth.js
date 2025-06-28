@@ -82,7 +82,7 @@ export const useLogout = () => {
       console.error("Logout error:", error)
       // Even if logout fails on server, clear local cache
       queryClient.clear()
-      navigate("/login")
+      navigate("/login", { replace: true })
     },
   })
 }

@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react"
-import { Navigate, useLocation } from "react-router-dom"
-import { useQuery } from "@tanstack/react-query"
-import { Loader2, AlertCircle, Mail } from "lucide-react"
-import { authApi } from "../services/authApi"
+import { useEffect } from "react"
+import { useNavigate } from "react-router-dom"
+import { Loader2 } from "lucide-react"
+import { useAuth } from "../hooks/useAuth"
 
 // Loading component
 const LoadingSpinner = () => (
@@ -12,4 +11,14 @@ const LoadingSpinner = () => (
   </div>
 )
 
+export default function ProtectedRoute({ children }) {
+  const navigate = useNavigate();
 
+  const { isAuthenticated } = useAuth();
+
+  useEffect(function () {
+    if (!isAuthenticated) navigate("/login")
+  }, [isAuthenticated, navigate]);
+
+  if (isAuthenticated) return children;
+}

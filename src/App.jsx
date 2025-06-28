@@ -10,6 +10,7 @@ import LoginPage from "./pages/auth/LoginPage"
 import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage"
 import ResetPasswordPage from "./pages/auth/ResetPasswordPage"
 import TwoFactorPage from "./pages/auth/TwoFactorPage"
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 
 // Create a client
 const queryClient = new QueryClient({
@@ -24,6 +25,7 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
+      <ReactQueryDevtools initialIsOpen={false} />
       <Router>
         <Routes>
           {/* Auth Routes (without AppLayout) */}
@@ -33,7 +35,6 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/2fa-verification" element={<TwoFactorPage />} />
-
           {/* Main App Routes (with AppLayout) */}
           {/* <Route
             path="/*"

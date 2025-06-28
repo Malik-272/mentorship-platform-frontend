@@ -3,7 +3,6 @@ import { Link, Outlet, useLocation } from "react-router-dom"
 import { Menu, X, Globe } from "lucide-react"
 import { navigationData, footerData } from "../data/navigationData"
 import Logo from "./Logo"
-import { useAuth, useLogout } from "../hooks/useAuth"
 
 export default function AppLayout() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
