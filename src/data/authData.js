@@ -64,7 +64,8 @@ export const validationRules = {
     required: "Please select your role",
     validate: (value) => {
       if (!value) return "Please select whether you want to be a mentee or mentor"
-      return ["mentee", "mentor"].includes(value) || "Role must be either mentee or mentor"
+      return ["mentee", "mentor", "community_manager"].includes(value)
+        || "Role must be either mentee or mentor or community manager"
     },
   },
 }

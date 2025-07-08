@@ -1,24 +1,25 @@
-import { useEffect } from "react"
-import { useNavigate } from "react-router-dom"
-import { Loader2 } from "lucide-react"
+// components/ProtectedRoute.jsx
+import { Navigate, useLocation } from "react-router-dom"
 import { useAuth } from "../hooks/useAuth"
 
-// Loading component
-const LoadingSpinner = () => (
-  <div className="min-h-screen bg-gray-50 flex flex-col justify-center items-center">
-    <Loader2 className="w-8 h-8 animate-spin text-blue-600 mb-4" />
-    <p className="text-gray-600">Checking authentication...</p>
-  </div>
-)
+export const ProtectedRoute = ({ children, requireFullAuth = false }) => {
+  const { isAuthenticated, partial, isLoading } = useAuth()
+  const location = useLocation()
 
-export default function ProtectedRoute({ children }) {
-  const navigate = useNavigate();
+  if (isLoading) {
+    return <div>Loading...</div> // Or your loading spinner
+  }
 
-  const { isAuthenticated } = useAuth();
+  // Not authenticated at all
+  if (!isAuthenticated) {
+    return <Navigate to="/login" state={{ from: location }} replace />
 
-  useEffect(function () {
-    if (!isAuthenticated) navigate("/login")
-  }, [isAuthenticated, navigate]);
+  }
 
-  if (isAuthenticated) return children;
+  // Authenticated but requires full auth and user is partial
+  if (requireFullAuth && partial) {
+    return <Navigate to="/confirm-email" state={{ from: location }} replace />
+  }
+
+  return children
 }

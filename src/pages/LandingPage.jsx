@@ -10,7 +10,7 @@ export default function LandingPage() {
 
 
   return (
-    <div className="bg-white">
+    <div className="bg-white dark:bg-gray-800">
       <HeroSection />
       <StatsSection />
       <FeaturesSection />
