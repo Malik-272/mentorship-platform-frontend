@@ -4,6 +4,7 @@ const API_BASE_URL = "http://localhost:3000/api/v1"
 export const authApi = {
   // Get current user
   getCurrentUser: async () => {
+    // auth/me
     const response = await fetch(`${API_BASE_URL}/auth/me`, {
       method: "GET",
       credentials: "include",
@@ -69,7 +70,6 @@ export const authApi = {
       if (!response.ok) {
         throw new Error(data.message || "Login failed")
       }
-
       return data
     } catch (error) {
       console.error("API: Login request failed:", error)
@@ -77,7 +77,6 @@ export const authApi = {
       if (error.name === "TypeError" && error.message.includes("fetch")) {
         throw new Error("Unable to connect to server. Please check your internet connection.")
       }
-
       throw error
     }
   },
@@ -170,6 +169,37 @@ export const authApi = {
     }
 
     return response.json()
+  },
+
+  // confirm email
+  confirmEmail: async (code) => {
+    console.log("API: confirm code:", code)
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/confirm-email`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ code }),
+        credentials: "include",
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message)
+      }
+
+      return data
+    } catch (error) {
+      console.error("API: confirm email request failed:", error)
+
+      if (error.name === "TypeError" && error.message.includes("fetch")) {
+        throw new Error("Unable to connect to server. Please check your internet connection.")
+      }
+
+      throw error
+    }
   },
 
   // Verify 2FA
