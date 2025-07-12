@@ -34,6 +34,7 @@ export const useSignup = () => {
     mutationFn: authApi.signup,
     onSuccess: (data) => {
       console.log("Signup successful:", data)
+      setSessionType(1);
       navigate("/confirm-email", {
         state: {
           email: data.email || "your email",

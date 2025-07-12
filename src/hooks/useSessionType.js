@@ -11,5 +11,5 @@ export const setSessionType = (partial) => {
 
 export const getSessionType = () => {
   const partial = localStorage.getItem("Partial")
-  return partial === 1;
+  return partial;
 }
