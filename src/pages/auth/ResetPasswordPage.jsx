@@ -23,9 +23,7 @@ export default function ResetPasswordPage() {
   const watchConfirmPassword = watch("confirmPassword", "")
 
   const onSubmit = async (data) => {
-    if (data.newPassword !== data.confirmPassword) {
-      return
-    }
+    if (data.newPassword !== data.confirmPassword) return
 
     try {
       await resetPasswordMutation.mutateAsync({
@@ -39,12 +37,12 @@ export default function ResetPasswordPage() {
 
   if (!token) {
     return (
-      <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
-          <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 text-center">
+          <div className="bg-white dark:bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10 text-center">
             <AlertCircle className="mx-auto h-12 w-12 text-red-500 mb-4" />
-            <h2 className="text-xl font-bold text-gray-900 mb-2">Invalid Reset Link</h2>
-            <p className="text-gray-600 mb-6">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Invalid Reset Link</h2>
+            <p className="text-gray-600 dark:text-gray-300 mb-6">
               This password reset link is invalid or has expired. Please request a new one.
             </p>
             <Link
@@ -60,19 +58,22 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
           <Logo withLink={true} />
         </div>
-        <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">Reset your password</h2>
-        <p className="mt-2 text-center text-sm text-gray-600">Enter your new password below.</p>
+        <h2 className="mt-6 text-center text-3xl font-bold text-gray-900 dark:text-white">
+          Reset your password
+        </h2>
+        <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-300">
+          Enter your new password below.
+        </p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+        <div className="bg-white dark:bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
-            {/* New Password Field */}
             <FormField
               label="New Password"
               name="newPassword"
@@ -86,7 +87,6 @@ export default function ResetPasswordPage() {
 
             <PasswordStrengthIndicator password={watchPassword} />
 
-            {/* Confirm Password Field */}
             <FormField
               label="Confirm New Password"
               name="confirmPassword"
@@ -101,7 +101,6 @@ export default function ResetPasswordPage() {
               showPasswordToggle={true}
             />
 
-            {/* Password Match Indicator */}
             {watchConfirmPassword && (
               <div className="text-sm">
                 {watchPassword === watchConfirmPassword ? (
@@ -125,16 +124,20 @@ export default function ResetPasswordPage() {
               {isSubmitting || resetPasswordMutation.isPending ? "Resetting..." : "Reset Password"}
             </button>
 
-            {/* Error Message */}
             {resetPasswordMutation.error && (
-              <div className="rounded-md bg-red-50 p-4">
-                <div className="text-sm text-red-700">{resetPasswordMutation.error.message}</div>
+              <div className="rounded-md bg-red-50 dark:bg-red-200 p-4">
+                <div className="text-sm text-red-700 dark:text-red-900">
+                  {resetPasswordMutation.error.message}
+                </div>
               </div>
             )}
           </form>
 
           <div className="mt-6 text-center">
-            <Link to="/login" className="text-sm text-blue-600 hover:text-blue-500">
+            <Link
+              to="/login"
+              className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300"
+            >
               Back to Login
             </Link>
           </div>
