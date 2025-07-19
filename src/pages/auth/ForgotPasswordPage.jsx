@@ -30,7 +30,7 @@ export default function ForgotPasswordPage() {
 
   if (emailSent) {
     return (
-      <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8 text-gray-900 dark:text-gray-100">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <div className="flex justify-center">
             <Logo withLink={true} />
@@ -38,17 +38,17 @@ export default function ForgotPasswordPage() {
         </div>
 
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-          <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 text-center">
-            <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-6">
-              <CheckCircle className="h-8 w-8 text-green-600" />
+          <div className="bg-white dark:bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10 text-center">
+            <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 dark:bg-green-900 mb-6">
+              <CheckCircle className="h-8 w-8 text-green-600 dark:text-green-400" />
             </div>
 
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Check Your Email</h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Check Your Email</h2>
 
             <div className="mb-6">
-              <p className="text-gray-600 mb-2">We've sent a password reset link to:</p>
-              <p className="font-medium text-gray-900 mb-4">{sentEmail}</p>
-              <p className="text-sm text-gray-500">
+              <p className="text-gray-600 dark:text-gray-300 mb-2">We've sent a password reset link to:</p>
+              <p className="font-medium text-gray-900 dark:text-white mb-4">{sentEmail}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
                 Click the link in the email to reset your password. The link will expire in 1 hour.
               </p>
             </div>
@@ -68,19 +68,19 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8 text-gray-900 dark:text-gray-100">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
           <Logo withLink={true} />
         </div>
-        <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">Forgot your password?</h2>
-        <p className="mt-2 text-center text-sm text-gray-600">
+        <h2 className="mt-6 text-center text-3xl font-bold text-gray-900 dark:text-white">Forgot your password?</h2>
+        <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-300">
           Enter your email address and we'll send you a link to reset your password.
         </p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+        <div className="bg-white dark:bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
             <FormField
               label="Email Address"
@@ -108,14 +108,17 @@ export default function ForgotPasswordPage() {
 
             {/* Error Message */}
             {forgotPasswordMutation.error && (
-              <div className="rounded-md bg-red-50 p-4">
-                <div className="text-sm text-red-700">{forgotPasswordMutation.error.message}</div>
+              <div className="rounded-md bg-red-50 dark:bg-red-900 p-4">
+                <div className="text-sm text-red-700 dark:text-red-300">{forgotPasswordMutation.error.message}</div>
               </div>
             )}
           </form>
 
           <div className="mt-6">
-            <Link to="/login" className="flex items-center justify-center text-sm text-blue-600 hover:text-blue-500">
+            <Link
+              to="/login"
+              className="flex items-center justify-center text-sm text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300"
+            >
               <ArrowLeft className="h-4 w-4 mr-1" />
               Back to Login
             </Link>

@@ -1,16 +1,15 @@
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { Link } from "react-router-dom"
-import { User, UserCheck, AlertCircle } from "lucide-react"
+import { User, UserCheck, AlertCircle, Shield } from "lucide-react"
 import { useSignup } from "../../hooks/useAuth"
 import { validationRules, countryCodes } from "../../data/authData"
 import FormField from "../../features/Authenticaion/FormField"
 import PasswordStrengthIndicator from "../../features/Authenticaion/PasswordStrengthIndicator"
 import Logo from "../../ui/Logo"
 
-
 export default function SignupPage() {
-  const [selectedRole, setSelectedRole] = useState("");
+  const [selectedRole, setSelectedRole] = useState("")
 
   const {
     register,
@@ -33,7 +32,6 @@ export default function SignupPage() {
   const signupMutation = useSignup()
   const watchPassword = watch("password", "")
 
-  // Handle role selection
   const handleRoleSelect = (role) => {
     setSelectedRole(role)
     setValue("role", role, { shouldValidate: true })
@@ -41,7 +39,6 @@ export default function SignupPage() {
 
   const onSubmit = async (data) => {
     try {
-      console.log("Submitting signup data:", data)
       await signupMutation.mutateAsync(data)
     } catch (error) {
       console.error("Signup failed:", error)
@@ -49,13 +46,15 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
           <Logo withLink={true} />
         </div>
-        <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">Create your account</h2>
-        <p className="mt-2 text-center text-sm text-gray-600">
+        <h2 className="mt-6 text-center text-3xl font-bold text-gray-900 dark:text-white">
+          Create your account
+        </h2>
+        <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-300">
           Already have an account?{" "}
           <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500">
             Sign in
@@ -64,9 +63,8 @@ export default function SignupPage() {
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+        <div className="bg-white dark:bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
-            {/* Name Field */}
             <FormField
               label="Full Name"
               name="name"
@@ -76,7 +74,6 @@ export default function SignupPage() {
               rules={validationRules.name}
             />
 
-            {/* Username Field */}
             <FormField
               label="Username"
               name="id"
@@ -86,7 +83,6 @@ export default function SignupPage() {
               rules={validationRules.id}
             />
 
-            {/* Email Field */}
             <FormField
               label="Email Address"
               name="email"
@@ -97,7 +93,6 @@ export default function SignupPage() {
               rules={validationRules.email}
             />
 
-            {/* Headline Field */}
             <FormField
               label="Professional Headline"
               name="headline"
@@ -107,7 +102,6 @@ export default function SignupPage() {
               rules={validationRules.headline}
             />
 
-            {/* Country Field */}
             <FormField
               label="Country"
               name="country"
@@ -117,7 +111,7 @@ export default function SignupPage() {
             >
               <select
                 {...register("country", validationRules.country)}
-                className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${errors.country ? "border-red-300" : "border-gray-300"
+                className={`w-full px-3 py-2 border rounded-md shadow-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${errors.country ? "border-red-300" : "border-gray-300 dark:border-gray-600"
                   }`}
               >
                 <option value="">Select your country</option>
@@ -129,48 +123,61 @@ export default function SignupPage() {
               </select>
             </FormField>
 
-            {/* Role Selection */}
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">I want to join as</label>
-              <div className="grid grid-cols-2 gap-3">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                I want to join as
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <button
                   type="button"
                   onClick={() => handleRoleSelect("mentee")}
                   className={`p-4 border-2 rounded-lg text-center transition-all ${selectedRole === "mentee"
-                    ? "border-blue-500 bg-blue-50 text-blue-700"
-                    : "border-gray-200 hover:border-gray-300"
+                    ? "border-blue-500 bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-300"
+                    : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-500"
                     }`}
                 >
                   <User className="w-6 h-6 mx-auto mb-2" />
                   <div className="font-medium">Mentee</div>
-                  <div className="text-xs text-gray-500">Seeking guidance</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">Seeking guidance</div>
                 </button>
+
                 <button
                   type="button"
                   onClick={() => handleRoleSelect("mentor")}
                   className={`p-4 border-2 rounded-lg text-center transition-all ${selectedRole === "mentor"
-                    ? "border-blue-500 bg-blue-50 text-blue-700"
-                    : "border-gray-200 hover:border-gray-300"
+                    ? "border-green-500 bg-green-50 dark:bg-green-900 text-green-700 dark:text-green-300"
+                    : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-500"
                     }`}
                 >
                   <UserCheck className="w-6 h-6 mx-auto mb-2" />
                   <div className="font-medium">Mentor</div>
-                  <div className="text-xs text-gray-500">Sharing expertise</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">Sharing expertise</div>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleRoleSelect("community_manager")}
+                  className={`p-4 border-2 rounded-lg text-center transition-all ${selectedRole === "community_manager"
+                    ? "border-purple-500 bg-purple-50 dark:bg-purple-900 text-purple-700 dark:text-purple-300"
+                    : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-500"
+                    }`}
+                >
+                  <Shield className="w-6 h-6 mx-auto mb-2" />
+                  <div className="font-medium">Community Manager</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">Managing communities</div>
                 </button>
               </div>
 
-              {/* Hidden input for role */}
               <input type="hidden" {...register("role", validationRules.role)} value={selectedRole} />
 
               {errors.role && (
-                <div className="flex items-center space-x-1 text-red-600 text-sm">
+                <div className="flex items-center space-x-1 text-red-600 dark:text-red-400 text-sm">
                   <AlertCircle className="w-4 h-4" />
                   <span>{errors.role.message}</span>
                 </div>
               )}
             </div>
 
-            {/* Password Field */}
             <FormField
               label="Password"
               name="password"
@@ -184,7 +191,6 @@ export default function SignupPage() {
 
             <PasswordStrengthIndicator password={watchPassword} />
 
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={isSubmitting || signupMutation.isPending}
@@ -193,13 +199,14 @@ export default function SignupPage() {
               {isSubmitting || signupMutation.isPending ? "Creating Account..." : "Create Account"}
             </button>
 
-            {/* Error Message */}
             {signupMutation.error && (
-              <div className="rounded-md bg-red-50 p-4">
+              <div className="rounded-md bg-red-50 dark:bg-red-900 p-4">
                 <div className="flex">
                   <AlertCircle className="h-5 w-5 text-red-400" />
                   <div className="ml-3">
-                    <div className="text-sm text-red-700">{signupMutation.error.message}</div>
+                    <div className="text-sm text-red-700 dark:text-red-200">
+                      {signupMutation.error.message}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -209,17 +216,19 @@ export default function SignupPage() {
           <div className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300" />
+                <div className="w-full border-t border-gray-300 dark:border-gray-600" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">By signing up, you agree to our</span>
+                <span className="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">
+                  By signing up, you agree to our
+                </span>
               </div>
             </div>
             <div className="mt-2 text-center">
               <Link to="/terms" className="text-sm text-blue-600 hover:text-blue-500">
                 Terms of Service
               </Link>
-              <span className="text-gray-500"> and </span>
+              <span className="text-gray-500 dark:text-gray-400"> and </span>
               <Link to="/privacy" className="text-sm text-blue-600 hover:text-blue-500">
                 Privacy Policy
               </Link>

@@ -1,6 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { authApi } from "../services/authApi"
 import { useNavigate } from "react-router-dom"
+import { getSessionType, setSessionType } from "./useSessionType"
+import { jwtDecode } from "jwt-decode"
 
 // Hook to get current user
 export const useCurrentUser = () => {
@@ -14,13 +16,14 @@ export const useCurrentUser = () => {
 }
 
 export const useAuth = () => {
-  const { data: user, isLoading, isError } = useCurrentUser()
-
+  const { data, isLoading, isError } = useCurrentUser()
+  const partial = getSessionType();
   return {
-    user,
-    isAuthenticated: !isError && !!user,
+    data,
+    isAuthenticated: !isError && !!data,
     isLoading,
     isError,
+    partial
   }
 }
 
@@ -31,7 +34,8 @@ export const useSignup = () => {
     mutationFn: authApi.signup,
     onSuccess: (data) => {
       console.log("Signup successful:", data)
-      navigate("/signup-confirmation", {
+      setSessionType(1);
+      navigate("/confirm-email", {
         state: {
           email: data.email || "your email",
         },
@@ -52,12 +56,18 @@ export const useLogin = () => {
     mutationFn: authApi.login,
     onSuccess: (data) => {
       console.log("Login successful:", data)
-
-      if (data.requires2FA) {
+      const partial = setSessionType(jwtDecode(data.token).partial);
+      if (partial) {
+        navigate("/confirm-email", {
+          state: {
+            message: "Please complete your profile to access the dashboard.",
+          },
+        })
+      } else if (data.requires2FA) {
         navigate("/2fa-verification")
       } else {
         queryClient.setQueryData(["user"], data.user)
-        navigate("/dashboard")
+        navigate("/", { replace: true })
       }
     },
     onError: (error) => {
@@ -67,22 +77,38 @@ export const useLogin = () => {
   })
 }
 
+export const useConfirmEmail = () => {
+  return useMutation({
+    mutationFn: ({ code }) => authApi.confirmEmail(code),
+    onSuccess: (data) => {
+      console.log("Email confirmation successful:", data)
+      // Optionally, you can redirect or show a success message
+      setSessionType(0)
+    },
+    onError: (error) => {
+      console.error("Email confirmation error:", error)
+      // Error is handled by the component
+    },
+  })
+}
+
 export const useLogout = () => {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
-
   return useMutation({
     mutationFn: authApi.logout,
     onSuccess: () => {
       // Clear all cached data
       queryClient.clear()
-      navigate("/login")
+      navigate("/login", { replace: true })
+      localStorage.removeItem("Partial")
     },
     onError: (error) => {
       console.error("Logout error:", error)
       // Even if logout fails on server, clear local cache
       queryClient.clear()
-      navigate("/login")
+      navigate("/login", { replace: true })
+      localStorage.removeItem("Partial")
     },
   })
 }
