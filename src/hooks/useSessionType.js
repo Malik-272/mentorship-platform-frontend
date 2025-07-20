@@ -1,9 +1,9 @@
 export const setSessionType = (partial) => {
-  if (partial === false || partial === undefined) {
+  if (partial === 0 || partial === undefined) {
     localStorage.setItem("Partial", 0)
     return 0;
   }
-  if (partial === true) {
+  if (partial === 1) {
     localStorage.setItem("Partial", 1)
     return 1;
   }

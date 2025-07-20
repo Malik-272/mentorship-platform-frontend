@@ -4,8 +4,8 @@ const API_BASE_URL = "http://localhost:3000/api/v1"
 export const authApi = {
   // Get current user
   getCurrentUser: async () => {
-    // auth/me
-    const response = await fetch(`${API_BASE_URL}/auth/me`, {
+    // users/me
+    const response = await fetch(`${API_BASE_URL}/users/me`, {
       method: "GET",
       credentials: "include",
       headers: {
@@ -20,8 +20,27 @@ export const authApi = {
       const error = await response.json()
       throw new Error(error.message || "Failed to get user info")
     }
+    return await response.json()
+  },
+  // Get user by ID
+  getUser: async (id) => {
+    // users/:id
+    const response = await fetch(`${API_BASE_URL}/users/${id}`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
 
-    return response.json()
+    if (!response.ok) {
+      if (response.status === 401) {
+        throw new Error("Not authenticated")
+      }
+      const error = await response.json()
+      throw new Error(error.message || "Failed to get user info")
+    }
+    return await response.json()
   },
   // Signup
   signup: async (userData) => {

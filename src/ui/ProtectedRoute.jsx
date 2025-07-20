@@ -21,7 +21,7 @@ export const ProtectedRoute = ({
 
   // Not authenticated at all
   if (!isAuthenticated) {
-    return <Navigate to={redirectTo} state={{ from: location }} replace />
+    return <Navigate to={redirectTo} /*state={{ from: location }}*/ replace />
   }
 
   // Partial authentication handling
@@ -33,7 +33,7 @@ export const ProtectedRoute = ({
 
     // If route requires full auth and user is partial, redirect to confirm email
     if (requireFullAuth) {
-      return <Navigate to="/confirm-email-page" replace />
+      return <Navigate to="/confirm-email" replace />
     }
   }
 
@@ -84,7 +84,7 @@ export const PublicOnlyRoute = ({ children }) => {
     if (location.pathname === "/confirm-email-page") {
       return children
     }
-    return <Navigate to="/confirm-email-page" replace />
+    return <Navigate to="/confirm-email" replace />
   }
 
   return children
