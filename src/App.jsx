@@ -1,20 +1,24 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import AppLayout from "./ui/AppLayout"
-import LandingPage from "./pages/LandingPage"
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
+import { ThemeProvider } from "./context/ThemeContext"
+// import { DashboardProtectedRoute, PartialAuthRoute, PublicOnlyRoute } from "./ui/ProtectedRoute"
+import { lazy } from "react"
+
+const AppLayout = lazy(() => import("./ui/AppLayout"))
+const LandingPage = lazy(() => import("./pages/LandingPage"))
 
 // Auth Pages
-import SignupPage from "./pages/auth/SignUpPage"
-import SignupConfirmationPage from "./pages/auth/SignupConfirmationPage"
-import LoginPage from "./pages/auth/LoginPage"
-import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage"
-import ResetPasswordPage from "./pages/auth/ResetPasswordPage"
-import TwoFactorPage from "./pages/auth/TwoFactorPage"
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
-import { ConfirmEmailPage } from "./pages/auth/ConfirmEmailPage"
-import { ThemeProvider } from "./context/ThemeContext"
-import { DashboardProtectedRoute, PartialAuthRoute, PublicOnlyRoute } from "./ui/ProtectedRoute"
-import NotFoundPage from "./pages/NotFoundPage"
+const SignupPage = lazy(() => import("./pages/auth/SignUpPage"))
+const SignupConfirmationPage = lazy(() => import("./pages/auth/SignupConfirmationPage"))
+const LoginPage = lazy(() => import("./pages/auth/LoginPage"))
+const ForgotPasswordPage = lazy(() => import("./pages/auth/ForgotPasswordPage"))
+const ResetPasswordPage = lazy(() => import("./pages/auth/ResetPasswordPage"))
+const TwoFactorPage = lazy(() => import("./pages/auth/TwoFactorPage"))
+const ConfirmEmailPage = lazy(() => import("./pages/auth/ConfirmEmailPage"))
+const NotFoundPage = lazy(() => import("./pages/NotFoundPage"))
+const SettingsPage = lazy(() => import("./pages/SettingsPage"))
+// const UserProfilePage = lazy(() => import("./pages/UserProfilePage"))
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -36,49 +40,49 @@ function App() {
             <Route
               path="/signup"
               element={
-                <PublicOnlyRoute>
-                  <SignupPage />
-                </PublicOnlyRoute>
+                // <PublicOnlyRoute>
+                <SignupPage />
+                // </PublicOnlyRoute>
               }
             />
             <Route
               path="/confirm-email"
               element={
-                <PublicOnlyRoute>
-                  <SignupConfirmationPage />
-                </PublicOnlyRoute>
+                // <PublicOnlyRoute>
+                <SignupConfirmationPage />
+                // </PublicOnlyRoute>
               }
             />
             <Route
               path="/login"
               element={
-                <PublicOnlyRoute>
-                  <LoginPage />
-                </PublicOnlyRoute>
+                // <PublicOnlyRoute>
+                <LoginPage />
+                // </PublicOnlyRoute>
               }
             />
             <Route
               path="/forgot-password"
               element={
-                <PublicOnlyRoute>
-                  <ForgotPasswordPage />
-                </PublicOnlyRoute>
+                // <PublicOnlyRoute>
+                <ForgotPasswordPage />
+                // </PublicOnlyRoute>
               }
             />
             <Route
               path="/reset-password"
               element={
-                <PublicOnlyRoute>
-                  <ResetPasswordPage />
-                </PublicOnlyRoute>
+                // <PublicOnlyRoute>
+                <ResetPasswordPage />
+                // </PublicOnlyRoute>
               }
             />
             <Route
               path="/2fa-verification"
               element={
-                <PublicOnlyRoute>
-                  <TwoFactorPage />
-                </PublicOnlyRoute>
+                // <PublicOnlyRoute>
+                <TwoFactorPage />
+                // </PublicOnlyRoute>
               }
             />
 
@@ -86,9 +90,9 @@ function App() {
             <Route
               path="/confirm-email-page"
               element={
-                <PartialAuthRoute>
-                  <ConfirmEmailPage />
-                </PartialAuthRoute>
+                // <PartialAuthRoute>
+                <ConfirmEmailPage />
+                // </PartialAuthRoute>
               }
             />
 
@@ -111,13 +115,15 @@ function App() {
               <Route
                 path="dashboard"
                 element={
-                  <DashboardProtectedRoute>
-                    <div className="p-8 text-center">Dashboard coming soon...</div>
-                  </DashboardProtectedRoute>
+                  // <DashboardProtectedRoute>
+                  <div className="p-8 text-center">Dashboard coming soon...</div>
+                  // </DashboardProtectedRoute>
                 }
               />
             </Route>
             <Route path="*" element={<NotFoundPage />} />
+            <Route path="settings" element={<SettingsPage />} />
+            {/* <Route path="profile" element={<UserProfilePage />} /> */}
           </Routes>
         </Router>
       </ThemeProvider>

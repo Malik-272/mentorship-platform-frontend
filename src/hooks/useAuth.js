@@ -27,6 +27,19 @@ export const useAuth = () => {
   }
 }
 
+export const useUser = (id) => {
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["user", id],
+    queryFn: () => authApi.getUser(id),
+    enabled: !!id,
+  })
+  return {
+    data,
+    isLoading,
+    isError
+  }
+}
+
 export const useSignup = () => {
   const navigate = useNavigate()
 
@@ -78,11 +91,11 @@ export const useLogin = () => {
 }
 
 export const useConfirmEmail = () => {
+  // const navigate = useNavigate()
   return useMutation({
     mutationFn: ({ code }) => authApi.confirmEmail(code),
     onSuccess: (data) => {
       console.log("Email confirmation successful:", data)
-      // Optionally, you can redirect or show a success message
       setSessionType(0)
     },
     onError: (error) => {
