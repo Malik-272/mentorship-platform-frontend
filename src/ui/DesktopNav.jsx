@@ -16,22 +16,18 @@ function DesktopNav() {
     isAuthenticated,
     isLoading,
     logout: logoutMutation,
-    setStatus,
   } = useAuth();
   const handleLogout = () => {
     logoutMutation.mutate(undefined, {
       onSuccess: () => {
-        setStatus("none");
         navigate("/login");
       },
       onError: () => {
-        document.cookie =
-          "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-        setStatus("none");
         navigate("/login");
       },
     });
   };
+  console.log("DesktopNav data:", data);
   return (
     <>
       {/* Desktop Navigation */}
@@ -60,9 +56,9 @@ function DesktopNav() {
           <div className="w-20 h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
         ) : isAuthenticated ? (
           <div className="flex items-center space-x-3">
-            <Link to={`/profile/${data?.user.id}`}>
+            <Link to={`/profile/${data?.user?.id}`}>
               <div className="flex items-center space-x-2 text-gray-700 dark:text-gray-200">
-                {data?.user.imageUrl ? (
+                {data?.user?.imageUrl ? (
                   <img
                     src={data.user.imageUrl}
                     alt="User avatar"
@@ -78,7 +74,7 @@ function DesktopNav() {
                     className="w-4 h-4 rounded-full object-cover"
                   />
                 )}
-                <span className="text-sm font-medium">{data?.user.name}</span>
+                <span className="text-sm font-medium">{data?.user?.name}</span>
               </div>
             </Link>
             <button

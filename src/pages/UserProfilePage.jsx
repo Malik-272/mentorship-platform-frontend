@@ -29,8 +29,8 @@ export default function UserProfilePage() {
   const { data: profileData, isLoading, error } = useGetUserProfile(id);
 
   const isOwnProfile =
-    currentUser.user.id === Number.parseInt(id) ||
-    currentUser.user.username === id;
+    currentUser?.user?.id === Number.parseInt(id) ||
+    currentUser?.user?.username === id;
 
   if (isLoading) {
     return (

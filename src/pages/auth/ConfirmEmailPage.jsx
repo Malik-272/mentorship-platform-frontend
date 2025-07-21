@@ -6,7 +6,7 @@ import { useAuth } from "../../context/AuthContext";
 export function ConfirmEmailPage() {
   const [searchParams] = useSearchParams();
   const code = searchParams.get("code");
-  const { confirmEmail, setStatus } = useAuth();
+  const { confirmEmail } = useAuth();
   const { mutate, isPending, isError, error } = confirmEmail;
   useEffect(() => {
     if (code) {
@@ -29,8 +29,6 @@ export function ConfirmEmailPage() {
         <div>Error: {error.message}</div>
       </div>
     );
-  } else {
-    setStatus("full"); // Set status to full after successful confirmation
   }
 
   return (

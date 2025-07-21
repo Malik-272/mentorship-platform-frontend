@@ -41,7 +41,6 @@ export default function SignupPage() {
     try {
       const result = await signupMutation.mutateAsync(data);
       if (result.status === "Success") {
-        setStatus("partial");
         navigate("/confirm-email", {
           state: {
             email: result?.email || data.email,

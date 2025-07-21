@@ -21,23 +21,19 @@ export default function LoginPage() {
   const onSubmit = async (data) => {
     try {
       const result = await loginMutation.mutateAsync(data);
-      const decoded = jwtDecode(result.token);
-      // result contains user, token, or whatever your backend returns
-      setStatus(decoded.partial ? "partial" : "full");
-      if (decoded?.partial === true) {
-        if (status === "partial") {
-          // Partial user — redirect to confirm email
 
-          navigate("/confirm-email", {
-            state: {
-              message: "Please confirm your email to proceed.",
-            },
-          });
-        } else {
-          // Fully authenticated user
-          console.log("Login successful:", status);
-          navigate("/dashboard");
-        }
+      if (status === "partial") {
+        // Partial user — redirect to confirm email
+
+        navigate("/confirm-email", {
+          state: {
+            message: "Please confirm your email to proceed.",
+          },
+        });
+      } else {
+        // Fully authenticated user
+        console.log("Login successful:", status);
+        navigate("/dashboard");
       }
     } catch (error) {
       console.error("Login failed:", error);
