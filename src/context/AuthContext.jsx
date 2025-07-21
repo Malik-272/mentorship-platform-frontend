@@ -1,6 +1,6 @@
 // src/context/AuthContext.jsx
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { createContext, useContext } from "react";
+import { createContext, useContext, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { authApi } from "../services/authApi";
 
@@ -36,7 +36,9 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
-  const status = isError ? "none" : decoded?.partial ? "partial" : "full";
+  const [status, setStatus] = useState(
+    isError || !decoded ? "none" : decoded.partial ? "partial" : "full"
+  );
 
   const login = useMutation({
     mutationFn: authApi.login,
@@ -96,8 +98,10 @@ export const AuthProvider = ({ children }) => {
       value={{
         data: user,
         isLoading,
+        isError,
         isAuthenticated: status !== "none",
         status,
+        setStatus,
         login,
         logout,
         signup,

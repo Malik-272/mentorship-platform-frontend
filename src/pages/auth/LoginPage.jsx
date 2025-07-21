@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AlertCircle } from "lucide-react";
 
@@ -11,7 +11,7 @@ export default function LoginPage() {
   const location = useLocation();
   const message = location.state?.message;
   const navigate = useNavigate();
-  const { login: loginMutation } = useAuth();
+  const { login: loginMutation, status, setStatus } = useAuth();
   const {
     register,
     handleSubmit,
@@ -23,18 +23,21 @@ export default function LoginPage() {
       const result = await loginMutation.mutateAsync(data);
       const decoded = jwtDecode(result.token);
       // result contains user, token, or whatever your backend returns
+      setStatus(decoded.partial ? "partial" : "full");
       if (decoded?.partial === true) {
-        // Partial user — redirect to confirm email
+        if (status === "partial") {
+          // Partial user — redirect to confirm email
 
-        navigate("/confirm-email", {
-          state: {
-            message: "Please confirm your email to proceed.",
-          },
-        });
-      } else {
-        // Fully authenticated user
-        console.log("Login successful:", decoded);
-        navigate("/dashboard");
+          navigate("/confirm-email", {
+            state: {
+              message: "Please confirm your email to proceed.",
+            },
+          });
+        } else {
+          // Fully authenticated user
+          console.log("Login successful:", status);
+          navigate("/dashboard");
+        }
       }
     } catch (error) {
       console.error("Login failed:", error);
