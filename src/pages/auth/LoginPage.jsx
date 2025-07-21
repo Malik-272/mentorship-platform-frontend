@@ -18,6 +18,7 @@ export default function LoginPage() {
   const loginMutation = useLogin()
 
   const onSubmit = async (data) => {
+    console.log("Login data:", data)
     try {
       await loginMutation.mutateAsync(data)
     } catch (error) {

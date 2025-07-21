@@ -1,40 +1,81 @@
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-import { Camera, Upload, Trash2, ExternalLink, Edit2 } from "lucide-react"
-import { useUpdateProfile, useUploadAvatar, useDeleteAvatar } from "../../hooks/useSettings"
+import { useEffect, useState } from "react"
+import { useFieldArray, useForm } from "react-hook-form"
+import { Camera, Upload, Trash2, ExternalLink, Edit2, Plus, Tag } from "lucide-react"
+import { useUpdateProfile, useUploadAvatar, useDeleteAvatar, useFetchUserLinks, useGetUserProfile } from "../../hooks/useSettings"
 import { validationRules, countryCodes } from "../../data/authData"
 import FormField from "../Authenticaion/FormField"
 import LinksModal from "./LinksModal"
 
-export default function PersonalInfoSection({ user }) {
+export default function PersonalInfoSection() {
+  const { data: userLinksData, isLoading: linksLoading, refetch: refetchLinks, error: linksError } = useFetchUserLinks()
   const [showLinksModal, setShowLinksModal] = useState(false)
   const [avatarHover, setAvatarHover] = useState(false)
-  console.log("User data in PersonalInfoSection:", user?.headline)
+  const { data, refetch: refetchUser } = useGetUserProfile() // Assuming useUser hook fetches the current user data
+  const [user, setUser] = useState(data?.user || {})
+
+  useEffect(() => {
+    setUser(data?.user || {})
+  }, [data])
+
   const {
     register,
     handleSubmit,
     formState: { errors, isDirty },
     reset,
+    control,
   } = useForm({
     defaultValues: {
       name: user?.name || "",
-      username: user?.id || "",
+      id: user?.id || "",
       email: user?.email || "",
       headline: user?.headline || "",
       bio: user?.bio || "",
       country: user?.country || "",
-      // location: user?.location || "",
-      // website: user?.website || "",
+      skills: user?.skills || [],
     },
   })
+
+  const { fields, append, remove } = useFieldArray({
+    name: "skills",
+    control,
+  })
+
+  useEffect(() => {
+    if (user) {
+      reset({
+        name: user?.name || "",
+        id: user?.id || "",
+        email: user?.email || "",
+        headline: user?.headline || "",
+        bio: user?.bio || "",
+        country: user?.country || "",
+        skills: user?.skills || [],
+      })
+    }
+  }, [user, reset])
 
   const updateProfileMutation = useUpdateProfile()
   const uploadAvatarMutation = useUploadAvatar()
   const deleteAvatarMutation = useDeleteAvatar()
 
   const onSubmit = async (data) => {
+    console.log("Submitting profile data:", data)
     try {
-      await updateProfileMutation.mutateAsync(data)
+      const allowedFields = ["name", "headline", "bio", "country", "skills"]
+      const filteredData = {}
+
+      allowedFields.forEach((field) => {
+        if (data[field]) {
+          filteredData[field] = data[field]
+        }
+      })
+
+      if (filteredData.skills) {
+        filteredData.skills = filteredData.skills.filter((skill) => skill.trim() !== "")
+      }
+
+      await updateProfileMutation.mutateAsync(filteredData)
+      refetchUser()
       reset(data) // Reset form dirty state
     } catch (error) {
       console.error("Profile update failed:", error)
@@ -62,6 +103,11 @@ export default function PersonalInfoSection({ user }) {
     }
   }
 
+  const handleLinksModalClose = () => {
+    setShowLinksModal(false)
+    refetchLinks() // Refresh links when modal closes
+  }
+
   const getInitials = (name) => {
     return name
       ?.split(" ")
@@ -81,6 +127,8 @@ export default function PersonalInfoSection({ user }) {
         return "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
     }
   }
+
+  const userLinks = userLinksData?.links || []
 
   return (
     <div className="p-6">
@@ -169,12 +217,14 @@ export default function PersonalInfoSection({ user }) {
           />
 
           <FormField
+            disabled={true}
             defaultValue={user?.id}
             label="Username"
-            name="username"
+            name="id"
             register={register}
-            error={errors.username}
+            error={errors.id}
             rules={validationRules.id}
+            className="opacity-60"
           />
 
           <FormField
@@ -219,25 +269,6 @@ export default function PersonalInfoSection({ user }) {
             </select>
           </FormField>
 
-          {/* <FormField
-            label="Location (City)"
-            name="location"
-            register={register}
-            error={errors.location}
-            placeholder="e.g., New York, NY"
-          /> */}
-
-          {/* <div className="md:col-span-2">
-            <FormField
-              label="Website"
-              name="website"
-              type="url"
-              register={register}
-              error={errors.website}
-              placeholder="https://yourwebsite.com"
-            />
-          </div> */}
-
           <div className="md:col-span-2">
             <FormField
               defaultValue={user?.bio}
@@ -255,6 +286,50 @@ export default function PersonalInfoSection({ user }) {
               />
             </FormField>
           </div>
+        </div>
+
+        {/* Skills Section */}
+        <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white">Skills</h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Add your professional skills and expertise</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => append("")}
+              className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Add Skill
+            </button>
+          </div>
+
+          <div className="space-y-3">
+            {fields.map((field, index) => (
+              <div key={field.id} className="flex items-center gap-2">
+                <input
+                  {...register(`skills.${index}`)}
+                  className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                  placeholder="e.g., JavaScript, React, UI Design"
+                />
+                <button
+                  type="button"
+                  onClick={() => remove(index)}
+                  className="p-2 text-red-500 hover:text-red-700 transition-colors"
+                >
+                  <Trash2 className="w-5 h-5" />
+                </button>
+              </div>
+            ))}
+          </div>
+
+          {fields.length === 0 && (
+            <div className="text-center py-6 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg">
+              <Tag className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+              <p className="text-sm text-gray-500 dark:text-gray-400">No skills added yet</p>
+            </div>
+          )}
         </div>
 
         {/* Social Links Section */}
@@ -277,23 +352,32 @@ export default function PersonalInfoSection({ user }) {
           </div>
 
           {/* Display Current Links */}
-          {user?.links && user.links.length > 0 ? (
+          {linksLoading ? (
+            <div className="text-center py-6">
+              <div className="text-sm text-gray-500 dark:text-gray-400">Loading links...</div>
+            </div>
+          ) : linksError ? (
+            <div className="text-center py-6 border-2 border-dashed border-red-300 dark:border-red-600 rounded-lg">
+              <ExternalLink className="w-8 h-8 text-red-400 mx-auto mb-2" />
+              <p className="text-sm text-red-500 dark:text-red-400">Failed to load links: {linksError.message}</p>
+            </div>
+          ) : userLinks.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {user.links.slice(0, 4).map((link, index) => (
+              {userLinks.slice(0, 4).map((link) => (
                 <div
-                  key={index}
+                  key={link.id}
                   className="flex items-center p-3 border border-gray-200 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700"
                 >
                   <ExternalLink className="w-4 h-4 text-gray-400 mr-3 flex-shrink-0" />
                   <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium text-gray-900 dark:text-white truncate">{link.name}</div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400 truncate">{link.url}</div>
+                    <div className="text-sm font-medium text-gray-900 dark:text-white truncate">{link.linkName}</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400 truncate">{link.linkUrl}</div>
                   </div>
                 </div>
               ))}
-              {user.links.length > 4 && (
+              {userLinks.length > 4 && (
                 <div className="flex items-center justify-center p-3 border border-gray-200 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-sm text-gray-500 dark:text-gray-400">
-                  +{user.links.length - 4} more links
+                  +{userLinks.length - 4} more links
                 </div>
               )}
             </div>
@@ -332,7 +416,12 @@ export default function PersonalInfoSection({ user }) {
 
       {/* Links Modal */}
       {showLinksModal && (
-        <LinksModal isOpen={showLinksModal} onClose={() => setShowLinksModal(false)} userLinks={user?.links || []} />
+        <LinksModal
+          isOpen={showLinksModal}
+          onClose={handleLinksModalClose}
+          userLinks={userLinks}
+          onRefresh={refetchLinks}
+        />
       )}
     </div>
   )

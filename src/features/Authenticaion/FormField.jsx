@@ -18,7 +18,7 @@ export default function FormField({
   const [showPassword, setShowPassword] = useState(false)
   const inputType = showPasswordToggle && showPassword ? "text" : type
 
-  // const registerProps = register ? register(name, rules) : {};
+  const registerProps = register ? register(name, rules) : {};
 
   let inputElement;
   if (children) {
@@ -35,6 +35,8 @@ export default function FormField({
         bg-white text-gray-900 placeholder-gray-400 
         dark:bg-gray-800 dark:text-white dark:placeholder-gray-500 
         ${error ? "border-red-300 dark:border-red-500" : "border-gray-300 dark:border-gray-600"}`}
+        {...registerProps}
+        {...props}
       />
     );
   }

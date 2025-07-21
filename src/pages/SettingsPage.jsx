@@ -14,11 +14,11 @@ export default function SettingsPage() {
   const renderContent = () => {
     switch (activeSection) {
       case "personal":
-        return <PersonalInfoSection user={data?.user} />
+        return <PersonalInfoSection />
       case "security":
         return <SecuritySection user={data?.user} />
       default:
-        return <PersonalInfoSection user={data?.user} />
+        return <PersonalInfoSection />
     }
   }
 

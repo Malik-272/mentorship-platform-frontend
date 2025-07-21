@@ -75,6 +75,7 @@ export const authApi = {
 
   // Login
   login: async (credentials) => {
+    console.log("API: Sending login request with credentials:", credentials)
     try {
       const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: "POST",
