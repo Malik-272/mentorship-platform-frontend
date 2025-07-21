@@ -1,15 +1,20 @@
 import { Link, useLocation } from "react-router-dom";
 import { navigationData } from "../data/navigationData";
-import { useAuth, useLogout } from "../hooks/useAuth";
+
 import { LogOut } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
 function MobileNav({ isMenuOpen, setIsMenuOpen }) {
   const location = useLocation();
 
   const navigation = navigationData;
 
-  const { data, isAuthenticated, isLoading } = useAuth();
-  const logoutMutation = useLogout();
+  const {
+    data,
+    isAuthenticated,
+    isLoading,
+    logout: logoutMutation,
+  } = useAuth();
 
   const handleLogout = () => {
     logoutMutation.mutate();

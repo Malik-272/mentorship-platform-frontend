@@ -1,17 +1,30 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { navigationData } from "../data/navigationData";
-import { useAuth, useLogout } from "../hooks/useAuth";
+
 import { SimpleThemeToggle } from "./ThemeToggle";
 import { LogOut } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
 function DesktopNav() {
   const isActive = (path) => location.pathname === path;
   const navigation = navigationData;
   const location = useLocation();
-  const logoutMutation = useLogout();
-  const { data, isAuthenticated, isLoading } = useAuth();
+  const navigate = useNavigate();
+  const {
+    data,
+    isAuthenticated,
+    isLoading,
+    logout: logoutMutation,
+  } = useAuth();
   const handleLogout = () => {
-    logoutMutation.mutate();
+    logoutMutation.mutate(undefined, {
+      onSuccess: () => {
+        navigate("/login");
+      },
+      onError: () => {
+        navigate("/login");
+      },
+    });
   };
   return (
     <>

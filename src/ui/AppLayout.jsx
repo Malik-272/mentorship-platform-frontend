@@ -1,4 +1,3 @@
-import { useAuth, useLogout } from "../hooks/useAuth";
 import NavBar from "./NavBar";
 import Footer from "./Footer";
 import Main from "./Main";

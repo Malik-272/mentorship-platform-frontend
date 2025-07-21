@@ -1,17 +1,15 @@
-import { useLocation, Link } from "react-router-dom"
-import { Mail, CheckCircle, ArrowRight, LogOut } from "lucide-react"
-import Logo from "../../ui/Logo"
-import { useAuth, useLogout } from "../../hooks/useAuth"
-
+import { useLocation, Link } from "react-router-dom";
+import { Mail, CheckCircle, ArrowRight, LogOut } from "lucide-react";
+import Logo from "../../ui/Logo";
+import { useAuth } from "../../context/AuthContext";
+import { useSearchParams } from "react-router-dom";
 export default function SignupConfirmationPage() {
-  const location = useLocation()
-  const email = location.state?.email || "your email"
-  const { isAuthenticated, isLoading } = useAuth()
-  const logoutMutation = useLogout()
-
+  const location = useLocation();
+  const email = location.state?.email || "your email";
+  const { isAuthenticated, isLoading, logout: logoutMutation } = useAuth();
   const handleLogout = () => {
-    logoutMutation.mutate()
-  }
+    logoutMutation.mutate();
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -46,22 +44,31 @@ export default function SignupConfirmationPage() {
             <CheckCircle className="h-8 w-8 text-green-600" />
           </div>
 
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Check Your Email</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+            Check Your Email
+          </h2>
 
           <div className="mb-6">
             <div className="flex items-center justify-center mb-4">
               <Mail className="h-12 w-12 text-blue-500" />
             </div>
-            <p className="text-gray-600 dark:text-gray-300 mb-2">We've sent a confirmation email to:</p>
-            <p className="font-medium text-gray-900 dark:text-white mb-4">{email}</p>
+            <p className="text-gray-600 dark:text-gray-300 mb-2">
+              We've sent a confirmation email to:
+            </p>
+            <p className="font-medium text-gray-900 dark:text-white mb-4">
+              {email}
+            </p>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Please check your inbox and click the confirmation link to activate your account.
+              Please check your inbox and click the confirmation link to
+              activate your account.
             </p>
           </div>
 
           <div className="space-y-4">
             <div className="bg-blue-50 dark:bg-blue-100 border border-blue-200 rounded-md p-4">
-              <h3 className="text-sm font-medium text-blue-800 mb-2">What's next?</h3>
+              <h3 className="text-sm font-medium text-blue-800 mb-2">
+                What's next?
+              </h3>
               <ul className="text-sm text-blue-700 space-y-1">
                 <li>• Check your email inbox (and spam folder)</li>
                 <li>• Click the confirmation link</li>
@@ -81,9 +88,8 @@ export default function SignupConfirmationPage() {
 
               {isLoading ? (
                 <div className="w-20 h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
-              ) :
+              ) : (
                 isAuthenticated && (
-
                   <button
                     onClick={handleLogout}
                     className="w-full flex justify-center items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
@@ -92,7 +98,7 @@ export default function SignupConfirmationPage() {
                     Sign Out
                   </button>
                 )
-              }
+              )}
               {/* <button
                 onClick={() => window.location.reload()}
                 className="w-full flex justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
@@ -105,13 +111,16 @@ export default function SignupConfirmationPage() {
           <div className="mt-6 text-center">
             <p className="text-xs text-gray-500 dark:text-gray-400">
               Didn't receive the email? Check your spam folder or{" "}
-              <Link to="/contact" className="text-blue-600 hover:text-blue-500 dark:hover:text-blue-400">
+              <Link
+                to="/contact"
+                className="text-blue-600 hover:text-blue-500 dark:hover:text-blue-400"
+              >
                 contact support
               </Link>
             </p>
           </div>
         </div>
       </div>
-    </div >
-  )
+    </div>
+  );
 }
