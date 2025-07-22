@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { User, UserCheck, AlertCircle, Shield } from "lucide-react";
 import { validationRules, countryCodes } from "../../data/authData";
@@ -7,6 +7,7 @@ import FormField from "../../features/Authenticaion/FormField";
 import PasswordStrengthIndicator from "../../features/Authenticaion/PasswordStrengthIndicator";
 import Logo from "../../ui/Logo";
 import { useAuth } from "../../context/AuthContext";
+import { jwtDecode } from "jwt-decode";
 
 export default function SignupPage() {
   const [selectedRole, setSelectedRole] = useState("");
@@ -28,7 +29,7 @@ export default function SignupPage() {
       role: "",
     },
   });
-  const { signup: signupMutation } = useAuth();
+  const { signup: signupMutation, status, setStatus } = useAuth();
   const watchPassword = watch("password", "");
   const navigate = useNavigate();
   const handleRoleSelect = (role) => {
@@ -39,15 +40,13 @@ export default function SignupPage() {
   const onSubmit = async (data) => {
     try {
       const result = await signupMutation.mutateAsync(data);
-
-      // optional: show a toast or confirmation
-
-      // Redirect to confirm email page with optional email state
-      navigate("/confirm-email", {
-        state: {
-          email: result?.email || data.email,
-        },
-      });
+      if (result.status === "Success") {
+        navigate("/confirm-email", {
+          state: {
+            email: result?.email || data.email,
+          },
+        });
+      }
     } catch (error) {
       console.error("Signup failed:", error);
       // show error feedback to user

@@ -24,6 +24,7 @@ import {
 import NotFoundPage from "./pages/NotFoundPage";
 import { AuthProvider } from "./context/AuthContext";
 import React from "react";
+import UserProfilePage from "./pages/UserProfilePage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -132,7 +133,14 @@ function App() {
                     </FullProtectedRoute>
                   }
                 />
-
+                <Route
+                  path="/profile/:id"
+                  element={
+                    <FullProtectedRoute>
+                      <UserProfilePage />
+                    </FullProtectedRoute>
+                  }
+                />
                 <Route path="*" element={<NotFoundPage />} />
               </Route>
             </Routes>
