@@ -71,42 +71,58 @@ export const AuthProvider = ({ children }) => {
         console.error("Failed to decode token:", err);
       }
     }
+    // dispatch({
+    //   type: "SET_STATUS",
+    //   payload: decoded ? (decoded.partial ? "partial" : "full") : "none",
+    // });
+    // console.log("decoded:     ", decoded);
     return decoded ? (decoded.partial ? "partial" : "full") : "none";
   };
-  const getUserFromTokenOrCookie = (tokenCookie) => {
-    // Only read from cookies if no token was passed
-    if (!tokenCookie) {
-      tokenCookie = document.cookie
-        .split("; ")
-        .find((row) => row.startsWith("token="));
-      dispatch({ type: "SET_USER", payload: jwtDecode(tokenCookie) });
-    }
+  // const getUserFromTokenOrCookie = (tokenCookie) => {
+  //   // Only read from cookies if no token was passed
+  //   if (!tokenCookie) {
+  //     tokenCookie = document.cookie
+  //       .split("; ")
+  //       .find((row) => row.startsWith("token="));
+  //     dispatch({ type: "SET_USER", payload: jwtDecode(tokenCookie) });
+  //   }
 
-    if (tokenCookie) {
-      // If we got it from cookies, extract token value
-      const token = tokenCookie.startsWith("token=")
-        ? tokenCookie.split("=")[1]
-        : tokenCookie; // if token was passed directly
+  //   if (tokenCookie) {
+  //     // If we got it from cookies, extract token value
+  //     const token = tokenCookie.startsWith("token=")
+  //       ? tokenCookie.split("=")[1]
+  //       : tokenCookie; // if token was passed directly
 
-      try {
-        console.log("Decoding token:", token);
-        return jwtDecode(token);
-      } catch (err) {
-        console.error("Failed to decode token:", err);
+  //     try {
+  //       console.log("Decoding token:", token);
+  //       return jwtDecode(token);
+  //     } catch (err) {
+  //       console.error("Failed to decode token:", err);
+  //     }
+  //   }
+
+  //   return null;
+  // };
+  useEffect(() => {
+    async function fetchData() {
+      const user = await authApi.getCurrentUser();
+      if (user) {
+        dispatch({ type: "SET_USER", payload: user });
+        dispatch({
+          type: "SET_STATUS",
+          payload: user.partial ? "partial" : "full",
+        });
+      } else {
+        dispatch({ type: "SET_USER", payload: null });
+        dispatch({
+          type: "SET_STATUS",
+          payload: "none",
+        });
       }
     }
 
-    return null;
-  };
-  useEffect(() => {
-    const user = getUserFromTokenOrCookie(null);
-    if (user) {
-      dispatch({ type: "SET_USER", payload: user });
-      dispatch({
-        type: "SET_STATUS",
-        payload: user.partial ? "partial" : "full",
-      });
-    }
+    fetchData();
+    // getUserStatus();
   }, []);
   const login = useMutation({
     mutationFn: authApi.login,

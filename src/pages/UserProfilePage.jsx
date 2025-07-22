@@ -28,9 +28,7 @@ export default function UserProfilePage() {
 
   const { data: profileData, isLoading, error } = useGetUserProfile(id);
 
-  const isOwnProfile =
-    currentUser?.user?.id === Number.parseInt(id) ||
-    currentUser?.user?.username === id;
+  const isOwnProfile = currentUser?.user?.id === id;
 
   if (isLoading) {
     return (
@@ -61,6 +59,7 @@ export default function UserProfilePage() {
   }
 
   const user = profileData?.user;
+  console.log("user:", user);
 
   return (
     // <ProtectedRoute requireAuth={true} requireVerification={true}>
@@ -161,9 +160,9 @@ function ProfileHeader({ user, isOwnProfile, onReport }) {
           {/* Profile Picture */}
           <div className="relative -mt-16 mb-4 sm:mb-0">
             <div className="w-32 h-32 rounded-full border-4 border-white dark:border-gray-800 overflow-hidden bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg">
-              {user?.avatar ? (
+              {user?.imageUrl ? (
                 <img
-                  src={user.avatar || "/placeholder.svg?height=128&width=128"}
+                  src={user.imageUrl || "/placeholder.svg?height=128&width=128"}
                   alt={user.name}
                   className="w-full h-full object-cover"
                 />
@@ -181,7 +180,7 @@ function ProfileHeader({ user, isOwnProfile, onReport }) {
                   {user?.name}
                 </h1>
                 <p className="text-gray-600 dark:text-gray-300 text-sm">
-                  @{user?.username}
+                  @{user?.id}
                 </p>
                 <p className="text-gray-700 dark:text-gray-200 mt-1">
                   {user?.headline}
@@ -381,8 +380,8 @@ function ProfileSidebar({ user }) {
                 Member since
               </div>
               <div className="text-sm text-gray-500 dark:text-gray-400">
-                {user?.created_at
-                  ? new Date(user.created_at).toLocaleDateString("en-US", {
+                {user?.dateJoined
+                  ? new Date(user.dateJoined).toLocaleDateString("en-US", {
                       year: "numeric",
                       month: "long",
                       day: "numeric",
