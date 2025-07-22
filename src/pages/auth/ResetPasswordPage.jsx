@@ -1,39 +1,45 @@
-import { useForm } from "react-hook-form"
-import { useSearchParams, Link } from "react-router-dom"
-import { AlertCircle } from "lucide-react"
-import { useResetPassword } from "../../hooks/useAuth"
-import { validationRules } from "../../data/authData"
-import FormField from "../../features/Authenticaion/FormField"
-import PasswordStrengthIndicator from "../../features/Authenticaion/PasswordStrengthIndicator"
-import Logo from "../../ui/Logo"
+import { useForm } from "react-hook-form";
+import { useSearchParams, Link, useNavigate } from "react-router-dom";
+import { AlertCircle } from "lucide-react";
+
+import { validationRules } from "../../data/authData";
+import FormField from "../../features/Authenticaion/FormField";
+import PasswordStrengthIndicator from "../../features/Authenticaion/PasswordStrengthIndicator";
+import Logo from "../../ui/Logo";
+import { useAuth } from "../../context/AuthContext";
 
 export default function ResetPasswordPage() {
-  const [searchParams] = useSearchParams()
-  const token = searchParams.get("token")
-
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get("token");
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors, isSubmitting },
-  } = useForm()
+  } = useForm();
 
-  const resetPasswordMutation = useResetPassword()
-  const watchPassword = watch("newPassword", "")
-  const watchConfirmPassword = watch("confirmPassword", "")
+  const { resetPassword: resetPasswordMutation } = useAuth();
+  const watchPassword = watch("newPassword", "");
+  const watchConfirmPassword = watch("confirmPassword", "");
 
   const onSubmit = async (data) => {
-    if (data.newPassword !== data.confirmPassword) return
+    if (data.newPassword !== data.confirmPassword) return;
 
     try {
       await resetPasswordMutation.mutateAsync({
         token,
         newPassword: data.newPassword,
-      })
+      });
+      navigate("/login", {
+        state: {
+          message: "Password reset successful. Please log in.",
+        },
+      });
     } catch (error) {
-      console.error("Reset password failed:", error)
+      console.error("Reset password failed:", error);
     }
-  }
+  };
 
   if (!token) {
     return (
@@ -41,9 +47,12 @@ export default function ResetPasswordPage() {
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <div className="bg-white dark:bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10 text-center">
             <AlertCircle className="mx-auto h-12 w-12 text-red-500 mb-4" />
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Invalid Reset Link</h2>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+              Invalid Reset Link
+            </h2>
             <p className="text-gray-600 dark:text-gray-300 mb-6">
-              This password reset link is invalid or has expired. Please request a new one.
+              This password reset link is invalid or has expired. Please request
+              a new one.
             </p>
             <Link
               to="/forgot-password"
@@ -54,7 +63,7 @@ export default function ResetPasswordPage() {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -96,7 +105,8 @@ export default function ResetPasswordPage() {
               error={errors.confirmPassword}
               rules={{
                 required: "Please confirm your password",
-                validate: (value) => value === watchPassword || "Passwords do not match",
+                validate: (value) =>
+                  value === watchPassword || "Passwords do not match",
               }}
               showPasswordToggle={true}
             />
@@ -121,7 +131,9 @@ export default function ResetPasswordPage() {
               }
               className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isSubmitting || resetPasswordMutation.isPending ? "Resetting..." : "Reset Password"}
+              {isSubmitting || resetPasswordMutation.isPending
+                ? "Resetting..."
+                : "Reset Password"}
             </button>
 
             {resetPasswordMutation.error && (
@@ -144,5 +156,5 @@ export default function ResetPasswordPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

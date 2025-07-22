@@ -1,15 +1,15 @@
-
-
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
-import { ThemeProvider } from "./context/ThemeContext"
-// import { DashboardProtectedRoute, PartialAuthRoute, PublicOnlyRoute } from "./ui/ProtectedRoute"
 import { lazy } from "react"
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { ThemeProvider } from "./context/ThemeContext";
+import { FullProtectedRoute, PartialAuthRoute, PublicOnlyRoute } from "./ui/ProtectedRoute";
+import { AuthProvider } from "./context/AuthContext";
+import React from "react";
+import UserProfilePage from "./pages/UserProfilePage";
 
 const AppLayout = lazy(() => import("./ui/AppLayout"))
 const LandingPage = lazy(() => import("./pages/LandingPage"))
-
 // Auth Pages
 const SignupPage = lazy(() => import("./pages/auth/SignUpPage"))
 const SignupConfirmationPage = lazy(() => import("./pages/auth/SignupConfirmationPage"))
@@ -20,7 +20,6 @@ const TwoFactorPage = lazy(() => import("./pages/auth/TwoFactorPage"))
 const ConfirmEmailPage = lazy(() => import("./pages/auth/ConfirmEmailPage"))
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage"))
 const SettingsPage = lazy(() => import("./pages/SettingsPage"))
-// const UserProfilePage = lazy(() => import("./pages/UserProfilePage"))
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -29,110 +28,126 @@ const queryClient = new QueryClient({
       refetchOnWindowFocus: false,
     },
   },
-})
+});
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={false} />
       <ThemeProvider defaultTheme="system" storageKey="growtly-theme">
-        <Router>
-          <Routes>
-            {/* Public-only Auth Routes (redirect if authenticated) */}
-            <Route
-              path="/signup"
-              element={
-                // <PublicOnlyRoute>
-                <SignupPage />
-                // </PublicOnlyRoute>
-              }
-            />
-            <Route
-              path="/confirm-email"
-              element={
-                // <PublicOnlyRoute>
-                <SignupConfirmationPage />
-                // </PublicOnlyRoute>
-              }
-            />
-            <Route
-              path="/login"
-              element={
-                // <PublicOnlyRoute>
-                <LoginPage />
-                // </PublicOnlyRoute>
-              }
-            />
-            <Route
-              path="/forgot-password"
-              element={
-                // <PublicOnlyRoute>
-                <ForgotPasswordPage />
-                // </PublicOnlyRoute>
-              }
-            />
-            <Route
-              path="/reset-password"
-              element={
-                // <PublicOnlyRoute>
-                <ResetPasswordPage />
-                // </PublicOnlyRoute>
-              }
-            />
-            <Route
-              path="/2fa-verification"
-              element={
-                // <PublicOnlyRoute>
-                <TwoFactorPage />
-                // </PublicOnlyRoute>
-              }
-            />
-
-            {/* Partial auth only route - for email confirmation */}
-            <Route
-              path="/confirm-email-page"
-              element={
-                // <PartialAuthRoute>
-                <ConfirmEmailPage />
-                // </PartialAuthRoute>
-              }
-            />
-
-            {/* Main App Routes (with AppLayout) */}
-            <Route element={<AppLayout />}>
-              {/* Public routes */}
-              <Route path="/" element={<LandingPage />} />
-              <Route path="mentors" element={<div className="p-8 text-center">Mentors page coming soon...</div>} />
+        <AuthProvider>
+          <Router>
+            <Routes>
+              {/* Public-only Auth Routes (redirect if authenticated) */}
               <Route
-                path="communities"
-                element={<div className="p-8 text-center">Communities page coming soon...</div>}
-              />
-              <Route
-                path="how-it-works"
-                element={<div className="p-8 text-center">How it works page coming soon...</div>}
-              />
-              <Route path="about" element={<div className="p-8 text-center">About page coming soon...</div>} />
-
-              {/* Protected dashboard route - requires full authentication */}
-              <Route
-                path="dashboard"
+                path="/signup"
                 element={
-                  // <DashboardProtectedRoute>
-                  <div className="p-8 text-center">Dashboard coming soon...</div>
-                  // </DashboardProtectedRoute>
+                  <PublicOnlyRoute>
+                    <SignupPage />
+                  </PublicOnlyRoute>
                 }
               />
-            </Route>
-            <Route path="*" element={<NotFoundPage />} />
-            <Route path="settings" element={<SettingsPage />} />
-            {/* <Route path="profile" element={<UserProfilePage />} /> */}
-          </Routes>
-        </Router>
-      </ThemeProvider>
-    </QueryClientProvider>
-  )
+              <Route
+                path="/confirm-email"
+                element={
+                  <PartialAuthRoute>
+                    <SignupConfirmationPage />
+                  </PartialAuthRoute>
+                }
+              />
+              <Route
+                path="/login"
+                element={
+                  <PublicOnlyRoute>
+                    <LoginPage />
+                  </PublicOnlyRoute>
+                }
+              />
+              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+              <Route path="/reset-password" element={<ResetPasswordPage />} />
+              <Route path="/2fa-verification" element={<TwoFactorPage />} />
 
+              {/* Partial auth only route - for email confirmation */}
+              <Route
+                path="/confirm-email-page"
+                element={<ConfirmEmailPage />}
+              />
+
+              {/* Main App Routes (with AppLayout) */}
+
+              <Route element={<AppLayout />}>
+                {/* Public routes */}
+                <Route path="/" element={<LandingPage />} />
+                <Route
+                  path="mentors"
+                  element={
+                    <div className="p-8 text-center">
+                      Mentors page coming soon...
+                    </div>
+                  }
+                />
+                <Route
+                  path="communities"
+                  element={
+                    <div className="p-8 text-center">
+                      Communities page coming soon...
+                    </div>
+                  }
+                />
+                <Route
+                  path="how-it-works"
+                  element={
+                    <div className="p-8 text-center">
+                      How it works page coming soon...
+                    </div>
+                  }
+                />
+                <Route
+                  path="about"
+                  element={
+                    <div className="p-8 text-center">
+                      About page coming soon...
+                    </div>
+                  }
+                />
+
+                {/* Protected dashboard route - requires full authentication */}
+
+                <Route
+                  path="dashboard"
+                  element={
+                    <FullProtectedRoute>
+                      <div className="p-8 text-center">
+                        Dashboard coming soon...
+                      </div>
+                    </FullProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/profile/:id"
+                  element={
+                    <FullProtectedRoute>
+                      <UserProfilePage />
+                    </FullProtectedRoute>
+                  }
+                />
+                <Route
+                  path="my/settings"
+                  element={
+                    <FullProtectedRoute>
+                      <SettingsPage />
+                    </FullProtectedRoute>
+                  }
+                />
+                <Route path="*" element={<NotFoundPage />} />
+              </Route>
+            </Routes>
+          </Router>
+        </AuthProvider >
+      </ThemeProvider >
+    </QueryClientProvider >
+    // </ProtectedRoute>
+  );
 }
 
-export default App
-
+export default App;

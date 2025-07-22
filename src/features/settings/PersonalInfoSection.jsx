@@ -286,8 +286,8 @@ export default function PersonalInfoSection({ user }) {
                 >
                   <ExternalLink className="w-4 h-4 text-gray-400 mr-3 flex-shrink-0" />
                   <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium text-gray-900 dark:text-white truncate">{link.name}</div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400 truncate">{link.url}</div>
+                    <div className="text-sm font-medium text-gray-900 dark:text-white truncate">{link.linkName}</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400 truncate">{link.linkUrl}</div>
                   </div>
                 </div>
               ))}

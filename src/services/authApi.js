@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:3000/api/v1"
+const API_BASE_URL = "http://localhost:3000/api/v1";
 
 // Auth API functions
 export const authApi = {
@@ -11,36 +11,17 @@ export const authApi = {
       headers: {
         "Content-Type": "application/json",
       },
-    })
+    });
 
     if (!response.ok) {
       if (response.status === 401) {
-        throw new Error("Not authenticated")
+        throw new Error("Not authenticated");
       }
-      const error = await response.json()
-      throw new Error(error.message || "Failed to get user info")
+      const error = await response.json();
+      throw new Error(error.message || "Failed to get user info");
     }
-    return await response.json()
-  },
-  // Get user by ID
-  getUser: async (id) => {
-    // users/:id
-    const response = await fetch(`${API_BASE_URL}/users/${id}`, {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
 
-    if (!response.ok) {
-      if (response.status === 401) {
-        throw new Error("Not authenticated")
-      }
-      const error = await response.json()
-      throw new Error(error.message || "Failed to get user info")
-    }
-    return await response.json()
+    return response.json()
   },
   // Signup
   signup: async (userData) => {
@@ -52,24 +33,28 @@ export const authApi = {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(userData),
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || `HTTP error! status: ${response.status}`)
+        throw new Error(
+          data.message || `HTTP error! status: ${response.status}`
+        );
       }
 
-      return data
+      return data;
     } catch (error) {
-      console.error("API: Signup request failed:", error)
+      console.error("API: Signup request failed:", error);
 
       // Handle network errors
       if (error.name === "TypeError" && error.message.includes("fetch")) {
-        throw new Error("Unable to connect to server. Please check your internet connection.")
+        throw new Error(
+          "Unable to connect to server. Please check your internet connection."
+        );
       }
 
-      throw error
+      throw error;
     }
   },
 
@@ -83,21 +68,23 @@ export const authApi = {
         },
         body: JSON.stringify(credentials),
         credentials: "include",
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Login failed")
+        throw new Error(data.message || "Login failed");
       }
-      return data
+      return data;
     } catch (error) {
-      console.error("API: Login request failed:", error)
+      console.error("API: Login request failed:", error);
 
       if (error.name === "TypeError" && error.message.includes("fetch")) {
-        throw new Error("Unable to connect to server. Please check your internet connection.")
+        throw new Error(
+          "Unable to connect to server. Please check your internet connection."
+        );
       }
-      throw error
+      throw error;
     }
   },
 
@@ -106,19 +93,19 @@ export const authApi = {
     const response = await fetch(`${API_BASE_URL}/auth/logout`, {
       method: "POST",
       credentials: "include",
-    })
+    });
 
     if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.message || "Logout failed")
+      const error = await response.json();
+      throw new Error(error.message || "Logout failed");
     }
 
-    return response.json()
+    return response.json();
   },
 
   // Forgot Password
   forgotPassword: async (email) => {
-    console.log("API: Sending forgot password request for email:", email)
+    console.log("API: Sending forgot password request for email:", email);
     try {
       const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
         method: "POST",
@@ -126,24 +113,26 @@ export const authApi = {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email }),
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
-      console.log("API: Forgot password response:", data)
+      console.log("API: Forgot password response:", data);
       if (!response.ok) {
-        throw new Error(data.message || "Failed to send reset email")
+        throw new Error(data.message || "Failed to send reset email");
       }
 
-      return data
+      return data;
     } catch (error) {
-      console.error("API: Forgot password request failed:", error)
+      console.error("API: Forgot password request failed:", error);
 
       if (error.name === "TypeError" && error.message.includes("fetch")) {
-        throw new Error("Unable to connect to server. Please check your internet connection.")
+        throw new Error(
+          "Unable to connect to server. Please check your internet connection."
+        );
       }
 
-      throw error
+      throw error;
     }
   },
 
@@ -156,23 +145,25 @@ export const authApi = {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ token, password: newPassword }),
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Password reset failed")
+        throw new Error(data.message || "Password reset failed");
       }
 
-      return data
+      return data;
     } catch (error) {
-      console.error("API: Reset password request failed:", error)
+      console.error("API: Reset password request failed:", error);
 
       if (error.name === "TypeError" && error.message.includes("fetch")) {
-        throw new Error("Unable to connect to server. Please check your internet connection.")
+        throw new Error(
+          "Unable to connect to server. Please check your internet connection."
+        );
       }
 
-      throw error
+      throw error;
     }
   },
 
@@ -181,19 +172,19 @@ export const authApi = {
     const response = await fetch(`${API_BASE_URL}/auth/resend-verification`, {
       method: "POST",
       credentials: "include",
-    })
+    });
 
     if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.message || "Failed to resend verification email")
+      const error = await response.json();
+      throw new Error(error.message || "Failed to resend verification email");
     }
 
-    return response.json()
+    return response.json();
   },
 
   // confirm email
   confirmEmail: async (code) => {
-    console.log("API: confirm code:", code)
+    console.log("API: confirm code:", code);
     try {
       const response = await fetch(`${API_BASE_URL}/auth/confirm-email`, {
         method: "POST",
@@ -202,29 +193,31 @@ export const authApi = {
         },
         body: JSON.stringify({ code }),
         credentials: "include",
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message)
+        throw new Error(data.message);
       }
 
-      return data
+      return data;
     } catch (error) {
-      console.error("API: confirm email request failed:", error)
+      console.error("API: confirm email request failed:", error);
 
       if (error.name === "TypeError" && error.message.includes("fetch")) {
-        throw new Error("Unable to connect to server. Please check your internet connection.")
+        throw new Error(
+          "Unable to connect to server. Please check your internet connection."
+        );
       }
 
-      throw error
+      throw error;
     }
   },
 
   // Verify 2FA
   verify2FA: async (code) => {
-    console.log("API: Verifying 2FA code:", code)
+    console.log("API: Verifying 2FA code:", code);
     try {
       const response = await fetch(`${API_BASE_URL}/auth/verify-2fa`, {
         method: "POST",
@@ -233,23 +226,25 @@ export const authApi = {
         },
         body: JSON.stringify({ code }),
         credentials: "include",
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "2FA verification failed")
+        throw new Error(data.message || "2FA verification failed");
       }
 
-      return data
+      return data;
     } catch (error) {
-      console.error("API: 2FA verification request failed:", error)
+      console.error("API: 2FA verification request failed:", error);
 
       if (error.name === "TypeError" && error.message.includes("fetch")) {
-        throw new Error("Unable to connect to server. Please check your internet connection.")
+        throw new Error(
+          "Unable to connect to server. Please check your internet connection."
+        );
       }
 
-      throw error
+      throw error;
     }
   },
 
@@ -259,23 +254,25 @@ export const authApi = {
       const response = await fetch(`${API_BASE_URL}/auth/resend-2fa`, {
         method: "POST",
         credentials: "include",
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Failed to resend code")
+        throw new Error(data.message || "Failed to resend code");
       }
 
-      return data
+      return data;
     } catch (error) {
-      console.error("API: Resend 2FA request failed:", error)
+      console.error("API: Resend 2FA request failed:", error);
 
       if (error.name === "TypeError" && error.message.includes("fetch")) {
-        throw new Error("Unable to connect to server. Please check your internet connection.")
+        throw new Error(
+          "Unable to connect to server. Please check your internet connection."
+        );
       }
 
-      throw error
+      throw error;
     }
   },
-}
+};

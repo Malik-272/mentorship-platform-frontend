@@ -1,15 +1,16 @@
 import { useState } from "react"
-import { useAuth, useUser } from "../hooks/useAuth"
+import { useAuth } from "../context/AuthContext"
 // import ProtectedRoute from "../ui/ProtectedRoute"
 import SettingsSidebar from "../features/settings/SettingsSidebar"
 import PersonalInfoSection from "../features/settings/PersonalInfoSection"
 import SecuritySection from "../features/settings/SecuritySection"
+import { useGetUserProfile } from "../hooks/useProfile"
 
 export default function SettingsPage() {
   const [activeSection, setActiveSection] = useState("personal")
-  const { data: userData } = useAuth()
-  const { data } = useUser(userData?.user?.id)
-  // console.log(isLoading, data)
+  const { data: currentUser } = useAuth()
+  const { data } = useGetUserProfile(currentUser?.user.id)
+  console.log(data);
 
   const renderContent = () => {
     switch (activeSection) {

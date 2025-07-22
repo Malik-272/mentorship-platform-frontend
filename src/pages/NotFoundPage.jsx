@@ -1,9 +1,9 @@
-import { Link } from "react-router-dom"
-import { Home, ArrowLeft, Search, Users, Calendar } from "lucide-react"
-import { useAuth } from "../hooks/useAuth"
+import { Link } from "react-router-dom";
+import { Home, ArrowLeft, Search, Users, Calendar } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
 export default function NotFoundPage() {
-  const { isAuthenticated, user } = useAuth()
+  const { isAuthenticated, data } = useAuth();
 
   const suggestions = [
     {
@@ -30,7 +30,7 @@ export default function NotFoundPage() {
       color: "text-purple-600 dark:text-purple-400",
       bgColor: "bg-purple-100 dark:bg-purple-900",
     },
-  ]
+  ];
 
   // Add authenticated user suggestions
   if (isAuthenticated) {
@@ -41,7 +41,7 @@ export default function NotFoundPage() {
       link: "/dashboard",
       color: "text-orange-600 dark:text-orange-400",
       bgColor: "bg-orange-100 dark:bg-orange-900",
-    })
+    });
   }
 
   return (
@@ -58,10 +58,21 @@ export default function NotFoundPage() {
 
             {/* Animated illustration */}
             <div className="relative mx-auto w-48 h-32 mb-6">
-              <svg className="w-full h-full" viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg
+                className="w-full h-full"
+                viewBox="0 0 200 120"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
                 {/* Lost person */}
                 <g className="animate-bounce">
-                  <circle cx="100" cy="40" r="12" fill="currentColor" className="text-gray-400 dark:text-gray-500" />
+                  <circle
+                    cx="100"
+                    cy="40"
+                    r="12"
+                    fill="currentColor"
+                    className="text-gray-400 dark:text-gray-500"
+                  />
                   <rect
                     x="94"
                     y="52"
@@ -110,7 +121,11 @@ export default function NotFoundPage() {
                 </g>
 
                 {/* Question marks */}
-                <text x="70" y="30" className="text-lg fill-current text-blue-500 dark:text-blue-400 animate-pulse">
+                <text
+                  x="70"
+                  y="30"
+                  className="text-lg fill-current text-blue-500 dark:text-blue-400 animate-pulse"
+                >
                   ?
                 </text>
                 <text
@@ -144,7 +159,9 @@ export default function NotFoundPage() {
           </div>
 
           {/* Content */}
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Oops! Page Not Found</h1>
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            Oops! Page Not Found
+          </h1>
 
           <p className="text-lg text-gray-600 dark:text-gray-300 mb-2">
             The page you're looking for seems to have wandered off.
@@ -155,11 +172,11 @@ export default function NotFoundPage() {
           </p>
 
           {/* User-specific message */}
-          {isAuthenticated && user && (
+          {isAuthenticated && data && (
             <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-8">
               <p className="text-blue-800 dark:text-blue-200 text-sm">
-                Welcome back, <span className="font-medium">{user.name}</span>! Let's get you back on track to your
-                mentorship journey.
+                Welcome back, <span className="font-medium">{data.name}</span>!
+                Let's get you back on track to your mentorship journey.
               </p>
             </div>
           )}
@@ -187,7 +204,9 @@ export default function NotFoundPage() {
 
           {/* Help Section */}
           <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">Still can't find what you're looking for?</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+              Still can't find what you're looking for?
+            </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 to="/contact"
@@ -195,14 +214,18 @@ export default function NotFoundPage() {
               >
                 Contact Support
               </Link>
-              <span className="hidden sm:inline text-gray-300 dark:text-gray-600">•</span>
+              <span className="hidden sm:inline text-gray-300 dark:text-gray-600">
+                •
+              </span>
               <Link
                 to="/help"
                 className="text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 text-sm font-medium transition-colors"
               >
                 Help Center
               </Link>
-              <span className="hidden sm:inline text-gray-300 dark:text-gray-600">•</span>
+              <span className="hidden sm:inline text-gray-300 dark:text-gray-600">
+                •
+              </span>
               <Link
                 to="/about"
                 className="text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 text-sm font-medium transition-colors"
@@ -214,5 +237,5 @@ export default function NotFoundPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

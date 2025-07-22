@@ -1,32 +1,32 @@
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-import { Link } from "react-router-dom"
-import { ArrowLeft, CheckCircle } from "lucide-react"
-import { useForgotPassword } from "../../hooks/useAuth"
-import FormField from "../../features/Authenticaion/FormField"
-import Logo from "../../ui/Logo"
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
+import { ArrowLeft, CheckCircle } from "lucide-react";
+import FormField from "../../features/Authenticaion/FormField";
+import Logo from "../../ui/Logo";
+import { useAuth } from "../../context/AuthContext";
 
 export default function ForgotPasswordPage() {
-  const [emailSent, setEmailSent] = useState(false)
-  const [sentEmail, setSentEmail] = useState("")
+  const [emailSent, setEmailSent] = useState(false);
+  const [sentEmail, setSentEmail] = useState("");
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm()
+  } = useForm();
 
-  const forgotPasswordMutation = useForgotPassword()
+  const { forgotPassword: forgotPasswordMutation } = useAuth();
 
   const onSubmit = async (data) => {
     try {
-      await forgotPasswordMutation.mutateAsync(data.email)
-      setSentEmail(data.email)
-      setEmailSent(true)
+      await forgotPasswordMutation.mutateAsync(data.email);
+      setSentEmail(data.email);
+      setEmailSent(true);
     } catch (error) {
-      console.error("Forgot password failed:", error)
+      console.error("Forgot password failed:", error);
     }
-  }
+  };
 
   if (emailSent) {
     return (
@@ -43,13 +43,20 @@ export default function ForgotPasswordPage() {
               <CheckCircle className="h-8 w-8 text-green-600 dark:text-green-400" />
             </div>
 
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Check Your Email</h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+              Check Your Email
+            </h2>
 
             <div className="mb-6">
-              <p className="text-gray-600 dark:text-gray-300 mb-2">We've sent a password reset link to:</p>
-              <p className="font-medium text-gray-900 dark:text-white mb-4">{sentEmail}</p>
+              <p className="text-gray-600 dark:text-gray-300 mb-2">
+                We've sent a password reset link to:
+              </p>
+              <p className="font-medium text-gray-900 dark:text-white mb-4">
+                {sentEmail}
+              </p>
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                Click the link in the email to reset your password. The link will expire in 1 hour.
+                Click the link in the email to reset your password. The link
+                will expire in 1 hour.
               </p>
             </div>
 
@@ -64,7 +71,7 @@ export default function ForgotPasswordPage() {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -73,9 +80,12 @@ export default function ForgotPasswordPage() {
         <div className="flex justify-center">
           <Logo withLink={true} />
         </div>
-        <h2 className="mt-6 text-center text-3xl font-bold text-gray-900 dark:text-white">Forgot your password?</h2>
+        <h2 className="mt-6 text-center text-3xl font-bold text-gray-900 dark:text-white">
+          Forgot your password?
+        </h2>
         <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-300">
-          Enter your email address and we'll send you a link to reset your password.
+          Enter your email address and we'll send you a link to reset your
+          password.
         </p>
       </div>
 
@@ -103,13 +113,17 @@ export default function ForgotPasswordPage() {
               disabled={isSubmitting || forgotPasswordMutation.isPending}
               className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isSubmitting || forgotPasswordMutation.isPending ? "Sending..." : "Send Reset Link"}
+              {isSubmitting || forgotPasswordMutation.isPending
+                ? "Sending..."
+                : "Send Reset Link"}
             </button>
 
             {/* Error Message */}
             {forgotPasswordMutation.error && (
               <div className="rounded-md bg-red-50 dark:bg-red-900 p-4">
-                <div className="text-sm text-red-700 dark:text-red-300">{forgotPasswordMutation.error.message}</div>
+                <div className="text-sm text-red-700 dark:text-red-300">
+                  {forgotPasswordMutation.error.message}
+                </div>
               </div>
             )}
           </form>
@@ -126,5 +140,5 @@ export default function ForgotPasswordPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
