@@ -23,14 +23,14 @@ import ErrorMessage from "../ui/ErrorMessage";
 import { useAuth } from "../context/AuthContext";
 export default function UserProfilePage() {
   const { id } = useParams();
-  const { data: currentUser } = useAuth();
+  const { data: currentUser, isLoading: isLoadingCurrentUser } = useAuth();
   const [showReportModal, setShowReportModal] = useState(false);
 
   const { data: profileData, isLoading, error } = useGetUserProfile(id);
 
   const isOwnProfile = currentUser?.user?.id === id;
 
-  if (isLoading) {
+  if (isLoading || isLoadingCurrentUser) {
     return (
       // <ProtectedRoute requireAuth={true} requireVerification={true}>
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">

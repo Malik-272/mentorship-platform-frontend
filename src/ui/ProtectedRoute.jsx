@@ -10,7 +10,12 @@ export const ProtectedRoute = ({ children }) => {
 
 export const PartialAuthRoute = ({ children }) => {
   const { status, isLoading } = useAuth();
-  if (isLoading) return <LoadingSpinner size="lg" />;
+  if (isLoading)
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <LoadingSpinner size="lg" />
+      </div>
+    );
   if (status === "none") return <Navigate to="/login" />;
   if (status === "full") return <Navigate to="/dashboard" />;
   return children; // allow partial only
@@ -18,7 +23,12 @@ export const PartialAuthRoute = ({ children }) => {
 
 export const PublicOnlyRoute = ({ children }) => {
   const { status, isLoading } = useAuth();
-  if (isLoading) return <LoadingSpinner size="lg" />;
+  if (isLoading)
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <LoadingSpinner size="lg" />
+      </div>
+    );
   if (status === "full") return <Navigate to="/dashboard" />;
   if (status === "partial") return <Navigate to="/confirm-email" />;
   return children;
@@ -26,7 +36,12 @@ export const PublicOnlyRoute = ({ children }) => {
 
 export function FullProtectedRoute({ children }) {
   const { status, isLoading } = useAuth();
-  if (isLoading) return <LoadingSpinner size="lg" />;
+  if (isLoading)
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <LoadingSpinner size="lg" />
+      </div>
+    );
   if (status === "none") return <Navigate to="/login" />;
   if (status === "partial") return <Navigate to="/confirm-email" />;
   return children;
