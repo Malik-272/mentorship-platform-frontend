@@ -21,6 +21,8 @@ import ReportUserModal from "./ReportUserModal";
 import LoadingSpinner from "../ui/LoadingSpinner";
 import ErrorMessage from "../ui/ErrorMessage";
 import { useAuth } from "../context/AuthContext";
+import countries from "i18n-iso-countries";
+import en from "i18n-iso-countries/langs/en.json";
 export default function UserProfilePage() {
   const { id } = useParams();
   const { data: currentUser, isLoading: isLoadingCurrentUser } = useAuth();
@@ -107,13 +109,13 @@ function ProfileHeader({ user, isOwnProfile, onReport }) {
 
   const getRoleColor = (role) => {
     switch (role) {
-      case "mentor":
+      case "MENTOR":
         return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200";
-      case "mentee":
+      case "MENTEE":
         return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200";
-      case "community_manager":
+      case "COMMUNITY_MANAGER":
         return "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200";
-      case "admin":
+      case "ADMIN":
         return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200";
       default:
         return "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200";
@@ -122,13 +124,13 @@ function ProfileHeader({ user, isOwnProfile, onReport }) {
 
   const getRoleLabel = (role) => {
     switch (role) {
-      case "community_manager":
+      case "COMMUNITY_MANAGER":
         return "Community Manager";
-      case "mentor":
+      case "MENTOR":
         return "Mentor";
-      case "mentee":
+      case "MENTEE":
         return "Mentee";
-      case "admin":
+      case "ADMIN":
         return "Admin";
       default:
         return role;
@@ -137,13 +139,13 @@ function ProfileHeader({ user, isOwnProfile, onReport }) {
 
   const getRoleIcon = (role) => {
     switch (role) {
-      case "mentor":
+      case "MENTOR":
         return <Users className="w-4 h-4" />;
-      case "mentee":
+      case "MENTEE":
         return <UserIcon className="w-4 h-4" />;
-      case "community_manager":
+      case "COMMUNITY_MANAGER":
         return <Shield className="w-4 h-4" />;
-      case "admin":
+      case "ADMIN":
         return <Shield className="w-4 h-4" />;
       default:
         return <UserIcon className="w-4 h-4" />;
@@ -196,12 +198,12 @@ function ProfileHeader({ user, isOwnProfile, onReport }) {
                     <span className="ml-1">{getRoleLabel(user?.role)}</span>
                   </span>
 
-                  {user?.location && (
+                  {/* {user?.country && (
                     <div className="flex items-center text-gray-500 dark:text-gray-400 text-sm">
                       <MapPin className="w-4 h-4 mr-1" />
-                      {user.location}
+                      {user.country}
                     </div>
-                  )}
+                  )} */}
                 </div>
               </div>
 
@@ -280,7 +282,7 @@ function ProfileInfo({ user }) {
             {user.links.map((link, index) => (
               <a
                 key={index}
-                href={link.url}
+                href={link.linkUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:border-gray-300 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors group"
@@ -288,10 +290,10 @@ function ProfileInfo({ user }) {
                 <ExternalLink className="w-4 h-4 text-gray-400 mr-3 flex-shrink-0 group-hover:text-blue-500" />
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                    {link.name}
+                    {link.linkName}
                   </div>
                   <div className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                    {link.url}
+                    {link.linkUrl}
                   </div>
                 </div>
               </a>
@@ -305,18 +307,10 @@ function ProfileInfo({ user }) {
 
 // Profile Sidebar Component
 function ProfileSidebar({ user }) {
-  const getCountryName = (countryCode) => {
-    // This would typically come from your countryCodes data
-    const countries = {
-      USA: "United States",
-      CAN: "Canada",
-      GBR: "United Kingdom",
-      DEU: "Germany",
-      FRA: "France",
-      // Add more as needed
-    };
-    return countries[countryCode] || countryCode;
-  };
+  countries.registerLocale(en);
+
+  const getCountryName = (code) =>
+    countries.getName(code, "en", { select: "official" }) || code;
 
   return (
     <div className="space-y-6">
@@ -350,20 +344,6 @@ function ProfileSidebar({ user }) {
               </span>
             </div>
           )}
-
-          {user?.website && (
-            <div className="flex items-center">
-              <ExternalLink className="w-4 h-4 text-gray-400 mr-3 flex-shrink-0" />
-              <a
-                href={user.website}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 truncate"
-              >
-                {user.website}
-              </a>
-            </div>
-          )}
         </div>
       </div>
 
@@ -390,29 +370,11 @@ function ProfileSidebar({ user }) {
               </div>
             </div>
           </div>
-
-          {user?.last_login && (
-            <div className="flex items-center">
-              <Clock className="w-4 h-4 text-gray-400 mr-3 flex-shrink-0" />
-              <div>
-                <div className="text-sm font-medium text-gray-900 dark:text-white">
-                  Last active
-                </div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">
-                  {new Date(user.last_login).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                  })}
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </div>
 
       {/* Stats (if applicable for mentors) */}
-      {user?.role === "mentor" && user?.stats && (
+      {/* {user?.role === "mentor" && user?.stats && (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             Mentoring Stats
@@ -450,7 +412,7 @@ function ProfileSidebar({ user }) {
             )}
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }

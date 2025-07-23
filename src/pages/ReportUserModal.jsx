@@ -65,12 +65,13 @@ export default function ReportUserModal({ isOpen, onClose, reportedUser }) {
     setIsSubmitting(true);
     try {
       await reportUserMutation.mutateAsync({
-        reportedUserId: reportedUser.id,
-        violationType: selectedViolation,
-        additionalInfo: data.additionalInfo,
+        userId: reportedUser.id,
+        body: {
+          violation: selectedViolation,
+          additionalDetails: data.additionalInfo,
+        },
       });
 
-      // Reset form and close modal
       reset();
       setSelectedViolation("");
       onClose();
@@ -111,8 +112,7 @@ export default function ReportUserModal({ isOpen, onClose, reportedUser }) {
                   Report User
                 </h3>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Report @{reportedUser?.username} for community guidelines
-                  violation
+                  Report @{reportedUser?.id} for community guidelines violation
                 </p>
               </div>
             </div>

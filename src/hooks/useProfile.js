@@ -27,14 +27,14 @@ const profileApi = {
     return response.json();
   },
 
-  reportUser: async (reportData) => {
-    const response = await fetch(`${API_BASE_URL}/users/report`, {
+  reportUser: async ({ userId, body }) => {
+    const response = await fetch(`${API_BASE_URL}/users/${userId}/report`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       credentials: "include",
-      body: JSON.stringify(reportData),
+      body: JSON.stringify(body),
     });
 
     if (!response.ok) {

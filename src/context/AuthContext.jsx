@@ -1,12 +1,6 @@
 // src/context/AuthContext.jsx
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useReducer,
-  useState,
-} from "react";
+import { createContext, useContext, useEffect, useReducer } from "react";
 import { jwtDecode } from "jwt-decode";
 import { authApi } from "../services/authApi";
 
@@ -45,19 +39,13 @@ export const AuthProvider = ({ children }) => {
     staleTime: 5 * 60 * 1000,
     cacheTime: 10 * 60 * 1000,
   });
-  //   const decoded = jwtDecode(user?.token);
 
-  // const [user, setUser] = useState(data);
-  // useEffect(() => {
-  //   if (data) {
-  //     setUser(data);
-  //     const partial = getUserStatus();
-  //     setStatus(partial ? "partial" : "full");
-  //   }
-  // }, [data]);
   console.log(" user:", user);
-  // const [status, setStatus] = useState("none");
+
   const getUserStatus = () => {
+    if (document.cookie === "") {
+      return "none";
+    }
     let decoded = null;
     const tokenCookie = document.cookie
       .split("; ")
@@ -71,46 +59,28 @@ export const AuthProvider = ({ children }) => {
         console.error("Failed to decode token:", err);
       }
     }
-    // dispatch({
-    //   type: "SET_STATUS",
-    //   payload: decoded ? (decoded.partial ? "partial" : "full") : "none",
-    // });
-    // console.log("decoded:     ", decoded);
+
     return decoded ? (decoded.partial ? "partial" : "full") : "none";
   };
-  // const getUserFromTokenOrCookie = (tokenCookie) => {
-  //   // Only read from cookies if no token was passed
-  //   if (!tokenCookie) {
-  //     tokenCookie = document.cookie
-  //       .split("; ")
-  //       .find((row) => row.startsWith("token="));
-  //     dispatch({ type: "SET_USER", payload: jwtDecode(tokenCookie) });
-  //   }
 
-  //   if (tokenCookie) {
-  //     // If we got it from cookies, extract token value
-  //     const token = tokenCookie.startsWith("token=")
-  //       ? tokenCookie.split("=")[1]
-  //       : tokenCookie; // if token was passed directly
-
-  //     try {
-  //       console.log("Decoding token:", token);
-  //       return jwtDecode(token);
-  //     } catch (err) {
-  //       console.error("Failed to decode token:", err);
-  //     }
-  //   }
-
-  //   return null;
-  // };
   useEffect(() => {
     async function fetchData() {
-      const user = await authApi.getCurrentUser();
+      const { data: user } = await refetch();
+
+      const userStatus = getUserStatus();
+      if (userStatus === "none") {
+        dispatch({ type: "SET_USER", payload: null });
+        dispatch({
+          type: "SET_STATUS",
+          payload: "none",
+        });
+        return;
+      }
       if (user) {
         dispatch({ type: "SET_USER", payload: user });
         dispatch({
           type: "SET_STATUS",
-          payload: user.partial ? "partial" : "full",
+          payload: userStatus,
         });
       } else {
         dispatch({ type: "SET_USER", payload: null });
@@ -128,8 +98,7 @@ export const AuthProvider = ({ children }) => {
     mutationFn: authApi.login,
     onSuccess: async (data) => {
       queryClient.invalidateQueries(["currentUser"]);
-      // setUser(data);
-      const user = await authApi.getCurrentUser();
+      const { data: user } = await refetch();
       dispatch({ type: "SET_STATUS", payload: getUserStatus() });
       dispatch({ type: "SET_USER", payload: user });
     },
@@ -139,7 +108,7 @@ export const AuthProvider = ({ children }) => {
     mutationFn: authApi.signup,
     onSuccess: async () => {
       dispatch({ type: "SET_STATUS", payload: "partial" });
-      const user = await authApi.getCurrentUser();
+      const { data: user } = await refetch();
       dispatch({
         type: "SET_USER",
         payload: user,
@@ -152,15 +121,16 @@ export const AuthProvider = ({ children }) => {
     onSuccess: () => {
       console.log("Logout successful");
       queryClient.clear();
-      // setUser(null);
-      dispatch({ type: "SET_STATUS", payload: "none" });
-      dispatch({ type: "SET_USER", payload: null });
+
+      dispatch({ type: "RESET" });
+
+      document.cookie =
+        "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     },
     onError: () => {
       document.cookie =
         "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       queryClient.clear();
-      // setStatus("none");
     },
   });
 
