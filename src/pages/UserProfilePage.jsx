@@ -59,9 +59,8 @@ export default function UserProfilePage() {
       // </ProtectedRoute>
     );
   }
-
+  console.log("profileData:", profileData);
   const user = profileData?.user;
-  console.log("user:", user);
 
   return (
     // <ProtectedRoute requireAuth={true} requireVerification={true}>
