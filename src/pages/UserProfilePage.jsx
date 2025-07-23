@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
   Settings,
@@ -28,9 +28,20 @@ export default function UserProfilePage() {
   const { data: currentUser, isLoading: isLoadingCurrentUser } = useAuth();
   const [showReportModal, setShowReportModal] = useState(false);
 
-  const { data: profileData, isLoading, error } = useGetUserProfile(id);
+  const {
+    data: profileData,
+    isLoading,
+    error,
+    refetch,
+  } = useGetUserProfile(id);
 
   const isOwnProfile = currentUser?.user?.id === id;
+  useEffect(() => {
+    async function refetchUser() {
+      await refetch();
+    }
+    refetchUser();
+  }, [refetch]);
 
   if (isLoading || isLoadingCurrentUser) {
     return (
@@ -361,10 +372,10 @@ function ProfileSidebar({ user }) {
               <div className="text-sm text-gray-500 dark:text-gray-400">
                 {user?.dateJoined
                   ? new Date(user.dateJoined).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })
                   : "Unknown"}
               </div>
             </div>
