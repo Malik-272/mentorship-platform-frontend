@@ -1,5 +1,5 @@
-import { useState } from "react"
-import { Eye, EyeOff, AlertCircle } from "lucide-react"
+import { useState } from "react";
+import { Eye, EyeOff, AlertCircle } from "lucide-react";
 
 export default function FormField({
   label,
@@ -15,8 +15,8 @@ export default function FormField({
   defaultValue,
   ...props
 }) {
-  const [showPassword, setShowPassword] = useState(false)
-  const inputType = showPasswordToggle && showPassword ? "text" : type
+  const [showPassword, setShowPassword] = useState(false);
+  const inputType = showPasswordToggle && showPassword ? "text" : type;
 
   // const registerProps = register ? register(name, rules) : {};
 
@@ -26,6 +26,7 @@ export default function FormField({
   } else {
     inputElement = (
       <input
+        {...register(name, rules)}
         defaultValue={defaultValue}
         id={name}
         type={inputType}
@@ -34,7 +35,11 @@ export default function FormField({
         focus:ring-2 focus:ring-blue-500 focus:border-blue-500
         bg-white text-gray-900 placeholder-gray-400 
         dark:bg-gray-800 dark:text-white dark:placeholder-gray-500 
-        ${error ? "border-red-300 dark:border-red-500" : "border-gray-300 dark:border-gray-600"}`}
+        ${
+          error
+            ? "border-red-300 dark:border-red-500"
+            : "border-gray-300 dark:border-gray-600"
+        }`}
       />
     );
   }
@@ -73,5 +78,5 @@ export default function FormField({
         </div>
       )}
     </div>
-  )
+  );
 }

@@ -93,7 +93,7 @@ export const AuthProvider = ({ children }) => {
 
     fetchData();
     // getUserStatus();
-  }, []);
+  }, [refetch]);
   const login = useMutation({
     mutationFn: authApi.login,
     onSuccess: async (data) => {
