@@ -1,41 +1,85 @@
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-import { Camera, Upload, Trash2, ExternalLink, Edit2 } from "lucide-react"
-import { useUpdateProfile, useUploadAvatar, useDeleteAvatar } from "../../hooks/useSettings"
+import { useEffect, useState } from "react"
+import { useFieldArray, useForm } from "react-hook-form"
+import { Camera, Upload, Trash2, ExternalLink, Edit2, Plus, Tag } from "lucide-react"
+import { useUpdateProfile, useUploadAvatar, useDeleteAvatar, useFetchUserLinks } from "../../hooks/useSettings"
 import { validationRules, countryCodes } from "../../data/authData"
 import FormField from "../Authenticaion/FormField"
 import LinksModal from "./LinksModal"
+import { useGetUserProfile } from "../../hooks/useProfile"
+import { useNavigate } from "react-router-dom"
 
-export default function PersonalInfoSection({ user }) {
+export default function PersonalInfoSection({ userId }) {
+  const { data: userLinksData, isLoading: linksLoading, refetch: refetchLinks, error: linksError } = useFetchUserLinks()
   const [showLinksModal, setShowLinksModal] = useState(false)
   const [avatarHover, setAvatarHover] = useState(false)
-  console.log("User data in PersonalInfoSection:", user?.headline)
+  const { data, refetch: refetchUser } = useGetUserProfile(userId) // Assuming useUser hook fetches the current user data
+  const navigate = useNavigate();
+  // const [user, setUser] = useState(data?.user || {})
+
+  // useEffect(() => {
+  //   setUser(data?.user || {})
+  // }, [data])
+
   const {
     register,
     handleSubmit,
     formState: { errors, isDirty },
     reset,
+    control,
   } = useForm({
     defaultValues: {
-      name: user?.name || "",
-      username: user?.id || "",
-      email: user?.email || "",
-      headline: user?.headline || "",
-      bio: user?.bio || "",
-      country: user?.country || "",
-      // location: user?.location || "",
-      // website: user?.website || "",
+      name: data?.user?.name || "",
+      id: data?.user?.id || "",
+      email: data?.user?.email || "",
+      headline: data?.user?.headline || "",
+      bio: data?.user?.bio || "",
+      country: data?.user?.country || "",
+      skills: data?.user?.skills || [],
     },
   })
+
+  const { fields, append, remove } = useFieldArray({
+    name: "skills",
+    control,
+  })
+
+  useEffect(() => {
+    if (data?.user) {
+      reset({
+        name: data?.user?.name || "",
+        id: data?.user?.id || "",
+        email: data?.user?.email || "",
+        headline: data?.user?.headline || "",
+        bio: data?.user?.bio || "",
+        country: data?.user?.country || "",
+        skills: data?.user?.skills || [],
+      })
+    }
+  }, [data, reset])
 
   const updateProfileMutation = useUpdateProfile()
   const uploadAvatarMutation = useUploadAvatar()
   const deleteAvatarMutation = useDeleteAvatar()
 
   const onSubmit = async (data) => {
+    console.log("Submitting profile data:", data)
     try {
-      await updateProfileMutation.mutateAsync(data)
-      reset(data) // Reset form dirty state
+      const allowedFields = ["name", "headline", "bio", "country", "skills"]
+      const filteredData = {}
+
+      allowedFields.forEach((field) => {
+        if (data[field]) {
+          filteredData[field] = data[field]
+        }
+      })
+
+      if (filteredData.skills) {
+        filteredData.skills = filteredData.skills.filter((skill) => skill.trim() !== "")
+      }
+
+      await updateProfileMutation.mutateAsync(filteredData)
+      navigate(`/profile/${data.user.id}`);
+      // reset(data) // Reset form dirty state
     } catch (error) {
       console.error("Profile update failed:", error)
     }
@@ -62,6 +106,11 @@ export default function PersonalInfoSection({ user }) {
     }
   }
 
+  const handleLinksModalClose = () => {
+    setShowLinksModal(false)
+    refetchLinks() // Refresh links when modal closes
+  }
+
   const getInitials = (name) => {
     return name
       ?.split(" ")
@@ -82,6 +131,8 @@ export default function PersonalInfoSection({ user }) {
     }
   }
 
+  const userLinks = userLinksData?.links || []
+
   return (
     <div className="p-6">
       <div className="mb-8">
@@ -100,10 +151,10 @@ export default function PersonalInfoSection({ user }) {
             onMouseLeave={() => setAvatarHover(false)}
           >
             <div className="w-32 h-32 rounded-full overflow-hidden bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white text-2xl font-bold relative">
-              {user?.imageUrl ? (
-                <img src={user.imageUrl || "/placeholder.svg"} alt={user.name} className="w-full h-full object-cover" />
+              {data?.user?.imageUrl ? (
+                <img src={data.user.imageUrl || "/placeholder.svg"} alt={data.user.name} className="w-full h-full object-cover" />
               ) : (
-                getInitials(user?.name)
+                getInitials(data?.user?.name)
               )}
 
               {/* Hover Overlay */}
@@ -120,7 +171,7 @@ export default function PersonalInfoSection({ user }) {
                         disabled={uploadAvatarMutation.isPending}
                       />
                     </label>
-                    {user?.imageUrl && (
+                    {data?.user?.imageUrl && (
                       <button
                         type="button"
                         onClick={handleAvatarDelete}
@@ -142,10 +193,10 @@ export default function PersonalInfoSection({ user }) {
           </div>
 
           <div className="mt-4 text-center">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white">{user?.name}</h3>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white">{data?.user?.name}</h3>
             <div className="flex items-center justify-center mt-2">
-              <span className={`inline-flex px-3 py-1 text-sm font-medium rounded-full ${getRoleColor(user?.role)}`}>
-                {user?.role === "mentee" ? "Mentee" : "Mentor"}
+              <span className={`inline-flex px-3 py-1 text-sm font-medium rounded-full ${getRoleColor(data?.user?.role)}`}>
+                {data?.user?.role === "mentee" ? "Mentee" : "Mentor"}
               </span>
             </div>
           </div>
@@ -160,7 +211,7 @@ export default function PersonalInfoSection({ user }) {
         {/* Form Fields */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField
-            defaultValue={user?.name}
+            defaultValue={data?.user?.name}
             label="Full Name"
             name="name"
             register={register}
@@ -169,16 +220,18 @@ export default function PersonalInfoSection({ user }) {
           />
 
           <FormField
-            defaultValue={user?.id}
+            disabled={true}
+            defaultValue={data?.user?.id}
             label="Username"
-            name="username"
+            name="id"
             register={register}
-            error={errors.username}
+            error={errors.id}
             rules={validationRules.id}
+            className="opacity-60"
           />
 
           <FormField
-            defaultValue={user?.email}
+            defaultValue={data?.user?.email}
             label="Email Address"
             name="email"
             type="email"
@@ -190,7 +243,7 @@ export default function PersonalInfoSection({ user }) {
           />
 
           <FormField
-            defaultValue={user?.headline}
+            defaultValue={data?.user?.headline}
             label="Professional Headline"
             name="headline"
             register={register}
@@ -199,7 +252,7 @@ export default function PersonalInfoSection({ user }) {
           />
 
           <FormField
-            defaultValue={user?.country}
+            defaultValue={data?.user?.country}
             label="Country"
             name="country"
             register={register}
@@ -210,7 +263,7 @@ export default function PersonalInfoSection({ user }) {
               {...register("country", validationRules.country)}
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
             >
-              <option value="">{countryCodes[user?.country] || "Select your country"}</option>
+              <option value="">{countryCodes[data?.user?.country] || "Select your country"}</option>
               {Object.entries(countryCodes).map(([key, country]) => (
                 <option key={key} value={key}>
                   {country}
@@ -219,28 +272,9 @@ export default function PersonalInfoSection({ user }) {
             </select>
           </FormField>
 
-          {/* <FormField
-            label="Location (City)"
-            name="location"
-            register={register}
-            error={errors.location}
-            placeholder="e.g., New York, NY"
-          /> */}
-
-          {/* <div className="md:col-span-2">
-            <FormField
-              label="Website"
-              name="website"
-              type="url"
-              register={register}
-              error={errors.website}
-              placeholder="https://yourwebsite.com"
-            />
-          </div> */}
-
           <div className="md:col-span-2">
             <FormField
-              defaultValue={user?.bio}
+              defaultValue={data?.user?.bio}
               label="Bio"
               name="bio"
               register={register}
@@ -255,6 +289,50 @@ export default function PersonalInfoSection({ user }) {
               />
             </FormField>
           </div>
+        </div>
+
+        {/* Skills Section */}
+        <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white">Skills</h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Add your professional skills and expertise</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => append("")}
+              className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Add Skill
+            </button>
+          </div>
+
+          <div className="space-y-3">
+            {fields.map((field, index) => (
+              <div key={field.id} className="flex items-center gap-2">
+                <input
+                  {...register(`skills.${index}`)}
+                  className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                  placeholder="e.g., JavaScript, React, UI Design"
+                />
+                <button
+                  type="button"
+                  onClick={() => remove(index)}
+                  className="p-2 text-red-500 hover:text-red-700 transition-colors"
+                >
+                  <Trash2 className="w-5 h-5" />
+                </button>
+              </div>
+            ))}
+          </div>
+
+          {fields.length === 0 && (
+            <div className="text-center py-6 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg">
+              <Tag className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+              <p className="text-sm text-gray-500 dark:text-gray-400">No skills added yet</p>
+            </div>
+          )}
         </div>
 
         {/* Social Links Section */}
@@ -277,11 +355,20 @@ export default function PersonalInfoSection({ user }) {
           </div>
 
           {/* Display Current Links */}
-          {user?.links && user.links.length > 0 ? (
+          {linksLoading ? (
+            <div className="text-center py-6">
+              <div className="text-sm text-gray-500 dark:text-gray-400">Loading links...</div>
+            </div>
+          ) : linksError ? (
+            <div className="text-center py-6 border-2 border-dashed border-red-300 dark:border-red-600 rounded-lg">
+              <ExternalLink className="w-8 h-8 text-red-400 mx-auto mb-2" />
+              <p className="text-sm text-red-500 dark:text-red-400">Failed to load links: {linksError.message}</p>
+            </div>
+          ) : userLinks.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {user.links.slice(0, 4).map((link, index) => (
+              {userLinks.slice(0, 4).map((link) => (
                 <div
-                  key={index}
+                  key={link.id}
                   className="flex items-center p-3 border border-gray-200 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700"
                 >
                   <ExternalLink className="w-4 h-4 text-gray-400 mr-3 flex-shrink-0" />
@@ -291,9 +378,9 @@ export default function PersonalInfoSection({ user }) {
                   </div>
                 </div>
               ))}
-              {user.links.length > 4 && (
+              {userLinks.length > 4 && (
                 <div className="flex items-center justify-center p-3 border border-gray-200 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-sm text-gray-500 dark:text-gray-400">
-                  +{user.links.length - 4} more links
+                  +{userLinks.length - 4} more links
                 </div>
               )}
             </div>
@@ -332,7 +419,12 @@ export default function PersonalInfoSection({ user }) {
 
       {/* Links Modal */}
       {showLinksModal && (
-        <LinksModal isOpen={showLinksModal} onClose={() => setShowLinksModal(false)} userLinks={user?.links || []} />
+        <LinksModal
+          isOpen={showLinksModal}
+          onClose={handleLinksModalClose}
+          userLinks={userLinks}
+          onRefresh={refetchLinks}
+        />
       )}
     </div>
   )

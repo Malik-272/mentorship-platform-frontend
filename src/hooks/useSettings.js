@@ -1,7 +1,13 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { settingsApi } from "../services/settingsApi"
 
 // Custom hooks
+export const useGetUserProfile = () => {
+  return useQuery({
+    queryKey: ["userProfile"],
+    queryFn: settingsApi.getUserProfile,
+  })
+}
 export const useUpdateProfile = () => {
   const queryClient = useQueryClient()
 
@@ -45,16 +51,46 @@ export const useDeleteAvatar = () => {
   })
 }
 
-export const useUpdateLinks = () => {
+// Updated link hooks to work with individual operations
+export const useFetchUserLinks = () => {
+  return useQuery({
+    queryKey: ["userLinks"],
+    queryFn: settingsApi.getUserLinks,
+  })
+}
+
+export const useAddLink = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: settingsApi.updateLinks,
-    onSuccess: (data) => {
-      queryClient.setQueryData(["currentUser"], (oldData) => ({
-        ...oldData,
-        user: { ...oldData.user, links: data.links },
-      }))
+    mutationFn: settingsApi.addLink,
+    onSuccess: () => {
+      // Invalidate and refetch user links
+      queryClient.invalidateQueries({ queryKey: ["userLinks"] })
+    },
+  })
+}
+
+export const useUpdateLink = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, linkData }) => settingsApi.updateLink(id, linkData),
+    onSuccess: () => {
+      // Invalidate and refetch user links
+      queryClient.invalidateQueries({ queryKey: ["userLinks"] })
+    },
+  })
+}
+
+export const useDeleteLink = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: settingsApi.deleteLink,
+    onSuccess: () => {
+      // Invalidate and refetch user links
+      queryClient.invalidateQueries({ queryKey: ["userLinks"] })
     },
   })
 }
