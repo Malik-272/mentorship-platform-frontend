@@ -21,6 +21,8 @@ import ReportUserModal from "./ReportUserModal";
 import LoadingSpinner from "../ui/LoadingSpinner";
 import ErrorMessage from "../ui/ErrorMessage";
 import { useAuth } from "../context/AuthContext";
+import { countryCodes as country } from "../data/authData"
+
 export default function UserProfilePage() {
   const { id } = useParams();
   const { data: currentUser, isLoading: isLoadingCurrentUser } = useAuth();
@@ -162,8 +164,8 @@ function ProfileHeader({ user, isOwnProfile, onReport }) {
             <div className="w-32 h-32 rounded-full border-4 border-white dark:border-gray-800 overflow-hidden bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg">
               {user?.imageUrl ? (
                 <img
-                  src={user.imageUrl || "/placeholder.svg?height=128&width=128"}
-                  alt={user.name}
+                  src={user?.imageUrl || "/placeholder.svg?height=128&width=128"}
+                  alt={user?.name}
                   className="w-full h-full object-cover"
                 />
               ) : (
@@ -280,7 +282,7 @@ function ProfileInfo({ user }) {
             {user.links.map((link, index) => (
               <a
                 key={index}
-                href={link.url}
+                href={link.linkUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:border-gray-300 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors group"
@@ -288,10 +290,10 @@ function ProfileInfo({ user }) {
                 <ExternalLink className="w-4 h-4 text-gray-400 mr-3 flex-shrink-0 group-hover:text-blue-500" />
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                    {link.name}
+                    {link.linkName}
                   </div>
                   <div className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                    {link.url}
+                    {link.linkUrl}
                   </div>
                 </div>
               </a>
@@ -306,16 +308,7 @@ function ProfileInfo({ user }) {
 // Profile Sidebar Component
 function ProfileSidebar({ user }) {
   const getCountryName = (countryCode) => {
-    // This would typically come from your countryCodes data
-    const countries = {
-      USA: "United States",
-      CAN: "Canada",
-      GBR: "United Kingdom",
-      DEU: "Germany",
-      FRA: "France",
-      // Add more as needed
-    };
-    return countries[countryCode] || countryCode;
+    return country[countryCode];
   };
 
   return (
@@ -382,10 +375,10 @@ function ProfileSidebar({ user }) {
               <div className="text-sm text-gray-500 dark:text-gray-400">
                 {user?.dateJoined
                   ? new Date(user.dateJoined).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })
                   : "Unknown"}
               </div>
             </div>

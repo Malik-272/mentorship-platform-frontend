@@ -31,7 +31,7 @@ export const AuthGuard = ({ children }) => {
         return
       }
       if (isPartialAuth) {
-        navigate("/confirm-email-page", { replace: true })
+        navigate("/confirm-email", { replace: true })
         return
       }
     }
