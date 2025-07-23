@@ -68,4 +68,9 @@ export const validationRules = {
         || "Role must be either mentee or mentor or community manager"
     },
   },
+  skills: {
+    validate: (skills) =>
+      !skills || skills.every(skill => typeof skill === 'string' && skill.trim().length > 0) ||
+      "All skills must be non-empty strings"
+  },
 }
