@@ -4,7 +4,7 @@ const API_BASE_URL = "http://localhost:3000/api/v1";
 export const authApi = {
   // Get current user
   getCurrentUser: async () => {
-    // auth/me
+    // users/me
     const response = await fetch(`${API_BASE_URL}/users/me`, {
       method: "GET",
       credentials: "include",
@@ -21,7 +21,7 @@ export const authApi = {
       throw new Error(error.message || "Failed to get user info");
     }
 
-    return response.json();
+    return response.json()
   },
   // Signup
   signup: async (userData) => {
@@ -60,6 +60,7 @@ export const authApi = {
 
   // Login
   login: async (credentials) => {
+    console.log("API: Attempting login with credentials:", credentials);
     try {
       const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: "POST",

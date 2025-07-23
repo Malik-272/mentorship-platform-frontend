@@ -1,30 +1,25 @@
+import { lazy } from "react"
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import AppLayout from "./ui/AppLayout";
-import LandingPage from "./pages/LandingPage";
-
-// Auth Pages
-import SignupPage from "./pages/auth/SignUpPage";
-import SignupConfirmationPage from "./pages/auth/SignupConfirmationPage";
-import LoginPage from "./pages/auth/LoginPage";
-import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage";
-import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
-import TwoFactorPage from "./pages/auth/TwoFactorPage";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { ConfirmEmailPage } from "./pages/auth/ConfirmEmailPage";
 import { ThemeProvider } from "./context/ThemeContext";
-import {
-  FullProtectedRoute,
-  PartialAuthRoute,
-  PublicOnlyRoute,
-  // PartialAuthRoute,
-  // ProtectedRoute,
-  // PublicOnlyRoute,
-} from "./ui/ProtectedRoute";
-import NotFoundPage from "./pages/NotFoundPage";
+import { FullProtectedRoute, PartialAuthRoute, PublicOnlyRoute } from "./ui/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
 import React from "react";
 import UserProfilePage from "./pages/UserProfilePage";
+
+const AppLayout = lazy(() => import("./ui/AppLayout"))
+const LandingPage = lazy(() => import("./pages/LandingPage"))
+// Auth Pages
+const SignupPage = lazy(() => import("./pages/auth/SignUpPage"))
+const SignupConfirmationPage = lazy(() => import("./pages/auth/SignupConfirmationPage"))
+const LoginPage = lazy(() => import("./pages/auth/LoginPage"))
+const ForgotPasswordPage = lazy(() => import("./pages/auth/ForgotPasswordPage"))
+const ResetPasswordPage = lazy(() => import("./pages/auth/ResetPasswordPage"))
+const TwoFactorPage = lazy(() => import("./pages/auth/TwoFactorPage"))
+const ConfirmEmailPage = lazy(() => import("./pages/auth/ConfirmEmailPage"))
+const NotFoundPage = lazy(() => import("./pages/NotFoundPage"))
+const SettingsPage = lazy(() => import("./pages/SettingsPage"))
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -37,11 +32,6 @@ const queryClient = new QueryClient({
 
 function App() {
   return (
-    // <ProtectedRoute
-    //   requireFullAuth={false}
-    //   allowPartialAuth={false}
-    //   redirectTo="/login"
-    // >
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={false} />
       <ThemeProvider defaultTheme="system" storageKey="growtly-theme">
@@ -141,13 +131,21 @@ function App() {
                     </FullProtectedRoute>
                   }
                 />
+                <Route
+                  path="my/settings"
+                  element={
+                    <FullProtectedRoute>
+                      <SettingsPage />
+                    </FullProtectedRoute>
+                  }
+                />
                 <Route path="*" element={<NotFoundPage />} />
               </Route>
             </Routes>
           </Router>
-        </AuthProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
+        </AuthProvider >
+      </ThemeProvider >
+    </QueryClientProvider >
     // </ProtectedRoute>
   );
 }

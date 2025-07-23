@@ -361,10 +361,10 @@ function ProfileSidebar({ user }) {
               <div className="text-sm text-gray-500 dark:text-gray-400">
                 {user?.dateJoined
                   ? new Date(user.dateJoined).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })
                   : "Unknown"}
               </div>
             </div>

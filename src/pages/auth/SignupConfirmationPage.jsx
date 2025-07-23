@@ -1,3 +1,16 @@
+<<<<<<< HEAD
+import { Link } from "react-router-dom"
+import { Mail, CheckCircle, LogOut } from "lucide-react"
+import Logo from "../../ui/Logo"
+import { useAuth, useLogout } from "../../hooks/useAuth"
+
+export default function SignupConfirmationPage() {
+  const { data, isLoading, isAuthenticated } = useAuth()
+  const email = data?.user?.email
+  console.log(email)
+  const logoutMutation = useLogout()
+  console.log("Confirm Email");
+=======
 import { useLocation, Link } from "react-router-dom";
 import { Mail, CheckCircle, ArrowRight, LogOut } from "lucide-react";
 import Logo from "../../ui/Logo";
@@ -7,29 +20,13 @@ export default function SignupConfirmationPage() {
   const location = useLocation();
   const email = location.state?.email || "your email";
   const { isAuthenticated, isLoading, logout: logoutMutation } = useAuth();
+>>>>>>> dc7ca342db9119b2444d618deddd66bc1d265808
   const handleLogout = () => {
     logoutMutation.mutate();
   };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      {/* Sign Out Button */}
-      {/* {isLoading ? (
-        <div className="w-20 h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
-      ) :
-        isAuthenticated && (
-          <div className="absolute top-4 right-4">
-            <button
-              onClick={handleLogout}
-              className="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 text-sm leading-4 font-medium rounded-md shadow-sm text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-              <LogOut className="h-4 w-4 mr-2" />
-              Sign Out
-            </button>
-          </div >
-        )
-      } */}
-
       {/* Logo and Title */}
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
@@ -78,16 +75,23 @@ export default function SignupConfirmationPage() {
             </div>
 
             <div className="flex flex-col space-y-3">
-              {/* <Link
-                to="/login"
-                className="w-full flex justify-center items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
-                Go to Login
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link> */}
-
               {isLoading ? (
                 <div className="w-20 h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+<<<<<<< HEAD
+              ) : isAuthenticated ? (
+                <button
+                  onClick={handleLogout}
+                  disabled={logoutMutation.isPending}
+                  className="w-full flex justify-center items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                >
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Sign Out
+                </button>
+              ) : (
+                <div>Login</div>
+              )
+              }
+=======
               ) : (
                 isAuthenticated && (
                   <button
@@ -105,6 +109,7 @@ export default function SignupConfirmationPage() {
               >
                 Resend Confirmation Email
               </button> */}
+>>>>>>> dc7ca342db9119b2444d618deddd66bc1d265808
             </div>
           </div>
 
