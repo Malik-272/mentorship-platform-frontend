@@ -1,6 +1,6 @@
-import js from "@eslint/js"
+import js from "@eslint/js";
 
-const API_BASE_URL = "http://localhost:3000/api/v1"
+const API_BASE_URL = "http://localhost:3000/api/v1";
 
 // Settings API functions
 export const settingsApi = {
@@ -9,17 +9,17 @@ export const settingsApi = {
     const response = await fetch(`${API_BASE_URL}/users/me`, {
       method: "GET",
       credentials: "include",
-    })
+    });
 
     if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.message || "Failed to fetch user profile")
+      const error = await response.json();
+      throw new Error(error.message || "Failed to fetch user profile");
     }
 
-    return response.json()
+    return response.json();
   },
   updateProfile: async (profileData) => {
-    console.log(profileData)
+    console.log(profileData);
     const response = await fetch(`${API_BASE_URL}/users/me`, {
       method: "PATCH",
       headers: {
@@ -27,44 +27,44 @@ export const settingsApi = {
       },
       credentials: "include",
       body: JSON.stringify(profileData),
-    })
+    });
 
     if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.message || "Failed to update profile")
+      const error = await response.json();
+      throw new Error(error.message || "Failed to update profile");
     }
 
-    return response.json()
+    return response.json();
   },
 
   uploadAvatar: async (formData) => {
     const response = await fetch(`${API_BASE_URL}/users/me/profile-picture`, {
       method: "PUT",
       credentials: "include",
-      body: formData
-    })
+      body: formData,
+    });
 
-    console.log("Avatar upload response:", response)
+    console.log("Avatar upload response:", response);
     if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.message || "Failed to upload avatar")
+      const error = await response.json();
+      throw new Error(error.message || "Failed to upload avatar");
     }
 
-    return response.json()
+    return response.json();
   },
 
   deleteAvatar: async () => {
     const response = await fetch(`${API_BASE_URL}/users/me/profile-picture`, {
       method: "DELETE",
       credentials: "include",
-    })
+    });
 
     if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.message || "Failed to delete avatar")
+      const error = await response.json();
+      throw new Error(error.message || "Failed to delete avatar");
     }
 
-    return response.json()
+    return response.json();
   },
 
   // Updated link operations to match your API endpoints
@@ -72,14 +72,14 @@ export const settingsApi = {
     const response = await fetch(`${API_BASE_URL}/users/me/links`, {
       method: "GET",
       credentials: "include",
-    })
+    });
 
     if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.message || "Failed to fetch user links")
+      const error = await response.json();
+      throw new Error(error.message || "Failed to fetch user links");
     }
 
-    return response.json()
+    return response.json();
   },
 
   addLink: async (linkData) => {
@@ -90,14 +90,14 @@ export const settingsApi = {
       },
       credentials: "include",
       body: JSON.stringify(linkData),
-    })
+    });
 
     if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.message || "Failed to add link")
+      const error = await response.json();
+      throw new Error(error.message || "Failed to add link");
     }
 
-    return response.json()
+    return response.json();
   },
 
   updateLink: async (id, linkData) => {
@@ -108,34 +108,34 @@ export const settingsApi = {
       },
       credentials: "include",
       body: JSON.stringify(linkData),
-    })
+    });
 
     if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.message || "Failed to update link")
+      const error = await response.json();
+      throw new Error(error.message || "Failed to update link");
     }
 
-    return response.json()
+    return response.json();
   },
 
   deleteLink: async (id) => {
     if (!id) {
-      throw new Error("Link ID is required for deletion")
+      throw new Error("Link ID is required for deletion");
     }
 
     const response = await fetch(`${API_BASE_URL}/users/me/links/${id}`, {
       method: "DELETE",
       credentials: "include",
-    })
+    });
 
     if (!response.ok) {
-      const error = await response.json()
-      console.error("Delete link error response:", error)
-      throw new Error(error.message || "Failed to delete link")
+      const error = await response.json();
+      console.error("Delete link error response:", error);
+      throw new Error(error.message || "Failed to delete link");
     }
     if (response.status == 204)
-      return { "success": true, "message": "Link deleted" }
-    return response.json()
+      return { success: true, message: "Link deleted" };
+    return response.json();
   },
 
   updatePassword: async (passwordData) => {
@@ -146,14 +146,14 @@ export const settingsApi = {
       },
       credentials: "include",
       body: JSON.stringify(passwordData),
-    })
+    });
 
     if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.message || "Failed to change password")
+      const error = await response.json();
+      throw new Error(error.message || "Failed to change password");
     }
 
-    return response.json()
+    return response.json();
   },
 
   toggle2FA: async (enabled) => {
@@ -164,13 +164,13 @@ export const settingsApi = {
       },
       credentials: "include",
       body: JSON.stringify({ enabled }),
-    })
+    });
 
     if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.message || "Failed to toggle 2FA")
+      const error = await response.json();
+      throw new Error(error.message || "Failed to toggle 2FA");
     }
 
-    return response.json()
+    return response.json();
   },
-}
+};

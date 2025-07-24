@@ -1,21 +1,40 @@
-import { useEffect, useState } from "react"
-import { useFieldArray, useForm } from "react-hook-form"
-import { Camera, Upload, Trash2, ExternalLink, Edit2, Plus, Tag } from "lucide-react"
-import { useUpdateProfile, useUploadAvatar, useDeleteAvatar, useFetchUserLinks, useGetUserProfile } from "../../hooks/useSettings"
-import { validationRules, countryCodes } from "../../data/authData"
-import FormField from "../Authenticaion/FormField"
-import LinksModal from "./LinksModal"
+import { useEffect, useState } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
+import {
+  Camera,
+  Upload,
+  Trash2,
+  ExternalLink,
+  Edit2,
+  Plus,
+  Tag,
+} from "lucide-react";
+import {
+  useUpdateProfile,
+  useUploadAvatar,
+  useDeleteAvatar,
+  useFetchUserLinks,
+  useGetUserProfile,
+} from "../../hooks/useSettings";
+import { validationRules, countryCodes } from "../../data/authData";
+import FormField from "../Authenticaion/FormField";
+import LinksModal from "./LinksModal";
 
 export default function PersonalInfoSection() {
-  const { data: userLinksData, isLoading: linksLoading, refetch: refetchLinks, error: linksError } = useFetchUserLinks()
-  const [showLinksModal, setShowLinksModal] = useState(false)
-  const [avatarHover, setAvatarHover] = useState(false)
-  const { data, refetch: refetchUser } = useGetUserProfile() // Assuming useUser hook fetches the current user data
-  const [user, setUser] = useState(data?.user || {})
+  const {
+    data: userLinksData,
+    isLoading: linksLoading,
+    refetch: refetchLinks,
+    error: linksError,
+  } = useFetchUserLinks();
+  const [showLinksModal, setShowLinksModal] = useState(false);
+  const [avatarHover, setAvatarHover] = useState(false);
+  const { data, refetch: refetchUser } = useGetUserProfile(); // Assuming useUser hook fetches the current user data
+  const [user, setUser] = useState(data?.user || {});
 
   useEffect(() => {
-    setUser(data?.user || {})
-  }, [data])
+    setUser(data?.user || {});
+  }, [data]);
 
   const {
     register,
@@ -33,12 +52,12 @@ export default function PersonalInfoSection() {
       country: user?.country || "",
       skills: user?.skills || [],
     },
-  })
+  });
 
   const { fields, append, remove } = useFieldArray({
     name: "skills",
     control,
-  })
+  });
 
   useEffect(() => {
     if (user) {
@@ -50,65 +69,67 @@ export default function PersonalInfoSection() {
         bio: user?.bio || "",
         country: user?.country || "",
         skills: user?.skills || [],
-      })
+      });
     }
-  }, [user, reset])
+  }, [user, reset]);
 
-  const updateProfileMutation = useUpdateProfile()
-  const uploadAvatarMutation = useUploadAvatar()
-  const deleteAvatarMutation = useDeleteAvatar()
+  const updateProfileMutation = useUpdateProfile();
+  const uploadAvatarMutation = useUploadAvatar();
+  const deleteAvatarMutation = useDeleteAvatar();
 
   const onSubmit = async (data) => {
-    console.log("Submitting profile data:", data)
+    console.log("Submitting profile data:", data);
     try {
-      const allowedFields = ["name", "headline", "bio", "country", "skills"]
-      const filteredData = {}
+      const allowedFields = ["name", "headline", "bio", "country", "skills"];
+      const filteredData = {};
 
       allowedFields.forEach((field) => {
         if (data[field]) {
-          filteredData[field] = data[field]
+          filteredData[field] = data[field];
         }
-      })
+      });
 
       if (filteredData.skills) {
-        filteredData.skills = filteredData.skills.filter((skill) => skill.trim() !== "")
+        filteredData.skills = filteredData.skills.filter(
+          (skill) => skill.trim() !== ""
+        );
       }
 
-      await updateProfileMutation.mutateAsync(filteredData)
-      refetchUser()
-      reset(data) // Reset form dirty state
+      await updateProfileMutation.mutateAsync(filteredData);
+      refetchUser();
+      reset(data); // Reset form dirty state
     } catch (error) {
-      console.error("Profile update failed:", error)
+      console.error("Profile update failed:", error);
     }
-  }
+  };
 
   const handleAvatarUpload = async (event) => {
-    const file = event.target.files[0]
+    const file = event.target.files[0];
     if (file) {
-      const formData = new FormData()
-      formData.append("image", file)
+      const formData = new FormData();
+      formData.append("image", file);
       try {
-        await uploadAvatarMutation.mutateAsync(formData)
-        refetchUser()
+        await uploadAvatarMutation.mutateAsync(formData);
+        refetchUser();
       } catch (error) {
-        console.error("Avatar upload failed:", error)
+        console.error("Avatar upload failed:", error);
       }
     }
-  }
+  };
 
   const handleAvatarDelete = async () => {
     try {
-      await deleteAvatarMutation.mutateAsync()
-      refetchUser()
+      await deleteAvatarMutation.mutateAsync();
+      refetchUser();
     } catch (error) {
-      console.error("Avatar delete failed:", error)
+      console.error("Avatar delete failed:", error);
     }
-  }
+  };
 
   const handleLinksModalClose = () => {
-    setShowLinksModal(false)
-    refetchLinks() // Refresh links when modal closes
-  }
+    setShowLinksModal(false);
+    refetchLinks(); // Refresh links when modal closes
+  };
 
   const getInitials = (name) => {
     return name
@@ -116,26 +137,28 @@ export default function PersonalInfoSection() {
       .map((n) => n[0])
       .join("")
       .toUpperCase()
-      .slice(0, 2)
-  }
+      .slice(0, 2);
+  };
 
   const getRoleColor = (role) => {
     switch (role) {
       case "mentor":
-        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200";
       case "mentee":
-        return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+        return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200";
       default:
-        return "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+        return "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200";
     }
-  }
+  };
 
-  const userLinks = userLinksData?.links || []
+  const userLinks = userLinksData?.links || [];
 
   return (
     <div className="p-6">
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Personal Information</h2>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+          Personal Information
+        </h2>
         <p className="text-gray-600 dark:text-gray-300">
           Update your profile information and manage your social links.
         </p>
@@ -151,7 +174,11 @@ export default function PersonalInfoSection() {
           >
             <div className="w-32 h-32 rounded-full overflow-hidden bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white text-2xl font-bold relative">
               {user?.imageUrl ? (
-                <img src={user.imageUrl || "/placeholder.svg"} alt={user.name} className="w-full h-full object-cover" />
+                <img
+                  src={user.imageUrl || "/placeholder.svg"}
+                  alt={user.name}
+                  className="w-full h-full object-cover"
+                />
               ) : (
                 getInitials(user?.name)
               )}
@@ -192,15 +219,22 @@ export default function PersonalInfoSection() {
           </div>
 
           <div className="mt-4 text-center">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white">{user?.name}</h3>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+              {user?.name}
+            </h3>
             <div className="flex items-center justify-center mt-2">
-              <span className={`inline-flex px-3 py-1 text-sm font-medium rounded-full ${getRoleColor(user?.role)}`}>
+              <span
+                className={`inline-flex px-3 py-1 text-sm font-medium rounded-full ${getRoleColor(
+                  user?.role
+                )}`}
+              >
                 {user?.role === "mentee" ? "Mentee" : "Mentor"}
               </span>
             </div>
           </div>
 
-          {(uploadAvatarMutation.isPending || deleteAvatarMutation.isPending) && (
+          {(uploadAvatarMutation.isPending ||
+            deleteAvatarMutation.isPending) && (
             <div className="mt-2 text-sm text-blue-600 dark:text-blue-400">
               {uploadAvatarMutation.isPending ? "Uploading..." : "Deleting..."}
             </div>
@@ -262,7 +296,9 @@ export default function PersonalInfoSection() {
               {...register("country", validationRules.country)}
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
             >
-              <option value="">{countryCodes[user?.country] || "Select your country"}</option>
+              <option value="">
+                {countryCodes[user?.country] || "Select your country"}
+              </option>
               {Object.entries(countryCodes).map(([key, country]) => (
                 <option key={key} value={key}>
                   {country}
@@ -294,8 +330,12 @@ export default function PersonalInfoSection() {
         <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white">Skills</h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Add your professional skills and expertise</p>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+                Skills
+              </h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Add your professional skills and expertise
+              </p>
             </div>
             <button
               type="button"
@@ -329,7 +369,9 @@ export default function PersonalInfoSection() {
           {fields.length === 0 && (
             <div className="text-center py-6 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg">
               <Tag className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-              <p className="text-sm text-gray-500 dark:text-gray-400">No skills added yet</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                No skills added yet
+              </p>
             </div>
           )}
         </div>
@@ -338,7 +380,9 @@ export default function PersonalInfoSection() {
         <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white">Social Links</h3>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+                Social Links
+              </h3>
               <p className="text-sm text-gray-500 dark:text-gray-400">
                 Add links to your social profiles and portfolio
               </p>
@@ -356,12 +400,16 @@ export default function PersonalInfoSection() {
           {/* Display Current Links */}
           {linksLoading ? (
             <div className="text-center py-6">
-              <div className="text-sm text-gray-500 dark:text-gray-400">Loading links...</div>
+              <div className="text-sm text-gray-500 dark:text-gray-400">
+                Loading links...
+              </div>
             </div>
           ) : linksError ? (
             <div className="text-center py-6 border-2 border-dashed border-red-300 dark:border-red-600 rounded-lg">
               <ExternalLink className="w-8 h-8 text-red-400 mx-auto mb-2" />
-              <p className="text-sm text-red-500 dark:text-red-400">Failed to load links: {linksError.message}</p>
+              <p className="text-sm text-red-500 dark:text-red-400">
+                Failed to load links: {linksError.message}
+              </p>
             </div>
           ) : userLinks.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -372,8 +420,12 @@ export default function PersonalInfoSection() {
                 >
                   <ExternalLink className="w-4 h-4 text-gray-400 mr-3 flex-shrink-0" />
                   <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium text-gray-900 dark:text-white truncate">{link.linkName}</div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400 truncate">{link.linkUrl}</div>
+                    <div className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                      {link.linkName}
+                    </div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                      {link.linkUrl}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -386,7 +438,9 @@ export default function PersonalInfoSection() {
           ) : (
             <div className="text-center py-6 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg">
               <ExternalLink className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-              <p className="text-sm text-gray-500 dark:text-gray-400">No social links added yet</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                No social links added yet
+              </p>
             </div>
           )}
         </div>
@@ -405,13 +459,17 @@ export default function PersonalInfoSection() {
         {/* Success/Error Messages */}
         {updateProfileMutation.isSuccess && (
           <div className="rounded-md bg-green-50 dark:bg-green-900/20 p-4">
-            <div className="text-sm text-green-700 dark:text-green-400">Profile updated successfully!</div>
+            <div className="text-sm text-green-700 dark:text-green-400">
+              Profile updated successfully!
+            </div>
           </div>
         )}
 
         {updateProfileMutation.error && (
           <div className="rounded-md bg-red-50 dark:bg-red-900/20 p-4">
-            <div className="text-sm text-red-700 dark:text-red-400">{updateProfileMutation.error.message}</div>
+            <div className="text-sm text-red-700 dark:text-red-400">
+              {updateProfileMutation.error.message}
+            </div>
           </div>
         )}
       </form>
@@ -426,5 +484,5 @@ export default function PersonalInfoSection() {
         />
       )}
     </div>
-  )
+  );
 }
