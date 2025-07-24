@@ -31,11 +31,11 @@ export default function PersonalInfoSection() {
   const [showLinksModal, setShowLinksModal] = useState(false);
   const [avatarHover, setAvatarHover] = useState(false);
   const { data } = useGetUserProfile(); // Assuming useUser hook fetches the current user data
-  const { userState, refetch: refetchUser } = useAuth();
-  const [user, setUser] = useState({ ...data?.user, ...userState });
+  const { data: userState, refetch: refetchUser } = useAuth();
+  const [user, setUser] = useState({ ...data?.user, ...userState?.user });
 
   useEffect(() => {
-    setUser({ ...data?.user, ...userState });
+    setUser({ ...data?.user, ...userState?.user });
   }, [data, userState]);
 
   const {
