@@ -17,14 +17,14 @@ function MobileNav({ isMenuOpen, setIsMenuOpen }) {
     logout: logoutMutation,
     refetchUser,
   } = useAuth();
-  useEffect(() => {
-    async function fetchUser() {
-      if (isAuthenticated) {
-        await refetchUser();
-      }
-    }
-    fetchUser();
-  }, [isAuthenticated, refetchUser]);
+  // useEffect(() => {
+  //   async function fetchUser() {
+  //     if (isAuthenticated) {
+  //       await refetchUser();
+  //     }
+  //   }
+  //   fetchUser();
+  // }, [isAuthenticated, refetchUser]);
   const handleLogout = () => {
     logoutMutation.mutate();
   };

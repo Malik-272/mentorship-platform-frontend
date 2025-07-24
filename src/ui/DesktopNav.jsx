@@ -17,7 +17,7 @@ function DesktopNav() {
     isAuthenticated,
     isLoading,
     logout: logoutMutation,
-    refetchUser,
+    setUser,
   } = useAuth();
   const handleLogout = () => {
     logoutMutation.mutate(undefined, {
@@ -29,14 +29,7 @@ function DesktopNav() {
       },
     });
   };
-  useEffect(() => {
-    async function fetchUser() {
-      if (isAuthenticated) {
-        await refetchUser();
-      }
-    }
-    fetchUser();
-  }, [isAuthenticated, refetchUser]);
+
   console.log("DesktopNav data:", data);
   return (
     <>

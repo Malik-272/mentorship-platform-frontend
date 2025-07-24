@@ -60,7 +60,7 @@ export default function UserProfilePage() {
     );
   }
 
-  const user = profileData?.user;
+  const user = { ...profileData?.user, ...currentUser?.user };
   console.log("user:", user);
 
   return (

@@ -93,7 +93,7 @@ export const AuthProvider = ({ children }) => {
 
     fetchData();
     // getUserStatus();
-  }, []);
+  }, [refetch]);
   const login = useMutation({
     mutationFn: authApi.login,
     onSuccess: async (data) => {
@@ -169,7 +169,7 @@ export const AuthProvider = ({ children }) => {
   return (
     <AuthContext.Provider
       value={{
-        data: state.user,
+        data: user,
         isLoading,
         isError,
         isAuthenticated: state.status !== "none",

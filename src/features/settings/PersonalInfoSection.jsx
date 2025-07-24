@@ -19,6 +19,7 @@ import {
 import { validationRules, countryCodes } from "../../data/authData";
 import FormField from "../Authenticaion/FormField";
 import LinksModal from "./LinksModal";
+import { useAuth } from "../../context/AuthContext";
 
 export default function PersonalInfoSection() {
   const {
@@ -29,7 +30,8 @@ export default function PersonalInfoSection() {
   } = useFetchUserLinks();
   const [showLinksModal, setShowLinksModal] = useState(false);
   const [avatarHover, setAvatarHover] = useState(false);
-  const { data, refetch: refetchUser } = useGetUserProfile(); // Assuming useUser hook fetches the current user data
+  const { data } = useGetUserProfile(); // Assuming useUser hook fetches the current user data
+  const { refetch: refetchUser } = useAuth();
   const [user, setUser] = useState(data?.user || {});
 
   useEffect(() => {
@@ -96,7 +98,7 @@ export default function PersonalInfoSection() {
       }
 
       await updateProfileMutation.mutateAsync(filteredData);
-      refetchUser();
+      await refetchUser();
       reset(data); // Reset form dirty state
     } catch (error) {
       console.error("Profile update failed:", error);
@@ -110,7 +112,7 @@ export default function PersonalInfoSection() {
       formData.append("image", file);
       try {
         await uploadAvatarMutation.mutateAsync(formData);
-        refetchUser();
+        await refetchUser();
       } catch (error) {
         console.error("Avatar upload failed:", error);
       }
@@ -120,7 +122,7 @@ export default function PersonalInfoSection() {
   const handleAvatarDelete = async () => {
     try {
       await deleteAvatarMutation.mutateAsync();
-      refetchUser();
+      await refetchUser();
     } catch (error) {
       console.error("Avatar delete failed:", error);
     }
