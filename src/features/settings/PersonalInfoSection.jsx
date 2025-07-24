@@ -89,6 +89,7 @@ export default function PersonalInfoSection() {
       formData.append("image", file)
       try {
         await uploadAvatarMutation.mutateAsync(formData)
+        refetchUser()
       } catch (error) {
         console.error("Avatar upload failed:", error)
       }
@@ -98,6 +99,7 @@ export default function PersonalInfoSection() {
   const handleAvatarDelete = async () => {
     try {
       await deleteAvatarMutation.mutateAsync()
+      refetchUser()
     } catch (error) {
       console.error("Avatar delete failed:", error)
     }
