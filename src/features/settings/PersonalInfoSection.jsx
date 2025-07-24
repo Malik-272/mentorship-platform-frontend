@@ -86,7 +86,7 @@ export default function PersonalInfoSection() {
     const file = event.target.files[0]
     if (file) {
       const formData = new FormData()
-      formData.append("avatar", file)
+      formData.append("image", file)
       try {
         await uploadAvatarMutation.mutateAsync(formData)
       } catch (error) {

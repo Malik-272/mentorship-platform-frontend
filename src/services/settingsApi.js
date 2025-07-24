@@ -1,3 +1,5 @@
+import js from "@eslint/js"
+
 const API_BASE_URL = "http://localhost:3000/api/v1"
 
 // Settings API functions
@@ -36,12 +38,13 @@ export const settingsApi = {
   },
 
   uploadAvatar: async (formData) => {
-    const response = await fetch(`${API_BASE_URL}/user/avatar`, {
-      method: "POST",
+    const response = await fetch(`${API_BASE_URL}/users/me/profile-picture`, {
+      method: "PUT",
       credentials: "include",
-      body: formData,
+      body: formData
     })
 
+    console.log("Avatar upload response:", response)
     if (!response.ok) {
       const error = await response.json()
       throw new Error(error.message || "Failed to upload avatar")
@@ -51,7 +54,7 @@ export const settingsApi = {
   },
 
   deleteAvatar: async () => {
-    const response = await fetch(`${API_BASE_URL}/user/avatar`, {
+    const response = await fetch(`${API_BASE_URL}/users/me/profile-picture`, {
       method: "DELETE",
       credentials: "include",
     })
