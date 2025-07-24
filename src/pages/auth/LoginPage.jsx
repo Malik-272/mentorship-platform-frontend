@@ -1,11 +1,10 @@
-import { set, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AlertCircle } from "lucide-react";
 
 import FormField from "../../features/Authenticaion/FormField";
 import Logo from "../../ui/Logo";
 import { useAuth } from "../../context/AuthContext";
-import { jwtDecode } from "jwt-decode";
 
 export default function LoginPage() {
   const location = useLocation();
@@ -19,6 +18,7 @@ export default function LoginPage() {
   } = useForm();
 
   const onSubmit = async (data) => {
+    console.log("Login data:", data)
     try {
       const result = await loginMutation.mutateAsync(data);
 

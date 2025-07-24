@@ -3,6 +3,7 @@ import { navigationData } from "../data/navigationData";
 
 import { LogOut } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { useEffect } from "react";
 
 function MobileNav({ isMenuOpen, setIsMenuOpen }) {
   const location = useLocation();
@@ -14,8 +15,16 @@ function MobileNav({ isMenuOpen, setIsMenuOpen }) {
     isAuthenticated,
     isLoading,
     logout: logoutMutation,
+    refetchUser,
   } = useAuth();
-
+  useEffect(() => {
+    async function fetchUser() {
+      if (isAuthenticated) {
+        await refetchUser();
+      }
+    }
+    fetchUser();
+  }, [isAuthenticated, refetchUser]);
   const handleLogout = () => {
     logoutMutation.mutate();
   };

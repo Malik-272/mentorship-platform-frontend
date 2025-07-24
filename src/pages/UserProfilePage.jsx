@@ -21,8 +21,8 @@ import ReportUserModal from "./ReportUserModal";
 import LoadingSpinner from "../ui/LoadingSpinner";
 import ErrorMessage from "../ui/ErrorMessage";
 import { useAuth } from "../context/AuthContext";
-import countries from "i18n-iso-countries";
-import en from "i18n-iso-countries/langs/en.json";
+import { countryCodes as country } from "../data/authData";
+
 export default function UserProfilePage() {
   const { id } = useParams();
   const { data: currentUser, isLoading: isLoadingCurrentUser } = useAuth();
@@ -164,8 +164,10 @@ function ProfileHeader({ user, isOwnProfile, onReport }) {
             <div className="w-32 h-32 rounded-full border-4 border-white dark:border-gray-800 overflow-hidden bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg">
               {user?.imageUrl ? (
                 <img
-                  src={user.imageUrl || "/placeholder.svg?height=128&width=128"}
-                  alt={user.name}
+                  src={
+                    user?.imageUrl || "/placeholder.svg?height=128&width=128"
+                  }
+                  alt={user?.name}
                   className="w-full h-full object-cover"
                 />
               ) : (
@@ -307,10 +309,9 @@ function ProfileInfo({ user }) {
 
 // Profile Sidebar Component
 function ProfileSidebar({ user }) {
-  countries.registerLocale(en);
-
-  const getCountryName = (code) =>
-    countries.getName(code, "en", { select: "official" }) || code;
+  const getCountryName = (countryCode) => {
+    return country[countryCode];
+  };
 
   return (
     <div className="space-y-6">

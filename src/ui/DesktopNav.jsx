@@ -4,6 +4,7 @@ import { navigationData } from "../data/navigationData";
 import { SimpleThemeToggle } from "./ThemeToggle";
 import { LogOut } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { useEffect } from "react";
 
 function DesktopNav() {
   const isActive = (path) => location.pathname === path;
@@ -16,6 +17,7 @@ function DesktopNav() {
     isAuthenticated,
     isLoading,
     logout: logoutMutation,
+    refetchUser,
   } = useAuth();
   const handleLogout = () => {
     logoutMutation.mutate(undefined, {
@@ -27,6 +29,14 @@ function DesktopNav() {
       },
     });
   };
+  useEffect(() => {
+    async function fetchUser() {
+      if (isAuthenticated) {
+        await refetchUser();
+      }
+    }
+    fetchUser();
+  }, [isAuthenticated, refetchUser]);
   console.log("DesktopNav data:", data);
   return (
     <>
