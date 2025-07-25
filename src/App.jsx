@@ -10,21 +10,26 @@ import {
 
 import { lazy } from "react";
 import { AuthProvider } from "./context/AuthContext";
+import CreateCommunityPage from "./pages/CreateCommunityPage";
 
 const AppLayout = lazy(() => import("./ui/AppLayout"));
 const LandingPage = lazy(() => import("./pages/LandingPage"));
 
 // Auth Pages
-const SignupPage = lazy(() => import("./pages/auth/SignUpPage"))
-const SignupConfirmationPage = lazy(() => import("./pages/auth/SignupConfirmationPage"))
-const LoginPage = lazy(() => import("./pages/auth/LoginPage"))
-const ForgotPasswordPage = lazy(() => import("./pages/auth/ForgotPasswordPage"))
-const ResetPasswordPage = lazy(() => import("./pages/auth/ResetPasswordPage"))
-const TwoFactorPage = lazy(() => import("./pages/auth/TwoFactorPage"))
-const ConfirmEmailPage = lazy(() => import("./pages/auth/ConfirmEmailPage"))
-const NotFoundPage = lazy(() => import("./pages/NotFoundPage"))
-const SettingsPage = lazy(() => import("./pages/SettingsPage"))
-const UserProfilePage = lazy(() => import("./pages/UserProfilePage"))
+const SignupPage = lazy(() => import("./pages/auth/SignUpPage"));
+const SignupConfirmationPage = lazy(() =>
+  import("./pages/auth/SignupConfirmationPage")
+);
+const LoginPage = lazy(() => import("./pages/auth/LoginPage"));
+const ForgotPasswordPage = lazy(() =>
+  import("./pages/auth/ForgotPasswordPage")
+);
+const ResetPasswordPage = lazy(() => import("./pages/auth/ResetPasswordPage"));
+const TwoFactorPage = lazy(() => import("./pages/auth/TwoFactorPage"));
+const ConfirmEmailPage = lazy(() => import("./pages/auth/ConfirmEmailPage"));
+const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
+const SettingsPage = lazy(() => import("./pages/SettingsPage"));
+const UserProfilePage = lazy(() => import("./pages/UserProfilePage"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -136,7 +141,6 @@ function App() {
                     </FullProtectedRoute>
                   }
                 />
-                <Route path="*" element={<NotFoundPage />} />
                 <Route
                   path="my/settings"
                   element={
@@ -145,6 +149,11 @@ function App() {
                     </FullProtectedRoute>
                   }
                 />
+                <Route
+                  path="/communities/create"
+                  element={<CreateCommunityPage />}
+                />
+                <Route path="*" element={<NotFoundPage />} />
               </Route>
             </Routes>
           </Router>

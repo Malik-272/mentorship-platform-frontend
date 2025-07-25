@@ -46,3 +46,20 @@ export function FullProtectedRoute({ children }) {
   if (status === "partial") return <Navigate to="/confirm-email" />;
   return children;
 }
+export function FullProtectedRouteWithRole({
+  children,
+  requiredRole,
+  fallback,
+}) {
+  const { status, isLoading, data } = useAuth();
+  if (isLoading)
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <LoadingSpinner size="lg" />
+      </div>
+    );
+  if (status === "none") return <Navigate to="/login" />;
+  if (status === "partial") return <Navigate to="/confirm-email" />;
+  if (status === "full" && data?.user?.role !== requiredRole) return fallback;
+  return children;
+}
