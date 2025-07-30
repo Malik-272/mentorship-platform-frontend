@@ -31,7 +31,7 @@ export default function PersonalInfoSection() {
   const [showLinksModal, setShowLinksModal] = useState(false);
   const [avatarHover, setAvatarHover] = useState(false);
   const { data } = useGetUserProfile(); // Assuming useUser hook fetches the current user data
-  const { data: userState, refetch: refetchUser } = useAuth();
+  const { data: userState, /*refetch: refetchUser*/ } = useAuth();
   const [user, setUser] = useState({ ...data?.user, ...userState?.user });
 
   useEffect(() => {
@@ -98,7 +98,7 @@ export default function PersonalInfoSection() {
       }
 
       await updateProfileMutation.mutateAsync(filteredData);
-      await refetchUser();
+      // await refetchUser();
       reset(data); // Reset form dirty state
     } catch (error) {
       console.error("Profile update failed:", error);
@@ -112,7 +112,7 @@ export default function PersonalInfoSection() {
       formData.append("image", file);
       try {
         await uploadAvatarMutation.mutateAsync(formData);
-        await refetchUser();
+        // await refetchUser();
       } catch (error) {
         console.error("Avatar upload failed:", error);
       }
@@ -122,7 +122,7 @@ export default function PersonalInfoSection() {
   const handleAvatarDelete = async () => {
     try {
       await deleteAvatarMutation.mutateAsync();
-      await refetchUser();
+      // await refetchUser();
     } catch (error) {
       console.error("Avatar delete failed:", error);
     }
@@ -237,10 +237,10 @@ export default function PersonalInfoSection() {
 
           {(uploadAvatarMutation.isPending ||
             deleteAvatarMutation.isPending) && (
-            <div className="mt-2 text-sm text-blue-600 dark:text-blue-400">
-              {uploadAvatarMutation.isPending ? "Uploading..." : "Deleting..."}
-            </div>
-          )}
+              <div className="mt-2 text-sm text-blue-600 dark:text-blue-400">
+                {uploadAvatarMutation.isPending ? "Uploading..." : "Deleting..."}
+              </div>
+            )}
         </div>
 
         {/* Form Fields */}

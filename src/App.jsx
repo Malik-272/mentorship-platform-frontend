@@ -10,6 +10,7 @@ import {
 
 import { lazy } from "react";
 import { AuthProvider } from "./context/AuthContext";
+import CommunityPage from "./pages/CommunityPage";
 
 const AppLayout = lazy(() => import("./ui/AppLayout"));
 const LandingPage = lazy(() => import("./pages/LandingPage"));
@@ -145,6 +146,7 @@ function App() {
                     </FullProtectedRoute>
                   }
                 />
+                <Route path="communities/:id" element={<CommunityPage />} />
               </Route>
             </Routes>
           </Router>
