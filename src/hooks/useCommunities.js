@@ -4,29 +4,6 @@ const API_BASE_URL = "http://localhost:3000/api/v1";
 
 // Communities API functions
 const communitiesApi = {
-  checkExistingCommunity: async (userId) => {
-    const response = await fetch(
-      `${API_BASE_URL}/communities/check-existing/${userId}`,
-      {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    if (!response.ok) {
-      if (response.status === 404) {
-        return null; // No existing community
-      }
-      const error = await response.json();
-      throw new Error(error.message || "Failed to check existing community");
-    }
-
-    return response.json();
-  },
-
   createCommunity: async (payload) => {
     const response = await fetch(`${API_BASE_URL}/communities`, {
       method: "POST",
@@ -63,7 +40,25 @@ const communitiesApi = {
 
     return response.json();
   },
+  getMyCommunity: async () => {
+    const response = await fetch(`${API_BASE_URL}/communities/my`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
+    if (!response.ok) {
+      if (response.status === 404) {
+        throw new Error("Community not found");
+      }
+      const error = await response.json();
+      throw new Error(error.message || "Failed to fetch community");
+    }
+
+    return response.json();
+  },
   updateCommunity: async ({ communityId, formData }) => {
     const response = await fetch(`${API_BASE_URL}/communities/${communityId}`, {
       method: "PUT",
@@ -132,18 +127,83 @@ const communitiesApi = {
 
     return response.json();
   },
+  getJoinRequests: async () => {
+    const response = await fetch(
+      `${API_BASE_URL}/communities/my/join-requests`,
+      {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to fetch join requests");
+    }
+
+    return response.json();
+  },
+  getMyMembers: async (communityId) => {
+    const response = await fetch(`${API_BASE_URL}/communities/my/members`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to fetch members");
+    }
+
+    return response.json();
+  },
+
+  respondToJoinRequest: async ({ requestId, action, communityId }) => {
+    const response = await fetch(
+      `${API_BASE_URL}/communities/my/join-requests`,
+      {
+        method: "PUT",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ requestId, action }),
+      }
+    );
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || `Failed to ${action} join request`);
+    }
+
+    return response.json();
+  },
+
+  removeMember: async ({ memberId }) => {
+    const response = await fetch(`${API_BASE_URL}/communities/my/members`, {
+      method: "DELETE",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: { memberId },
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to remove member");
+    }
+
+    return response.json();
+  },
 };
 
 // Custom hooks
-export const useCheckExistingCommunity = (userId) => {
-  return useQuery({
-    queryKey: ["existingCommunity", userId],
-    queryFn: () => communitiesApi.checkExistingCommunity(userId),
-    enabled: !!userId,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    cacheTime: 10 * 60 * 1000, // 10 minutes
-  });
-};
 
 export const useCreateCommunity = () => {
   const queryClient = useQueryClient();
@@ -171,7 +231,14 @@ export const useGetCommunity = (communityId) => {
     cacheTime: 10 * 60 * 1000, // 10 minutes
   });
 };
-
+export const useGetMyCommunity = () => {
+  return useQuery({
+    queryKey: ["myCommunity"],
+    queryFn: communitiesApi.getMyCommunity,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    cacheTime: 10 * 60 * 1000, // 10 minutes
+  });
+};
 export const useUpdateCommunity = () => {
   const queryClient = useQueryClient();
 
@@ -189,52 +256,112 @@ export const useUpdateCommunity = () => {
   });
 };
 
-export const useDeleteCommunity = () => {
+// export const useDeleteCommunity = () => {
+//   const queryClient = useQueryClient();
+
+//   return useMutation({
+//     mutationFn: communitiesApi.deleteCommunity,
+//     onSuccess: (data, communityId) => {
+//       // Remove from cache
+//       queryClient.removeQueries(["community", communityId]);
+//       // Invalidate related queries
+//       queryClient.invalidateQueries(["communities"]);
+//       queryClient.invalidateQueries(["existingCommunity"]);
+//     },
+//     onError: (error) => {
+//       console.error("Delete community error:", error);
+//     },
+//   });
+// };
+
+// export const useJoinCommunity = () => {
+//   const queryClient = useQueryClient();
+
+//   return useMutation({
+//     mutationFn: communitiesApi.joinCommunity,
+//     onSuccess: (data, communityId) => {
+//       // Invalidate community data to refetch member count
+//       queryClient.invalidateQueries(["community", communityId]);
+//       queryClient.invalidateQueries(["communities"]);
+//     },
+//     onError: (error) => {
+//       console.error("Join community error:", error);
+//     },
+//   });
+// };
+export const useGetCommunityJoinRequests = () => {
+  return useQuery({
+    queryKey: ["communityJoinRequests"],
+    queryFn: communitiesApi.getJoinRequests,
+    staleTime: 30 * 1000, // 30 seconds
+    cacheTime: 5 * 60 * 1000, // 5 minutes
+  });
+};
+// export const useLeaveCommunity = () => {
+//   const queryClient = useQueryClient();
+
+//   return useMutation({
+//     mutationFn: communitiesApi.leaveCommunity,
+//     onSuccess: (data, communityId) => {
+//       // Invalidate community data to refetch member count
+//       queryClient.invalidateQueries(["community", communityId]);
+//       queryClient.invalidateQueries(["communities"]);
+//     },
+//     onError: (error) => {
+//       console.error("Leave community error:", error);
+//     },
+//   });
+// };
+export const useGetMyCommunityMembers = (communityId) => {
+  return useQuery({
+    queryKey: ["communityMembers", communityId],
+    queryFn: () => communitiesApi.getMyMembers(communityId),
+    enabled: !!communityId,
+    staleTime: 2 * 60 * 1000, // 2 minutes
+    cacheTime: 10 * 60 * 1000, // 10 minutes
+  });
+};
+export const useRespondToJoinRequest = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: communitiesApi.deleteCommunity,
-    onSuccess: (data, communityId) => {
-      // Remove from cache
-      queryClient.removeQueries(["community", communityId]);
-      // Invalidate related queries
-      queryClient.invalidateQueries(["communities"]);
-      queryClient.invalidateQueries(["existingCommunity"]);
+    mutationFn: communitiesApi.respondToJoinRequest,
+    onSuccess: (data, variables) => {
+      // Invalidate join requests to refetch
+      queryClient.invalidateQueries([
+        "communityJoinRequests",
+        variables.communityId,
+      ]);
+      // If accepted, invalidate members to refetch
+      if (variables.action === "accept") {
+        queryClient.invalidateQueries([
+          "communityMembers",
+          variables.communityId,
+        ]);
+      }
     },
     onError: (error) => {
-      console.error("Delete community error:", error);
+      console.error("Respond to join request error:", error);
     },
   });
 };
 
-export const useJoinCommunity = () => {
+export const useRemoveMember = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: communitiesApi.joinCommunity,
-    onSuccess: (data, communityId) => {
-      // Invalidate community data to refetch member count
-      queryClient.invalidateQueries(["community", communityId]);
-      queryClient.invalidateQueries(["communities"]);
+    mutationFn: communitiesApi.removeMember,
+    onSuccess: (data, variables) => {
+      // Invalidate members to refetch
+      queryClient.invalidateQueries([
+        "communityMembers",
+        variables.communityId,
+      ]);
+      // Invalidate community data to update member count
+      queryClient.invalidateQueries(["community", variables.communityId]);
     },
     onError: (error) => {
-      console.error("Join community error:", error);
-    },
-  });
-};
-
-export const useLeaveCommunity = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: communitiesApi.leaveCommunity,
-    onSuccess: (data, communityId) => {
-      // Invalidate community data to refetch member count
-      queryClient.invalidateQueries(["community", communityId]);
-      queryClient.invalidateQueries(["communities"]);
-    },
-    onError: (error) => {
-      console.error("Leave community error:", error);
+      console.error("Remove member error:", error);
     },
   });
 };

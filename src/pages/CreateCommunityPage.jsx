@@ -14,10 +14,7 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
-import {
-  useCreateCommunity,
-  useCheckExistingCommunity,
-} from "../hooks/useCommunities";
+import { useCreateCommunity, useGetMyCommunity } from "../hooks/useCommunities";
 import FormField from "../features/Authenticaion/FormField";
 import LoadingSpinner from "../ui/LoadingSpinner";
 import {
@@ -26,25 +23,14 @@ import {
 } from "../ui/ProtectedRoute";
 
 export default function CreateCommunityPage() {
-  return (
-    <FullProtectedRouteWithRole
-      requiredRole="COMMUNITY_MANAGER"
-      fallback={<CommunityManagerOnlyFallback />}
-    >
-      <CreateCommunityContent />
-    </FullProtectedRouteWithRole>
-  );
-}
-
-function CreateCommunityContent() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [imagePreview, setImagePreview] = useState(null);
   const [imageFile, setImageFile] = useState(null);
 
   // Check if user already has a community
-  // const { data: existingCommunity, isLoading: checkingExisting } =
-  //   useCheckExistingCommunity(user?.id);
+  const { data: existingCommunity, isLoading: checkingExisting } =
+    useGetMyCommunity();
 
   const {
     register,
@@ -63,11 +49,11 @@ function CreateCommunityContent() {
   const createCommunityMutation = useCreateCommunity();
 
   // Redirect if user already has a community
-  // useEffect(() => {
-  //   if (existingCommunity && !checkingExisting) {
-  //     navigate(`/communities/${existingCommunity.id}`);
-  //   }
-  // }, [existingCommunity, checkingExisting, navigate]);
+  useEffect(() => {
+    if (existingCommunity.community && !checkingExisting) {
+      navigate(`/communities/${existingCommunity?.community.id}`);
+    }
+  }, [existingCommunity, checkingExisting, navigate]);
 
   // Auto-generate community ID from name
   const watchName = watch("name");
@@ -127,19 +113,19 @@ function CreateCommunityContent() {
       // Use the correct mutation if it expects JSON
       const result = await createCommunityMutation.mutateAsync(payload);
 
-      // navigate(`/communities/${result.community.id}`);
+      navigate(`/communities/${result.community.id}`);
     } catch (error) {
       console.error("Community creation failed:", error);
     }
   };
 
-  // if (checkingExisting) {
-  //   return (
-  //     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-  //       <LoadingSpinner size="lg" text="Checking existing communities..." />
-  //     </div>
-  //   );
-  // }
+  if (checkingExisting) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <LoadingSpinner size="lg" text="Checking existing communities..." />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
@@ -420,38 +406,6 @@ function CreateCommunityContent() {
             </p>
           </div>
         </div>
-      </div>
-    </div>
-  );
-}
-
-function CommunityManagerOnlyFallback() {
-  const { data, isAuthenticated } = useAuth();
-  const navigate = useNavigate();
-
-  return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center px-4">
-      <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 text-center">
-        <div className="w-16 h-16 bg-red-100 dark:bg-red-900 rounded-full flex items-center justify-center mx-auto mb-6">
-          <AlertCircle className="w-8 h-8 text-red-600 dark:text-red-400" />
-        </div>
-
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-          Access Restricted
-        </h2>
-
-        <p className="text-gray-600 dark:text-gray-300 mb-8">
-          This page is only accessible to Community Managers.
-          {data?.user?.role &&
-            ` You are currently logged in as a ${data?.user.role}.`}
-        </p>
-
-        <button
-          onClick={() => navigate("/dashboard")}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors"
-        >
-          Go to Dashboard
-        </button>
       </div>
     </div>
   );

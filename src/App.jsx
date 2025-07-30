@@ -4,6 +4,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ThemeProvider } from "./context/ThemeContext";
 import {
   FullProtectedRoute,
+  FullProtectedRouteWithRole,
   PartialAuthRoute,
   PublicOnlyRoute,
 } from "./ui/ProtectedRoute";
@@ -11,7 +12,8 @@ import {
 import { lazy } from "react";
 import { AuthProvider } from "./context/AuthContext";
 import CreateCommunityPage from "./pages/CreateCommunityPage";
-
+import ManageCommunityPage from "./pages/ManageCommunityPage";
+import CommunityManagerOnlyFallback from "./ui/CommunityManagerOnlyFallback";
 const AppLayout = lazy(() => import("./ui/AppLayout"));
 const LandingPage = lazy(() => import("./pages/LandingPage"));
 
@@ -151,7 +153,25 @@ function App() {
                 />
                 <Route
                   path="/communities/create"
-                  element={<CreateCommunityPage />}
+                  element={
+                    <FullProtectedRouteWithRole
+                      requiredRole="COMMUNITY_MANAGER"
+                      fallback={<CommunityManagerOnlyFallback />}
+                    >
+                      <CreateCommunityPage />
+                    </FullProtectedRouteWithRole>
+                  }
+                />
+                <Route
+                  path="/communities/my/manage"
+                  element={
+                    <FullProtectedRouteWithRole
+                      requiredRole="COMMUNITY_MANAGER"
+                      fallback={<CommunityManagerOnlyFallback />}
+                    >
+                      <ManageCommunityPage />
+                    </FullProtectedRouteWithRole>
+                  }
                 />
                 <Route path="*" element={<NotFoundPage />} />
               </Route>
