@@ -38,7 +38,7 @@ const ManageCommunityPage = () => {
   console.log("Existing Community:", existingCommunity);
   // Redirect to community creation if no community exists
   useEffect(() => {
-    if (!checkingCommunity && !communityError && !existingCommunity.community) {
+    if (!checkingCommunity && !existingCommunity?.community) {
       navigate("/communities/create");
     }
   }, [checkingCommunity, communityError, existingCommunity, navigate]);

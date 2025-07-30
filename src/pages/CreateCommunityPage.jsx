@@ -50,7 +50,7 @@ export default function CreateCommunityPage() {
 
   // Redirect if user already has a community
   useEffect(() => {
-    if (existingCommunity.community && !checkingExisting) {
+    if (existingCommunity?.community && !checkingExisting) {
       navigate(`/communities/${existingCommunity?.community.id}`);
     }
   }, [existingCommunity, checkingExisting, navigate]);
