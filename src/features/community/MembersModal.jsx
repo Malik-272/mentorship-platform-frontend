@@ -11,16 +11,16 @@ export default function MembersModal({ isOpen, onClose, communityId, communityNa
     membersData?.members?.filter(
       (member) =>
         member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        member.username.toLowerCase().includes(searchTerm.toLowerCase()),
+        member.id.toLowerCase().includes(searchTerm.toLowerCase()),
     ) || []
 
   const getRoleIcon = (role) => {
     switch (role) {
-      case "community_manager":
+      case "COMMUNITY_MANAGER":
         return <Crown className="w-4 h-4 text-purple-600 dark:text-purple-400" />
-      case "mentor":
+      case "MENTOR":
         return <Shield className="w-4 h-4 text-green-600 dark:text-green-400" />
-      case "mentee":
+      case "MENTEE":
         return <User className="w-4 h-4 text-blue-600 dark:text-blue-400" />
       default:
         return <User className="w-4 h-4 text-gray-600 dark:text-gray-400" />
@@ -29,11 +29,11 @@ export default function MembersModal({ isOpen, onClose, communityId, communityNa
 
   const getRoleLabel = (role) => {
     switch (role) {
-      case "community_manager":
+      case "COMMUNITY_MANAGER":
         return "Manager"
-      case "mentor":
+      case "MENTOR":
         return "Mentor"
-      case "mentee":
+      case "MENTEE":
         return "Mentee"
       default:
         return role
@@ -140,7 +140,7 @@ export default function MembersModal({ isOpen, onClose, communityId, communityNa
                         {getRoleIcon(member.role)}
                       </div>
                       <div className="flex items-center space-x-2 mt-1">
-                        <div className="text-xs text-gray-500 dark:text-gray-400 truncate">@{member.username}</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400 truncate">@{member.id}</div>
                         <span className="text-xs text-gray-400">•</span>
                         <div className="text-xs text-gray-500 dark:text-gray-400">{getRoleLabel(member.role)}</div>
                       </div>
@@ -149,7 +149,7 @@ export default function MembersModal({ isOpen, onClose, communityId, communityNa
                     {/* Join Date */}
                     <div className="text-xs text-gray-400 dark:text-gray-500 flex-shrink-0">
                       Joined{" "}
-                      {new Date(member.joined_at).toLocaleDateString("en-US", {
+                      {new Date(member.joinedAt).toLocaleDateString("en-US", {
                         month: "short",
                         year: "numeric",
                       })}
@@ -164,7 +164,7 @@ export default function MembersModal({ isOpen, onClose, communityId, communityNa
           <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
             <div className="flex justify-between items-center text-sm text-gray-500 dark:text-gray-400">
               <span>
-                {filteredMembers.length} of {membersData?.total || 0} members
+                {filteredMembers.length} of {membersData?.members?.length || 0} members
                 {searchTerm && " (filtered)"}
               </span>
               <button

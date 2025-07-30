@@ -11,7 +11,7 @@ import ErrorMessage from "../ui/ErrorMessage"
 
 export default function CommunityPage() {
   const { id } = useParams()
-  const { data: currentUser } = useAuth()
+  const { user: currentUser } = useAuth()
   const [showMembersModal, setShowMembersModal] = useState(false)
   const [showVerificationModal, setShowVerificationModal] = useState(false)
   const [showLeaveConfirm, setShowLeaveConfirm] = useState(false)
@@ -48,17 +48,14 @@ export default function CommunityPage() {
   }
 
   const community = communityData?.community
-  const user = currentUser?.user
-  // const userMembership = communityData?.userMembership
-  const isManager = user?.role ===
-    "COMMUNITY_MANAGER" && community?.managerId === user?.id
+  const userMembership = communityData?.userMembership
+  const isManager = currentUser?.role ===
+    "COMMUNITY_MANAGER" && community?.managerId === currentUser?.id
   const isAdmin = currentUser?.role === "ADMIN"
-  // const isMember = !!userMembership
-  const isMember = !isAdmin
+  const isMember = !!userMembership
   const canViewMembers = isMember || isManager || isAdmin
   const canRequestJoin =
-    (user?.role === "MENTEE" || user?.role === "MENTOR") && !isMember   // No pending request
-  // (currentUser?.role === "mentee" || currentUser?.role === "mentor") && !isMember && !userMembership?.status // No pending request
+    (currentUser?.role === "MENTEE" || currentUser?.role === "MENTOR") && !isMember && !userMembership?.status // No pending request
 
   const handleJoinRequest = async () => {
     try {
@@ -95,7 +92,7 @@ export default function CommunityPage() {
           <div className="lg:col-span-1">
             <CommunitySidebar
               community={community}
-              // userMembership={userMembership}
+              userMembership={userMembership}
               canViewMembers={canViewMembers}
               canRequestJoin={canRequestJoin}
               isMember={isMember}
@@ -293,7 +290,7 @@ function CommunityInfo({ community }) {
 // Community Sidebar Component
 function CommunitySidebar({
   community,
-  // userMembership,
+  userMembership,
   canViewMembers,
   canRequestJoin,
   isMember,
@@ -308,30 +305,30 @@ function CommunitySidebar({
   requestToJoinMutation,
   leaveCommunityMutation,
 }) {
-  // const getMembershipStatus = () => {
-  //   if (!userMembership) return null
+  const getMembershipStatus = () => {
+    if (!userMembership) return null
 
-  //   switch (userMembership.status) {
-  //     case "pending":
-  //       return (
-  //         <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3">
-  //           <div className="text-sm text-yellow-800 dark:text-yellow-200 font-medium">Request Pending</div>
-  //           <div className="text-xs text-yellow-600 dark:text-yellow-300 mt-1">Your join request is being reviewed</div>
-  //         </div>
-  //       )
-  //     case "approved":
-  //       return null // Will show joined button instead
-  //     case "rejected":
-  //       return (
-  //         <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3">
-  //           <div className="text-sm text-red-800 dark:text-red-200 font-medium">Request Rejected</div>
-  //           <div className="text-xs text-red-600 dark:text-red-300 mt-1">Your join request was not approved</div>
-  //         </div>
-  //       )
-  //     default:
-  //       return null
-  //   }
-  // }
+    switch (userMembership.status) {
+      case "pending":
+        return (
+          <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3">
+            <div className="text-sm text-yellow-800 dark:text-yellow-200 font-medium">Request Pending</div>
+            <div className="text-xs text-yellow-600 dark:text-yellow-300 mt-1">Your join request is being reviewed</div>
+          </div>
+        )
+      case "approved":
+        return null // Will show joined button instead
+      case "rejected":
+        return (
+          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3">
+            <div className="text-sm text-red-800 dark:text-red-200 font-medium">Request Rejected</div>
+            <div className="text-xs text-red-600 dark:text-red-300 mt-1">Your join request was not approved</div>
+          </div>
+        )
+      default:
+        return null
+    }
+  }
 
   return (
     <div className="space-y-6">
