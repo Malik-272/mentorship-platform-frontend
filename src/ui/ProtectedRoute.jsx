@@ -48,7 +48,7 @@ export function FullProtectedRoute({ children }) {
 }
 export function FullProtectedRouteWithRole({
   children,
-  requiredRole,
+  roles = [],
   fallback,
 }) {
   const { status, isLoading, data } = useAuth();
@@ -60,6 +60,6 @@ export function FullProtectedRouteWithRole({
     );
   if (status === "none") return <Navigate to="/login" />;
   if (status === "partial") return <Navigate to="/confirm-email" />;
-  if (status === "full" && data?.user?.role !== requiredRole) return fallback;
+  if (status === "full" && !roles.includes(data?.user?.role)) return fallback;
   return children;
 }
