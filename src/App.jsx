@@ -155,7 +155,7 @@ function App() {
                   path="/communities/create"
                   element={
                     <FullProtectedRouteWithRole
-                      requiredRole="COMMUNITY_MANAGER"
+                      roles={["COMMUNITY_MANAGER"]}
                       fallback={<CommunityManagerOnlyFallback />}
                     >
                       <CreateCommunityPage />
@@ -166,7 +166,7 @@ function App() {
                   path="/communities/my/manage"
                   element={
                     <FullProtectedRouteWithRole
-                      requiredRole="COMMUNITY_MANAGER"
+                      roles={["COMMUNITY_MANAGER"]}
                       fallback={<CommunityManagerOnlyFallback />}
                     >
                       <ManageCommunityPage />
