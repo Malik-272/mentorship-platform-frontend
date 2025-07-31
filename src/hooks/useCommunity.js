@@ -45,7 +45,7 @@ const communityApi = {
   },
 
   requestToJoin: async (communityId) => {
-    const response = await fetch(`${API_BASE_URL}/communities/${communityId}/join-request`, {
+    const response = await fetch(`${API_BASE_URL}/communities/${communityId}/join-requests`, {
       method: "POST",
       credentials: "include",
       headers: {
