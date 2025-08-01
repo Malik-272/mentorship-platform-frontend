@@ -177,12 +177,12 @@ function App() {
                 <Route
                   path="/communities/my/settings"
                   element={
-                    // <FullProtectedRouteWithRole
-                    //   roles={["COMMUNITY_MANAGER"]}
-                    //   fallback={<CommunityManagerOnlyFallback />}
-                    // >
-                    <CommunitySettingsPage />
-                    // </FullProtectedRouteWithRole>
+                    <FullProtectedRouteWithRole
+                      roles={["COMMUNITY_MANAGER"]}
+                      fallback={<CommunityManagerOnlyFallback />}
+                    >
+                      <CommunitySettingsPage />
+                    </FullProtectedRouteWithRole>
                   }
                 />
                 <Route path="*" element={<NotFoundPage />} />
