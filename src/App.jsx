@@ -14,6 +14,7 @@ import { AuthProvider } from "./context/AuthContext";
 import CreateCommunityPage from "./pages/CreateCommunityPage";
 import ManageCommunityPage from "./pages/ManageCommunityPage";
 import CommunityManagerOnlyFallback from "./ui/CommunityManagerOnlyFallback";
+import CommunitySettingsPage from "./pages/CommunitySettingsPage";
 const AppLayout = lazy(() => import("./ui/AppLayout"));
 const LandingPage = lazy(() => import("./pages/LandingPage"));
 
@@ -171,6 +172,17 @@ function App() {
                     >
                       <ManageCommunityPage />
                     </FullProtectedRouteWithRole>
+                  }
+                />
+                <Route
+                  path="/communities/my/settings"
+                  element={
+                    // <FullProtectedRouteWithRole
+                    //   roles={["COMMUNITY_MANAGER"]}
+                    //   fallback={<CommunityManagerOnlyFallback />}
+                    // >
+                    <CommunitySettingsPage />
+                    // </FullProtectedRouteWithRole>
                   }
                 />
                 <Route path="*" element={<NotFoundPage />} />

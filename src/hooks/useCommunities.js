@@ -59,11 +59,15 @@ const communitiesApi = {
 
     return response.json();
   },
-  updateCommunity: async ({ communityId, formData }) => {
-    const response = await fetch(`${API_BASE_URL}/communities/${communityId}`, {
-      method: "PUT",
+  updateCommunity: async (payload) => {
+    console.log("payload:         ", JSON.stringify(payload));
+    const response = await fetch(`${API_BASE_URL}/communities/my`, {
+      method: "PATCH",
       credentials: "include",
-      body: formData,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
     });
 
     if (!response.ok) {
@@ -73,7 +77,6 @@ const communitiesApi = {
 
     return response.json();
   },
-
   deleteCommunity: async (communityId) => {
     const response = await fetch(`${API_BASE_URL}/communities/${communityId}`, {
       method: "DELETE",
