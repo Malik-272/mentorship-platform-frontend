@@ -15,6 +15,8 @@ import CreateCommunityPage from "./pages/CreateCommunityPage";
 import ManageCommunityPage from "./pages/ManageCommunityPage";
 import CommunityManagerOnlyFallback from "./ui/CommunityManagerOnlyFallback";
 import CommunitySettingsPage from "./pages/CommunitySettingsPage";
+import UnauthorizedAccessFallback from "./ui/UnauthorizedAccessFallback";
+import UserCommunitiesPage from "./pages/UserCommunitiesPage";
 const AppLayout = lazy(() => import("./ui/AppLayout"));
 const LandingPage = lazy(() => import("./pages/LandingPage"));
 
@@ -150,6 +152,17 @@ function App() {
                     <FullProtectedRoute>
                       <SettingsPage />
                     </FullProtectedRoute>
+                  }
+                />
+                <Route
+                  path="my/communities"
+                  element={
+                    <FullProtectedRouteWithRole
+                      roles={["MENTEE", "MENTOR"]}
+                      fallback={<UnauthorizedAccessFallback />}
+                    >
+                      <UserCommunitiesPage />
+                    </FullProtectedRouteWithRole>
                   }
                 />
                 <Route
