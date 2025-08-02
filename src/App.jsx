@@ -4,13 +4,19 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ThemeProvider } from "./context/ThemeContext";
 import {
   FullProtectedRoute,
+  FullProtectedRouteWithRole,
   PartialAuthRoute,
   PublicOnlyRoute,
 } from "./ui/ProtectedRoute";
 
 import { lazy } from "react";
 import { AuthProvider } from "./context/AuthContext";
-
+import CreateCommunityPage from "./pages/CreateCommunityPage";
+import ManageCommunityPage from "./pages/ManageCommunityPage";
+import CommunityManagerOnlyFallback from "./ui/CommunityManagerOnlyFallback";
+import CommunitySettingsPage from "./pages/CommunitySettingsPage";
+import UnauthorizedAccessFallback from "./ui/UnauthorizedAccessFallback";
+import UserCommunitiesPage from "./pages/UserCommunitiesPage";
 const AppLayout = lazy(() => import("./ui/AppLayout"));
 const LandingPage = lazy(() => import("./pages/LandingPage"));
 
@@ -137,7 +143,6 @@ function App() {
                     </FullProtectedRoute>
                   }
                 />
-                <Route path="*" element={<NotFoundPage />} />
                 <Route
                   path="my/settings"
                   element={
@@ -146,7 +151,51 @@ function App() {
                     </FullProtectedRoute>
                   }
                 />
-                <Route path="communities/:id" element={<CommunityPage />} />
+                <Route
+                  path="my/communities"
+                  element={
+                    <FullProtectedRouteWithRole
+                      roles={["MENTEE", "MENTOR"]}
+                      fallback={<UnauthorizedAccessFallback />}
+                    >
+                      <UserCommunitiesPage />
+                    </FullProtectedRouteWithRole>
+                  }
+                />
+                <Route
+                  path="/communities/create"
+                  element={
+                    <FullProtectedRouteWithRole
+                      roles={["COMMUNITY_MANAGER"]}
+                      fallback={<CommunityManagerOnlyFallback />}
+                    >
+                      <CreateCommunityPage />
+                    </FullProtectedRouteWithRole>
+                  }
+                />
+                <Route
+                  path="/communities/my/manage"
+                  element={
+                    <FullProtectedRouteWithRole
+                      roles={["COMMUNITY_MANAGER"]}
+                      fallback={<CommunityManagerOnlyFallback />}
+                    >
+                      <ManageCommunityPage />
+                    </FullProtectedRouteWithRole>
+                  }
+                />
+                <Route
+                  path="/communities/my/settings"
+                  element={
+                    <FullProtectedRouteWithRole
+                      roles={["COMMUNITY_MANAGER"]}
+                      fallback={<CommunityManagerOnlyFallback />}
+                    >
+                      <CommunitySettingsPage />
+                    </FullProtectedRouteWithRole>
+                  }
+                />
+                <Route path="*" element={<NotFoundPage />} />
               </Route>
             </Routes>
           </Router>
