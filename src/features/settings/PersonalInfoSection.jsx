@@ -9,6 +9,7 @@ import {
   Plus,
   Tag,
 } from "lucide-react";
+import moment from "moment-timezone";
 import {
   useUpdateProfile,
   useUploadAvatar,
@@ -53,6 +54,7 @@ export default function PersonalInfoSection() {
       bio: user?.bio || "",
       country: user?.country || "",
       skills: user?.skills || [],
+      timezone: user?.timezone || moment.tz.guess(),
     },
   });
 
@@ -71,6 +73,7 @@ export default function PersonalInfoSection() {
         bio: user?.bio || "",
         country: user?.country || "",
         skills: user?.skills || [],
+        timezone: user?.timezone || moment.tz.guess(),
       });
     }
   }, [user, reset]);
@@ -82,7 +85,7 @@ export default function PersonalInfoSection() {
   const onSubmit = async (data) => {
     console.log("Submitting profile data:", data);
     try {
-      const allowedFields = ["name", "headline", "bio", "country", "skills"];
+      const allowedFields = ["name", "headline", "bio", "country", "skills", "timezone"];
       const filteredData = {};
 
       allowedFields.forEach((field) => {
@@ -308,6 +311,24 @@ export default function PersonalInfoSection() {
               ))}
             </select>
           </FormField>
+          <FormField
+            label="Timezone"
+            name="timezone"
+            register={register}
+            error={errors.timezone}
+          >
+            <select
+              {...register("timezone")}
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+            >
+              {moment.tz.names().map((tz) => (
+                <option key={tz} value={tz}>
+                  {tz}
+                </option>
+              ))}
+            </select>
+          </FormField>
+
 
           <div className="md:col-span-2">
             <FormField
