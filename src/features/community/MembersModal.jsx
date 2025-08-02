@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { X, Users, Search, Crown, Shield, User } from "lucide-react"
-import { useGetCommunityMembers } from "../../hooks/useCommunity"
+import { useGetCommunityMembers } from "../../hooks/useCommunities"
 import LoadingSpinner from "../../ui/LoadingSpinner"
 
 export default function MembersModal({ isOpen, onClose, communityId, communityName }) {

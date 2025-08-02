@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { useAuth } from "../context/AuthContext"
-import { useCancelRequestToJoin, useGetCommunity, useLeaveCommunity, useRequestToJoin } from "../hooks/useCommunity"
+import { useCancelRequestToJoin, useGetCommunity, useLeaveCommunity, useRequestToJoin } from "../hooks/useCommunities"
 import MembersModal from "../features/community/MembersModal"
 import VerificationHelpModal from "../features/community/VerificationHelpModal"
 import CommunitySidebar from "../features/community/CommunitySidebar"

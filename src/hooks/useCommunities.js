@@ -91,45 +91,47 @@ const communitiesApi = {
     return response.json();
   },
 
-  joinCommunity: async (communityId) => {
-    const response = await fetch(
-      `${API_BASE_URL}/communities/${communityId}/join`,
-      {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || "Failed to join community");
-    }
-
-    return response.json();
-  },
-
   leaveCommunity: async (communityId) => {
+    const response = await fetch(`${API_BASE_URL}/communities/my/memberships`, {
+      method: "DELETE",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        "id": `${communityId}`
+      })
+    })
+
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.message || "Failed to leave community")
+    }
+
+    return { "success": true, "message": "Left community successfully" }
+  },
+
+  respondToJoinRequest: async ({ requestId, action, communityId }) => {
     const response = await fetch(
-      `${API_BASE_URL}/communities/${communityId}/leave`,
+      `${API_BASE_URL}/communities/my/join-requests`,
       {
-        method: "POST",
+        method: "PUT",
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
+        body: JSON.stringify({ requestId, action }),
       }
     );
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || "Failed to leave community");
+      throw new Error(error.message || `Failed to ${action} join request`);
     }
 
     return response.json();
   },
+
   getJoinRequests: async () => {
     const response = await fetch(
       `${API_BASE_URL}/communities/my/join-requests`,
@@ -166,25 +168,21 @@ const communitiesApi = {
     return response.json();
   },
 
-  respondToJoinRequest: async ({ requestId, action, communityId }) => {
-    const response = await fetch(
-      `${API_BASE_URL}/communities/my/join-requests`,
-      {
-        method: "PUT",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ requestId, action }),
-      }
-    );
+  getCommunityMembers: async (communityId) => {
+    const response = await fetch(`${API_BASE_URL}/communities/${communityId}/members`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
 
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || `Failed to ${action} join request`);
+      const error = await response.json()
+      throw new Error(error.message || "Failed to fetch community members")
     }
 
-    return response.json();
+    return response.json()
   },
 
   removeMember: async ({ memberId }) => {
@@ -203,6 +201,40 @@ const communitiesApi = {
     }
 
     return response.json();
+  },
+
+  requestToJoin: async (communityId) => {
+    const response = await fetch(`${API_BASE_URL}/communities/${communityId}/join-requests`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.message || "Failed to send join request")
+    }
+
+    return response.json()
+  },
+
+  cancelRequestToJoin: async (communityId) => {
+    const response = await fetch(`${API_BASE_URL}/communities/${communityId}/join-requests`, {
+      method: "DELETE",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.message || "Failed to send join request")
+    }
+
+    return { "success": true, "message": "Request to join community cancelled" }
   },
 };
 
@@ -324,6 +356,37 @@ export const useGetMyCommunityMembers = (communityId) => {
     cacheTime: 10 * 60 * 1000, // 10 minutes
   });
 };
+
+export const useRemoveMember = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: communitiesApi.removeMember,
+    onSuccess: (data, variables) => {
+      // Invalidate members to refetch
+      queryClient.invalidateQueries([
+        "communityMembers",
+        variables.communityId,
+      ]);
+      // Invalidate community data to update member count
+      queryClient.invalidateQueries(["community", variables.communityId]);
+    },
+    onError: (error) => {
+      console.error("Remove member error:", error);
+    },
+  });
+};
+
+export const useGetCommunityMembers = (communityId, enabled = true) => {
+  return useQuery({
+    queryKey: ["communityMembers", communityId],
+    queryFn: () => communitiesApi.getCommunityMembers(communityId),
+    enabled: !!communityId && enabled,
+    staleTime: 2 * 60 * 1000, // 2 minutes
+    cacheTime: 5 * 60 * 1000, // 5 minutes
+  })
+}
+
 export const useRespondToJoinRequest = () => {
   const queryClient = useQueryClient();
 
@@ -349,22 +412,53 @@ export const useRespondToJoinRequest = () => {
   });
 };
 
-export const useRemoveMember = () => {
-  const queryClient = useQueryClient();
+export const useRequestToJoin = () => {
+  const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: communitiesApi.removeMember,
-    onSuccess: (data, variables) => {
-      // Invalidate members to refetch
-      queryClient.invalidateQueries([
-        "communityMembers",
-        variables.communityId,
-      ]);
-      // Invalidate community data to update member count
-      queryClient.invalidateQueries(["community", variables.communityId]);
+    mutationFn: communitiesApi.requestToJoin,
+    onSuccess: (data, communityId) => {
+      // Update the community cache to reflect the new membership status
+      queryClient.setQueryData(["community", communityId], (oldData) => ({
+        ...oldData,
+        userMembership: { status: "pending" },
+      }))
     },
-    onError: (error) => {
-      console.error("Remove member error:", error);
+  })
+}
+
+export const useCancelRequestToJoin = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: communitiesApi.cancelRequestToJoin,
+    onSuccess: (data, communityId) => {
+      // Update the community cache to reflect the new membership status
+      queryClient.setQueryData(["community", communityId], (oldData) => ({
+        ...oldData,
+        userMembership: null,
+      }))
+    }
+  })
+}
+
+export const useLeaveCommunity = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: communitiesApi.leaveCommunity,
+    onSuccess: (data, communityId) => {
+      // Update the community cache
+      queryClient.setQueryData(["community", communityId], (oldData) => ({
+        ...oldData,
+        userMembership: null,
+        community: {
+          ...oldData.community,
+          member_count: Math.max((oldData.community.member_count || 1) - 1, 0),
+        },
+      }))
+      // Invalidate members list
+      queryClient.invalidateQueries(["communityMembers", communityId])
     },
-  });
-};
+  })
+}

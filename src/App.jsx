@@ -195,6 +195,12 @@ function App() {
                     </FullProtectedRouteWithRole>
                   }
                 />
+                <Route
+                  path="/communities/:id"
+                  element={
+                    <CommunityPage />
+                  }
+                />
                 <Route path="*" element={<NotFoundPage />} />
               </Route>
             </Routes>
