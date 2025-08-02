@@ -1,7 +1,7 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { useAuth } from "../context/AuthContext"
-import { useGetCommunity, useLeaveCommunity, useRequestToJoin } from "../hooks/useCommunity"
+import { useCancelRequestToJoin, useGetCommunity, useLeaveCommunity, useRequestToJoin } from "../hooks/useCommunity"
 import MembersModal from "../features/community/MembersModal"
 import VerificationHelpModal from "../features/community/VerificationHelpModal"
 import CommunitySidebar from "../features/community/CommunitySidebar"
@@ -17,25 +17,40 @@ export default function CommunityPage() {
   const [showVerificationModal, setShowVerificationModal] = useState(false)
   const [showLeaveConfirm, setShowLeaveConfirm] = useState(false)
 
-  const { data: communityData, isLoading, error } = useGetCommunity(id)
-  // const joinCommunityMutation = useJoinCommunity()
+  const [message, setMessage] = useState(null);
+
+  const { data: communityData, isLoading, error, refetch: RefetchCommunity } = useGetCommunity(id)
   const leaveCommunityMutation = useLeaveCommunity()
   const requestToJoinMutation = useRequestToJoin()
+  const cancelJoinRequestMutation = useCancelRequestToJoin()
 
+  // Clear message after 3 seconds
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => {
+        setMessage(null)
+      }, 3000)
+      return () => clearTimeout(timer)
+    }
+  }, [message])
+
+  // Reset all mutation states when component mounts or when starting new action
+  const resetAllMutations = () => {
+    requestToJoinMutation.reset()
+    cancelJoinRequestMutation.reset()
+    leaveCommunityMutation.reset()
+  }
 
   if (isLoading) {
     return (
-      // <ProtectedRoute requireAuth={true} requireVerification={true}>
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <LoadingSpinner size="lg" text="Loading community..." />
       </div>
-      // </ProtectedRoute>
     )
   }
 
   if (error) {
     return (
-      // <ProtectedRoute requireAuth={true} requireVerification={true}>
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <ErrorMessage
           title="Community Not Found"
@@ -44,7 +59,6 @@ export default function CommunityPage() {
           onRetry={() => window.location.reload()}
         />
       </div>
-      // </ProtectedRoute>
     )
   }
 
@@ -54,29 +68,103 @@ export default function CommunityPage() {
   const isAdmin = user?.role === "ADMIN"
   const isManager = (user?.role === "COMMUNITY_MANAGER" && community?.managerId === user?.id) || isAdmin
   const isMember = userMembership === "MEMBER"
+  const isPending = userMembership === "PENDING"
   const canViewMembers = isMember || isManager || isAdmin
-  const canRequestJoin = (user?.role === "MENTEE" || user?.role === "MENTOR") && !isMember && !(userMembership === "PENDING")
+  const canRequestJoin = (user?.role === "MENTEE" || user?.role === "MENTOR") && !isMember && !isPending
 
+  const handleCancelJoinRequest = async () => {
+    try {
+      // Reset all mutations and clear any existing messages
+      resetAllMutations()
+      setMessage(null)
+
+      await cancelJoinRequestMutation.mutateAsync(community.id)
+      setMessage({
+        type: "success",
+        text: "✓ Request canceled successfully",
+      })
+      await RefetchCommunity()
+    } catch (error) {
+      console.error("Cancel join request failed:", error)
+      setMessage({
+        type: "error",
+        text: error.message || "Failed to cancel request",
+      })
+    }
+  }
 
   const handleJoinRequest = async () => {
     try {
+      // Reset all mutations and clear any existing messages
+      resetAllMutations()
+      setMessage(null)
+
       await requestToJoinMutation.mutateAsync(community.id)
+      setMessage({
+        type: "success",
+        text: "✓ Join request sent successfully!",
+      })
+      await RefetchCommunity()
     } catch (error) {
       console.error("Join request failed:", error)
+      setMessage({
+        type: "error",
+        text: error.message || "Failed to send join request",
+      })
     }
   }
 
   const handleLeave = async () => {
     try {
+      // Reset all mutations and clear any existing messages
+      resetAllMutations()
+      setMessage(null)
+
       await leaveCommunityMutation.mutateAsync(community.id)
       setShowLeaveConfirm(false)
+      setMessage({
+        type: "success",
+        text: "✓ Left community successfully",
+      })
+      RefetchCommunity()
     } catch (error) {
       console.error("Leave community failed:", error)
+      setMessage({
+        type: "error",
+        text: error.message || "Failed to leave community",
+      })
     }
   }
 
+  // const handleCancelJoinRequest = async () => {
+  //   try {
+  //     await cancelJoinRequestMutation.mutateAsync(community.id)
+  //     RefetchCommunity()
+  //   } catch (error) {
+  //     console.error("Cancel join request failed:", error)
+  //   }
+  // }
+
+  // const handleJoinRequest = async () => {
+  //   try {
+  //     await requestToJoinMutation.mutateAsync(community.id)
+  //     RefetchCommunity()
+  //   } catch (error) {
+  //     console.error("Join request failed:", error)
+  //   }
+  // }
+
+  // const handleLeave = async () => {
+  //   try {
+  //     await leaveCommunityMutation.mutateAsync(community.id)
+  //     RefetchCommunity()
+  //     setShowLeaveConfirm(false)
+  //   } catch (error) {
+  //     console.error("Leave community failed:", error)
+  //   }
+  // }
+
   return (
-    // <ProtectedRoute requireAuth={true} requireVerification={true}>
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <CommunityHeader
@@ -97,15 +185,19 @@ export default function CommunityPage() {
               canViewMembers={canViewMembers}
               canRequestJoin={canRequestJoin}
               isMember={isMember}
+              isPending={isPending}
               isManager={isManager}
               isAdmin={isAdmin}
               showLeaveConfirm={showLeaveConfirm}
+              message={message}
               onShowMembers={() => setShowMembersModal(true)}
               onJoinRequest={handleJoinRequest}
+              onCancelJoinRequest={handleCancelJoinRequest}
               onShowLeaveConfirm={() => setShowLeaveConfirm(true)}
               onCancelLeave={() => setShowLeaveConfirm(false)}
               onConfirmLeave={handleLeave}
               requestToJoinMutation={requestToJoinMutation}
+              cancelJoinRequestMutation={cancelJoinRequestMutation}
               leaveCommunityMutation={leaveCommunityMutation}
             />
           </div>
@@ -127,14 +219,5 @@ export default function CommunityPage() {
         <VerificationHelpModal isOpen={showVerificationModal} onClose={() => setShowVerificationModal(false)} />
       )}
     </div>
-    // </ProtectedRoute>
   )
 }
-
-// Community Header Component
-
-// Community Info Component
-
-
-// Community Sidebar Component
-

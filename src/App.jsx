@@ -10,7 +10,6 @@ import {
 
 import { lazy } from "react";
 import { AuthProvider } from "./context/AuthContext";
-import CommunityPage from "./pages/CommunityPage";
 
 const AppLayout = lazy(() => import("./ui/AppLayout"));
 const LandingPage = lazy(() => import("./pages/LandingPage"));
@@ -26,6 +25,7 @@ const ConfirmEmailPage = lazy(() => import("./pages/auth/ConfirmEmailPage"))
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage"))
 const SettingsPage = lazy(() => import("./pages/SettingsPage"))
 const UserProfilePage = lazy(() => import("./pages/UserProfilePage"))
+const CommunityPage = lazy(() => import("./pages/CommunityPage"))
 
 const queryClient = new QueryClient({
   defaultOptions: {

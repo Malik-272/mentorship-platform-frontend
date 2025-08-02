@@ -61,9 +61,9 @@ const communityApi = {
     return response.json()
   },
 
-  joinCommunity: async (communityId) => {
-    const response = await fetch(`${API_BASE_URL}/communities/${communityId}/join`, {
-      method: "POST",
+  cancelRequestToJoin: async (communityId) => {
+    const response = await fetch(`${API_BASE_URL}/communities/${communityId}/join-requests`, {
+      method: "DELETE",
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
@@ -72,19 +72,22 @@ const communityApi = {
 
     if (!response.ok) {
       const error = await response.json()
-      throw new Error(error.message || "Failed to join community")
+      throw new Error(error.message || "Failed to send join request")
     }
 
-    return response.json()
+    return { "success": true, "message": "Request to join community cancelled" }
   },
 
   leaveCommunity: async (communityId) => {
-    const response = await fetch(`${API_BASE_URL}/communities/${communityId}/leave`, {
-      method: "POST",
+    const response = await fetch(`${API_BASE_URL}/communities/my/memberships`, {
+      method: "DELETE",
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
+      body: JSON.stringify({
+        "id": `${communityId}`
+      })
     })
 
     if (!response.ok) {
@@ -92,7 +95,7 @@ const communityApi = {
       throw new Error(error.message || "Failed to leave community")
     }
 
-    return response.json()
+    return { "success": true, "message": "Left community successfully" }
   },
 }
 
@@ -132,24 +135,18 @@ export const useRequestToJoin = () => {
   })
 }
 
-export const useJoinCommunity = () => {
+export const useCancelRequestToJoin = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: communityApi.joinCommunity,
+    mutationFn: communityApi.cancelRequestToJoin,
     onSuccess: (data, communityId) => {
-      // Update the community cache
+      // Update the community cache to reflect the new membership status
       queryClient.setQueryData(["community", communityId], (oldData) => ({
         ...oldData,
-        userMembership: { status: "approved" },
-        community: {
-          ...oldData.community,
-          member_count: (oldData.community.member_count || 0) + 1,
-        },
+        userMembership: null,
       }))
-      // Invalidate members list
-      queryClient.invalidateQueries(["communityMembers", communityId])
-    },
+    }
   })
 }
 
