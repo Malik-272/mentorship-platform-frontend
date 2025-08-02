@@ -173,4 +173,19 @@ export const settingsApi = {
 
     return response.json();
   },
+  getAppConnectionsStates: async() => {
+    const response = await fetch(`${API_BASE_URL}/auth/app-connections`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+    
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to fetch App connections state");
+    }
+    return response.json();
+  },
 };

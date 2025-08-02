@@ -2,6 +2,7 @@ import { useState } from "react"
 import { useAuth } from "../context/AuthContext"
 // import ProtectedRoute from "../ui/ProtectedRoute"
 import SettingsSidebar from "../features/settings/SettingsSidebar"
+import ConnectionsSection from "../features/settings/ConnectionsSection"
 import PersonalInfoSection from "../features/settings/PersonalInfoSection"
 import SecuritySection from "../features/settings/SecuritySection"
 import { useGetUserProfile } from "../hooks/useProfile"
@@ -13,15 +14,17 @@ export default function SettingsPage() {
   // console.log(isLoading, data)
 
   const renderContent = () => {
-    switch (activeSection) {
-      case "personal":
-        return <PersonalInfoSection />
-      case "security":
-        return <SecuritySection user={data?.user} />
-      default:
-        return <PersonalInfoSection />
-    }
+  switch (activeSection) {
+    case "personal":
+      return <PersonalInfoSection />;
+    case "security":
+      return <SecuritySection user={data?.user} />;
+    case "connections":
+      return <ConnectionsSection />;
+    default:
+      return <PersonalInfoSection />;
   }
+};
 
   return (
     // <ProtectedRoute requireAuth={true} requireVerification={true} requiredRole={["mentee", "mentor"]}>
