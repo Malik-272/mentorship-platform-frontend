@@ -122,9 +122,9 @@ export default function MembersModal({ isOpen, onClose, communityId, communityNa
                   >
                     {/* Avatar */}
                     <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white text-sm font-medium mr-3 flex-shrink-0">
-                      {member.avatar ? (
+                      {member.imageUrl ? (
                         <img
-                          src={member.avatar || "/placeholder.svg"}
+                          src={member.imageUrl || "/placeholder.svg"}
                           alt={member.name}
                           className="w-full h-full object-cover"
                         />
