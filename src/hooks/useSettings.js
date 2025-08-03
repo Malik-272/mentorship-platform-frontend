@@ -9,6 +9,7 @@ export const useGetUserProfile = () => {
     queryFn: settingsApi.getUserProfile,
   })
 }
+
 export const useUpdateProfile = () => {
   const queryClient = useQueryClient()
 
@@ -57,6 +58,13 @@ export const useFetchUserLinks = () => {
   return useQuery({
     queryKey: ["userLinks"],
     queryFn: settingsApi.getUserLinks,
+  })
+}
+
+export const useGetAppConnectionsStates = () => {
+  return useQuery({
+    queryKey: ["appConnections"],
+    queryFn: settingsApi.getAppConnectionsStates,
   })
 }
 
