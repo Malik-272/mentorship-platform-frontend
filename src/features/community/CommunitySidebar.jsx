@@ -7,6 +7,7 @@ export default function CommunitySidebar({
   canRequestJoin,
   isMember,
   isPending,
+  isCommunityManager,
   isManager,
   isAdmin,
   showLeaveConfirm,
@@ -67,7 +68,7 @@ export default function CommunitySidebar({
       </div>
 
       {/* Action Buttons */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+      {!isCommunityManager && <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <div className="space-y-4">
           {/* Join Request Button - Show when user can request to join */}
           {canRequestJoin && (
@@ -178,7 +179,7 @@ export default function CommunitySidebar({
             </div>
           </div>
         )}
-      </div>
+      </div>}
     </div>
   )
 }

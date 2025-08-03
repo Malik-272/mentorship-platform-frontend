@@ -67,6 +67,7 @@ export default function CommunityPage() {
   const userMembership = communityData?.membershipStatus
   const isAdmin = user?.role === "ADMIN"
   const isManager = (user?.role === "COMMUNITY_MANAGER" && community?.managerId === user?.id) || isAdmin
+  const isCommunityManager = user?.role === "COMMUNITY_MANAGER"
   const isMember = userMembership === "MEMBER"
   const isPending = userMembership === "PENDING"
   const canViewMembers = isMember || isManager || isAdmin
@@ -184,6 +185,7 @@ export default function CommunityPage() {
               userMembership={userMembership}
               canViewMembers={canViewMembers}
               canRequestJoin={canRequestJoin}
+              isCommunityManager={isCommunityManager}
               isMember={isMember}
               isPending={isPending}
               isManager={isManager}
