@@ -17,21 +17,26 @@ import CommunityManagerOnlyFallback from "./ui/CommunityManagerOnlyFallback";
 import CommunitySettingsPage from "./pages/CommunitySettingsPage";
 import UnauthorizedAccessFallback from "./ui/UnauthorizedAccessFallback";
 import UserCommunitiesPage from "./pages/UserCommunitiesPage";
+import CreateServicePage from "./pages/CreateServicePage";
 const AppLayout = lazy(() => import("./ui/AppLayout"));
 const LandingPage = lazy(() => import("./pages/LandingPage"));
 
 // Auth Pages
-const SignupPage = lazy(() => import("./pages/auth/SignUpPage"))
-const SignupConfirmationPage = lazy(() => import("./pages/auth/SignupConfirmationPage"))
-const LoginPage = lazy(() => import("./pages/auth/LoginPage"))
-const ForgotPasswordPage = lazy(() => import("./pages/auth/ForgotPasswordPage"))
-const ResetPasswordPage = lazy(() => import("./pages/auth/ResetPasswordPage"))
-const TwoFactorPage = lazy(() => import("./pages/auth/TwoFactorPage"))
-const ConfirmEmailPage = lazy(() => import("./pages/auth/ConfirmEmailPage"))
-const NotFoundPage = lazy(() => import("./pages/NotFoundPage"))
-const SettingsPage = lazy(() => import("./pages/SettingsPage"))
-const UserProfilePage = lazy(() => import("./pages/UserProfilePage"))
-const CommunityPage = lazy(() => import("./pages/CommunityPage"))
+const SignupPage = lazy(() => import("./pages/auth/SignUpPage"));
+const SignupConfirmationPage = lazy(() =>
+  import("./pages/auth/SignupConfirmationPage")
+);
+const LoginPage = lazy(() => import("./pages/auth/LoginPage"));
+const ForgotPasswordPage = lazy(() =>
+  import("./pages/auth/ForgotPasswordPage")
+);
+const ResetPasswordPage = lazy(() => import("./pages/auth/ResetPasswordPage"));
+const TwoFactorPage = lazy(() => import("./pages/auth/TwoFactorPage"));
+const ConfirmEmailPage = lazy(() => import("./pages/auth/ConfirmEmailPage"));
+const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
+const SettingsPage = lazy(() => import("./pages/SettingsPage"));
+const UserProfilePage = lazy(() => import("./pages/UserProfilePage"));
+const CommunityPage = lazy(() => import("./pages/CommunityPage"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -195,10 +200,16 @@ function App() {
                     </FullProtectedRouteWithRole>
                   }
                 />
+                <Route path="/communities/:id" element={<CommunityPage />} />
                 <Route
-                  path="/communities/:id"
+                  path="/services/create"
                   element={
-                    <CommunityPage />
+                    <FullProtectedRouteWithRole
+                      roles={["MENTOR"]}
+                      fallback={<UnauthorizedAccessFallback />}
+                    >
+                      <CreateServicePage />
+                    </FullProtectedRouteWithRole>
                   }
                 />
                 <Route path="*" element={<NotFoundPage />} />
