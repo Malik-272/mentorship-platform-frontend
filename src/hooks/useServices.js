@@ -22,8 +22,8 @@ const servicesApi = {
     return response.json();
   },
 
-  getMyServices: async () => {
-    const response = await fetch(`${API_BASE_URL}/services/my`, {
+  getMyService: async (serviceId) => {
+    const response = await fetch(`${API_BASE_URL}/services/my/${serviceId}`, {
       method: "GET",
       credentials: "include",
       headers: {
@@ -111,10 +111,10 @@ export const useCreateService = () => {
   });
 };
 
-export const useGetMyServices = () => {
+export const useGetMyService = (serviceId) => {
   return useQuery({
-    queryKey: ["myServices"],
-    queryFn: servicesApi.getMyServices,
+    queryKey: ["myService", serviceId],
+    queryFn: () => servicesApi.getMyService(serviceId),
     staleTime: 5 * 60 * 1000, // 5 minutes
     cacheTime: 10 * 60 * 1000, // 10 minutes
   });

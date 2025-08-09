@@ -20,7 +20,7 @@ import { useCreateService } from "../hooks/useServices";
 import LoadingSpinner from "../ui/LoadingSpinner";
 import FormField from "../features/Authenticaion/FormField";
 import WeeklyAvailability from "../features/services/WeeklyAvailability";
-import DateExceptions from "../features/services/DataExceptions";
+import DateExceptions from "../features/services/DateExceptions";
 
 const SERVICE_TYPES = [
   { value: "career_guidance", label: "Career Guidance" },
@@ -129,7 +129,7 @@ export default function CreateServicePage() {
       };
 
       await createServiceMutation.mutateAsync(serviceData);
-      navigate("/services/my");
+      navigate(`/my/services/${data.serviceId}`);
     } catch (error) {
       console.error("Service creation failed:", error);
     }

@@ -18,6 +18,7 @@ import CommunitySettingsPage from "./pages/CommunitySettingsPage";
 import UnauthorizedAccessFallback from "./ui/UnauthorizedAccessFallback";
 import UserCommunitiesPage from "./pages/UserCommunitiesPage";
 import CreateServicePage from "./pages/CreateServicePage";
+import ServiceManagementPage from "./pages/ServiceManagementPage";
 const AppLayout = lazy(() => import("./ui/AppLayout"));
 const LandingPage = lazy(() => import("./pages/LandingPage"));
 
@@ -209,6 +210,17 @@ function App() {
                       fallback={<UnauthorizedAccessFallback />}
                     >
                       <CreateServicePage />
+                    </FullProtectedRouteWithRole>
+                  }
+                />
+                <Route
+                  path="/my/services/:id"
+                  element={
+                    <FullProtectedRouteWithRole
+                      roles={["MENTOR"]}
+                      fallback={<UnauthorizedAccessFallback />}
+                    >
+                      <ServiceManagementPage />
                     </FullProtectedRouteWithRole>
                   }
                 />
