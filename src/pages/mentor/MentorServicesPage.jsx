@@ -27,6 +27,7 @@ export default function MentorServicesPage() {
     error: servicesError,
     refetch: refetchServices,
   } = useGetMentorServices()
+  console.log("services: ", services)
 
 
   // Authentication and authorization checks
@@ -251,9 +252,9 @@ export default function MentorServicesPage() {
                     >
                       <Calendar className="w-4 h-4" />
                       <span>Session Requests</span>
-                      {service.pendingRequests > 0 && (
+                      {service.pendingRequestsCount > 0 && (
                         <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                          {service.pendingRequests > 99 ? "99+" : service.pendingRequests}
+                          {service.pendingRequestsCount > 99 ? "99+" : service.pendingRequestsCount}
                         </span>
                       )}
                     </Link>
@@ -270,13 +271,13 @@ export default function MentorServicesPage() {
                 </div>
 
                 {/* Pending Requests Alert */}
-                {service.pendingRequests > 0 && (
+                {service.pendingRequestsCount > 0 && (
                   <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
                     <div className="flex items-center text-amber-800 dark:text-amber-200">
                       <AlertCircle className="w-4 h-4 mr-2" />
                       <span className="text-sm font-medium">
-                        You have {service.pendingRequests} pending session request
-                        {service.pendingRequests !== 1 ? "s" : ""} for this service
+                        You have {service.pendingRequestsCount} pending session request
+                        {service.pendingRequestsCount !== 1 ? "s" : ""} for this service
                       </span>
                     </div>
                   </div>
