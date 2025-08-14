@@ -14,70 +14,9 @@ import SessionRequestModal from "../../features/mentor/SessionRequestModal"
 import AcceptConfirmationModal from "../../features/mentor/AcceptConfirmationModal"
 import RejectReasonModal from "../../features/mentor/RejectReasonModal"
 import CancelConfirmationModal from "../../features/mentor/CancelConfirmationModal"
+import { STATUS_CONFIG } from "../../data/MentorData"
+import { formatDateTime, formatDuration } from "../../utils/formating"
 
-const STATUS_CONFIG = {
-  PENDING: {
-    title: "Pending Requests",
-    color: "orange",
-    bgColor: "bg-orange-50 dark:bg-orange-900/20",
-    borderColor: "border-orange-200 dark:border-orange-800",
-    textColor: "text-orange-700 dark:text-orange-300",
-    icon: Clock,
-  },
-  ACCEPTED: {
-    title: "Accepted Sessions",
-    color: "green",
-    bgColor: "bg-green-50 dark:bg-green-900/20",
-    borderColor: "border-green-200 dark:border-green-800",
-    textColor: "text-green-700 dark:text-green-300",
-    icon: Check,
-  },
-  REJECTED: {
-    title: "Rejected Requests",
-    color: "red",
-    bgColor: "bg-red-50 dark:bg-red-900/20",
-    borderColor: "border-red-200 dark:border-red-800",
-    textColor: "text-red-700 dark:text-red-300",
-    icon: X,
-  },
-  CANCELED: {
-    title: "Canceled Sessions",
-    color: "gray",
-    bgColor: "bg-gray-50 dark:bg-gray-900/20",
-    borderColor: "border-gray-200 dark:border-gray-800",
-    textColor: "text-gray-700 dark:text-gray-300",
-    icon: Ban,
-  },
-}
-
-const formatDateTime = (date, time) => {
-  const dateObj = new Date(`${date}T${time}`)
-  return {
-    date: dateObj.toLocaleDateString("en-US", {
-      weekday: "short",
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    }),
-    time: dateObj.toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    }),
-  }
-}
-
-const formatDuration = (minutes) => {
-  if (minutes < 60) {
-    return `${minutes}min`
-  }
-  const hours = Math.floor(minutes / 60)
-  const remainingMinutes = minutes % 60
-  if (remainingMinutes === 0) {
-    return `${hours}h`
-  }
-  return `${hours}h ${remainingMinutes}min`
-}
 
 const canCancelSession = (date, startTime) => {
   const sessionDateTime = new Date(`${date}T${startTime}`)
