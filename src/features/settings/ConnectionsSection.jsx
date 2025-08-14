@@ -11,10 +11,12 @@ const PROMPT = "consent";
 const GOOGLE_AUTH_URL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=${SCOPE}&access_type=${ACCESS_TYPE}&prompt=${PROMPT}`;
 
 export default function ConnectionsSection() {
-  const {
-    refetch,
-    data: connectionState,
-  } = useGetAppConnectionsStates();
+  const { refetch, data: connectionState } = useGetAppConnectionsStates();
+
+  const googleConnection = connectionState?.appConnections?.GoogleCalendar;
+  const isConnected = googleConnection?.connected;
+  const connectedEmail = googleConnection?.email;
+
   return (
     <div className="p-6">
       <div className="mb-8">
@@ -48,24 +50,26 @@ export default function ConnectionsSection() {
               )}
             </div>
           </div>
-          {
-            connectionState?.appConnections?.GoogleCalendar ?
-              <a
-                onClick={() => { alert("It's too late my mate :)") }}
-                href={''}
-                className="ml-4 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md text-sm font-medium transition-colors"
-              >
-                Disconnect
-              </a>
-              :
-              <a
-                onClick={refetch}
-                href={GOOGLE_AUTH_URL}
-                className="ml-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm font-medium transition-colors"
-              >
-                Connect
-              </a>
-          }
+
+          {isConnected ? (
+            <a
+              onClick={() => {
+                alert("It's too late my mate :)");
+              }}
+              href={""}
+              className="ml-4 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md text-sm font-medium transition-colors"
+            >
+              Disconnect
+            </a>
+          ) : (
+            <a
+              onClick={refetch}
+              href={GOOGLE_AUTH_URL}
+              className="ml-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm font-medium transition-colors"
+            >
+              Connect
+            </a>
+          )}
         </div>
       </div>
     </div>
