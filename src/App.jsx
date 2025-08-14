@@ -17,6 +17,8 @@ import CommunityManagerOnlyFallback from "./ui/CommunityManagerOnlyFallback";
 import CommunitySettingsPage from "./pages/CommunitySettingsPage";
 import UnauthorizedAccessFallback from "./ui/UnauthorizedAccessFallback";
 import UserCommunitiesPage from "./pages/UserCommunitiesPage";
+import MentorServicesPage from "./pages/mentor/MentorServicesPage";
+import SessionRequestsPage from "./pages/mentor/SessionRequestsPage";
 const AppLayout = lazy(() => import("./ui/AppLayout"));
 const LandingPage = lazy(() => import("./pages/LandingPage"));
 
@@ -199,6 +201,22 @@ function App() {
                   path="/communities/:id"
                   element={
                     <CommunityPage />
+                  }
+                />
+                <Route
+                  path="my/services"
+                  element={
+                    <FullProtectedRoute>
+                      <MentorServicesPage />
+                    </FullProtectedRoute>
+                  }
+                />
+                <Route
+                  path="my/services/:id/session-requests"
+                  element={
+                    <FullProtectedRoute>
+                      <SessionRequestsPage />
+                    </FullProtectedRoute>
                   }
                 />
                 <Route path="*" element={<NotFoundPage />} />
