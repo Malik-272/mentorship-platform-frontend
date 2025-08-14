@@ -29,7 +29,6 @@ export default function UserProfilePage() {
   const [showReportModal, setShowReportModal] = useState(false);
 
   const { data: profileData, isLoading, error } = useGetUserProfile(id);
-
   const isOwnProfile = currentUser?.user?.id === id;
 
   if (isLoading || isLoadingCurrentUser) {
@@ -60,7 +59,9 @@ export default function UserProfilePage() {
     );
   }
 
-  const user = { ...profileData?.user, ...currentUser?.user };
+  // BUGGGG
+  // const user = { ...profileData?.user, ...currentUser?.user };
+  const user = { ...profileData?.user }
   console.log("user:", user);
 
   return (
@@ -363,10 +364,10 @@ function ProfileSidebar({ user }) {
               <div className="text-sm text-gray-500 dark:text-gray-400">
                 {user?.dateJoined
                   ? new Date(user.dateJoined).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })
                   : "Unknown"}
               </div>
             </div>
