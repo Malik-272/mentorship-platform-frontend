@@ -13,7 +13,7 @@ const GOOGLE_AUTH_URL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=
 export default function ConnectionsSection() {
   const {
     refetch,
-    data : connectionState,
+    data: connectionState,
   } = useGetAppConnectionsStates();
   return (
     <div className="p-6">
@@ -40,22 +40,22 @@ export default function ConnectionsSection() {
             </div>
           </div>
           {
-           connectionState?.appConnections?.GoogleCalendar ?
-            <a
-          onClick={() => {alert("It's too late my mate :)")}}
-            href={''}
-            className="ml-4 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md text-sm font-medium transition-colors"
-          >
-            Disconnect
-          </a>
-          :
-            <a
-          onClick={refetch}
-            href={GOOGLE_AUTH_URL}
-            className="ml-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm font-medium transition-colors"
-          >
-            Connect
-          </a>
+            connectionState?.appConnections?.GoogleCalendar ?
+              <a
+                onClick={() => { alert("It's too late my mate :)") }}
+                href={''}
+                className="ml-4 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md text-sm font-medium transition-colors"
+              >
+                Disconnect
+              </a>
+              :
+              <a
+                onClick={refetch}
+                href={GOOGLE_AUTH_URL}
+                className="ml-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm font-medium transition-colors"
+              >
+                Connect
+              </a>
           }
         </div>
       </div>
