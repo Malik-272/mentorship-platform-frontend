@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Link, Navigate, useParams } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 import { Calendar, Clock, User, MessageSquare, Check, X, AlertTriangle, Users, ArrowLeft, Eye, Ban } from "lucide-react"
 import {
   useGetServiceSessionRequests,
@@ -16,7 +16,6 @@ import RejectReasonModal from "../../features/mentor/RejectReasonModal"
 import CancelConfirmationModal from "../../features/mentor/CancelConfirmationModal"
 import { STATUS_CONFIG } from "../../data/MentorData"
 import { formatDateTime, formatDuration } from "../../utils/formating"
-
 
 const canCancelSession = (date, startTime) => {
   const sessionDateTime = new Date(`${date}T${startTime}`)
@@ -271,6 +270,7 @@ export default function SessionRequestsPage() {
       await acceptMutation.mutateAsync({
         serviceId,
         requestId: selectedRequest.id,
+        agenda: selectedRequest.agenda,
       })
       setShowAcceptModal(false)
       setSelectedRequest(null)
@@ -284,7 +284,7 @@ export default function SessionRequestsPage() {
       await rejectMutation.mutateAsync({
         serviceId,
         requestId: selectedRequest.id,
-        reason,
+        rejectionReason: reason,
       })
       setShowRejectModal(false)
       setSelectedRequest(null)
@@ -298,7 +298,7 @@ export default function SessionRequestsPage() {
       await cancelMutation.mutateAsync({
         serviceId,
         requestId: selectedRequest.id,
-        reason,
+        rejectionReason: reason,
       })
       setShowCancelModal(false)
       setSelectedRequest(null)

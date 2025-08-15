@@ -1,15 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-const API_BASE_URL = "http://localhost:3000/api/v1";
+const API_BASE_URL = "http://localhost:3000/api/v1"
 
 // Mock API functions - replace with actual API calls
 const sessionRequestsApi = {
   getServiceSessionRequests: async (id) => {
     const response = await fetch(`${API_BASE_URL}/services/my/${id}/session-requests`, {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      credentials: 'include',
+      credentials: "include",
     })
 
     if (!response.ok) {
@@ -18,28 +18,29 @@ const sessionRequestsApi = {
 
     const data = await response.json()
 
-    return data;
+    return data
   },
 
-  acceptSessionRequest: async ({ serviceId, requestId }) => {
-    console.log("Accepting session request:", { serviceId, requestId })
-    // Mock API call
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    return { success: true, message: "Session request accepted successfully" }
-  },
+  updateSessionRequest: async ({ serviceId, requestId, status, agenda, rejectionReason }) => {
+    const response = await fetch(`${API_BASE_URL}/services/my/${serviceId}/session-requests/${requestId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        status,
+        ...(agenda && { agenda }),
+        ...(rejectionReason && { rejectionReason }),
+      }),
+    })
 
-  rejectSessionRequest: async ({ serviceId, requestId, reason }) => {
-    console.log("Rejecting session request:", { serviceId, requestId, reason })
-    // Mock API call
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    return { success: true, message: "Session request rejected successfully" }
-  },
+    if (!response.ok) {
+      throw new Error(`Failed to update session request: ${response.status} ${response.statusText}`)
+    }
 
-  cancelSessionRequest: async ({ serviceId, requestId, reason }) => {
-    console.log("Canceling session request:", { serviceId, requestId, reason })
-    // Mock API call
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    return { success: true, message: "Session canceled successfully" }
+    const data = await response.json()
+    return data
   },
 }
 
@@ -57,7 +58,13 @@ export const useAcceptSessionRequest = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: sessionRequestsApi.acceptSessionRequest,
+    mutationFn: ({ serviceId, requestId, agenda }) =>
+      sessionRequestsApi.updateSessionRequest({
+        serviceId,
+        requestId,
+        status: "accepted",
+        agenda,
+      }),
     onSuccess: (data, variables) => {
       // Invalidate and refetch session requests
       queryClient.invalidateQueries({
@@ -78,7 +85,13 @@ export const useRejectSessionRequest = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: sessionRequestsApi.rejectSessionRequest,
+    mutationFn: ({ serviceId, requestId, rejectionReason }) =>
+      sessionRequestsApi.updateSessionRequest({
+        serviceId,
+        requestId,
+        status: "rejected",
+        rejectionReason,
+      }),
     onSuccess: (data, variables) => {
       // Invalidate and refetch session requests
       queryClient.invalidateQueries({
@@ -99,7 +112,13 @@ export const useCancelSessionRequest = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: sessionRequestsApi.cancelSessionRequest,
+    mutationFn: ({ serviceId, requestId, rejectionReason }) =>
+      sessionRequestsApi.updateSessionRequest({
+        serviceId,
+        requestId,
+        status: "cancelled",
+        rejectionReason,
+      }),
     onSuccess: (data, variables) => {
       // Invalidate and refetch session requests
       queryClient.invalidateQueries({
