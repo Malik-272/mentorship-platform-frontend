@@ -1,21 +1,21 @@
 import { X, User, Calendar, Clock, Users, MessageSquare, ExternalLink, Check, Ban } from "lucide-react"
-
-const formatDateTime = (date, time) => {
-  const dateObj = new Date(`${date}T${time}`)
-  return {
-    date: dateObj.toLocaleDateString("en-US", {
-      weekday: "long",
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-    }),
-    time: dateObj.toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    }),
-  }
-}
+import { formatDateTime } from "../../utils/formating"
+// const formatDateTime = (date, time) => {
+//   const dateObj = new Date(`${date}T${time}`)
+//   return {
+//     date: dateObj.toLocaleDateString("en-US", {
+//       weekday: "long",
+//       month: "long",
+//       day: "numeric",
+//       year: "numeric",
+//     }),
+//     time: dateObj.toLocaleTimeString("en-US", {
+//       hour: "2-digit",
+//       minute: "2-digit",
+//       hour12: true,
+//     }),
+//   }
+// }
 
 const formatDuration = (minutes) => {
   if (minutes < 60) {
@@ -64,7 +64,7 @@ export default function SessionRequestModal({ request, service, onClose, onAccep
               <div className="flex items-center space-x-2">
                 <User className="w-4 h-4 text-gray-500" />
                 <span className="font-medium text-gray-900 dark:text-white">{request.menteeName}</span>
-                <span className="text-sm text-gray-500">#{request.menteeId.slice(-8)}</span>
+                <span className="text-sm text-gray-500">@{request.menteeId.slice(-8)}</span>
               </div>
               <a
                 href={`/profile/${request.menteeId}`}
@@ -208,8 +208,8 @@ export default function SessionRequestModal({ request, service, onClose, onAccep
                 }}
                 disabled={isLoading || !canCancel}
                 className={`inline-flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${canCancel
-                    ? "bg-red-600 hover:bg-red-700 text-white"
-                    : "bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                  ? "bg-red-600 hover:bg-red-700 text-white"
+                  : "bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
                   }`}
                 title={canCancel ? "Cancel Session" : "Cannot cancel (less than 6 hours remaining)"}
               >

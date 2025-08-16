@@ -48,30 +48,38 @@ export default function RejectReasonModal({ request, onConfirm, onCancel, isLoad
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full max-h-[90vh] flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center">
               <XIcon className="w-5 h-5 text-red-600 dark:text-red-400" />
             </div>
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Reject Session Request</h2>
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+              Reject Session Request
+            </h2>
           </div>
         </div>
 
-        {/* Content */}
-        <div className="p-6">
+        {/* Scrollable Content */}
+        <div className="p-6 overflow-y-auto">
           <div className="mb-6">
-            <p className="text-gray-600 dark:text-gray-400 mb-4">You're about to reject a session request from:</p>
+            <p className="text-gray-600 dark:text-gray-400 mb-4">
+              You're about to reject a session request from:
+            </p>
 
             <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 space-y-2">
               <div className="flex items-center space-x-2">
                 <User className="w-4 h-4 text-gray-500" />
-                <span className="font-medium text-gray-900 dark:text-white">{request.menteeName}</span>
+                <span className="font-medium text-gray-900 dark:text-white">
+                  {request.menteeName}
+                </span>
               </div>
               <div className="flex items-center space-x-2">
                 <Calendar className="w-4 h-4 text-gray-500" />
-                <span className="text-gray-900 dark:text-white">{formatDateTime(request.date, request.startTime)}</span>
+                <span className="text-gray-900 dark:text-white">
+                  {formatDateTime(request.date, request.startTime)}
+                </span>
               </div>
             </div>
           </div>
@@ -107,7 +115,9 @@ export default function RejectReasonModal({ request, onConfirm, onCancel, isLoad
                   rows={3}
                   maxLength={200}
                 />
-                <div className="text-xs text-gray-500 mt-1">{customReason.length}/200 characters</div>
+                <div className="text-xs text-gray-500 mt-1">
+                  {customReason.length}/200 characters
+                </div>
               </div>
             )}
           </div>
@@ -129,7 +139,7 @@ export default function RejectReasonModal({ request, onConfirm, onCancel, isLoad
             </button>
             <button
               onClick={handleSubmit}
-              disabled={isLoading}
+              disabled={isLoading || !canSubmit}
               className="inline-flex items-center space-x-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors disabled:opacity-50"
             >
               {isLoading ? (

@@ -26,3 +26,16 @@ export const formatDuration = (minutes) => {
   }
   return `${hours}h ${remainingMinutes}min`
 }
+
+export const formatDateTimeForCancelConfirmationModel = (date, time) => {
+  const dateObj = new Date(`${date}T${time}`)
+  return dateObj.toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  })
+}

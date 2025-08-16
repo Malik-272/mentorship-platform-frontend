@@ -44,7 +44,7 @@ const SessionRequestItem = ({ request, status, onViewDetails, onAccept, onReject
               >
                 {request.menteeName}
               </Link>
-              <span className="text-xs text-gray-500">#{request.menteeId.slice(-8)}</span>
+              <span className="text-xs text-gray-500">@{request.menteeId.slice(-8)}</span>
             </div>
           </div>
 
@@ -143,7 +143,7 @@ const SessionRequestsList = ({ requests, status, onViewDetails, onAccept, onReje
           {status === "PENDING" && "You don't have any pending session requests at the moment."}
           {status === "ACCEPTED" && "You haven't accepted any session requests yet."}
           {status === "REJECTED" && "You haven't rejected any session requests."}
-          {status === "CANCELED" && "No sessions have been canceled."}
+          {status === "CANCELLED" && "No sessions have been canceled."}
         </p>
       </div>
     )

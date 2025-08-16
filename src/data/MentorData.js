@@ -25,7 +25,7 @@ export const STATUS_CONFIG = {
     textColor: "text-red-700 dark:text-red-300",
     icon: X,
   },
-  CANCELED: {
+  CANCELLED: {
     title: "Canceled Sessions",
     color: "gray",
     bgColor: "bg-gray-50 dark:bg-gray-900/20",
@@ -34,3 +34,12 @@ export const STATUS_CONFIG = {
     icon: Ban,
   },
 }
+
+export const COMMON_REASONS = [
+  "Personal emergency",
+  "Schedule conflict",
+  "Technical issues",
+  "Health reasons",
+  "Family emergency",
+  "Other",
+]
