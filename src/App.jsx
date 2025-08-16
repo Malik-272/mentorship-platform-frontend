@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ThemeProvider } from "./context/ThemeContext";
@@ -32,6 +32,9 @@ const TwoFactorPage = lazy(() => import("./pages/auth/TwoFactorPage"))
 const ConfirmEmailPage = lazy(() => import("./pages/auth/ConfirmEmailPage"))
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage"))
 const SettingsPage = lazy(() => import("./pages/SettingsPage"))
+const PersonalInfoSection = lazy(() => import("./features/settings/PersonalInfoSection"))
+const SecuritySection = lazy(() => import("./features/settings/SecuritySection"))
+const ConnectionsSection = lazy(() => import("./features/settings/ConnectionsSection"))
 const UserProfilePage = lazy(() => import("./pages/UserProfilePage"))
 const CommunityPage = lazy(() => import("./pages/CommunityPage"))
 
@@ -152,7 +155,14 @@ function App() {
                       <SettingsPage />
                     </FullProtectedRoute>
                   }
-                />
+                >
+                  <Route index element={<Navigate to="personal" replace />} />
+
+                  {/* Subroutes */}
+                  <Route path="personal" element={<PersonalInfoSection />} />
+                  <Route path="security" element={<SecuritySection />} />
+                  <Route path="connections" element={<ConnectionsSection />} />
+                </Route>
                 <Route
                   path="my/communities"
                   element={

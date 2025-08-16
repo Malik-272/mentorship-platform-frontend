@@ -1,33 +1,8 @@
-import { useState } from "react"
-import { useAuth } from "../context/AuthContext"
-// import ProtectedRoute from "../ui/ProtectedRoute"
-import SettingsSidebar from "../features/settings/SettingsSidebar"
-import ConnectionsSection from "../features/settings/ConnectionsSection"
-import PersonalInfoSection from "../features/settings/PersonalInfoSection"
-import SecuritySection from "../features/settings/SecuritySection"
-import { useGetUserProfile } from "../hooks/useProfile"
+import { Outlet } from "react-router-dom";
+import SettingsSidebar from "../features/settings/SettingsSidebar";
 
 export default function SettingsPage() {
-  const [activeSection, setActiveSection] = useState("personal")
-  const { data: userData } = useAuth()
-  const { data } = useGetUserProfile(userData?.user?.id)
-  // console.log(isLoading, data)
-
-  const renderContent = () => {
-  switch (activeSection) {
-    case "personal":
-      return <PersonalInfoSection />;
-    case "security":
-      return <SecuritySection user={data?.user} />;
-    case "connections":
-      return <ConnectionsSection />;
-    default:
-      return <PersonalInfoSection />;
-  }
-};
-
   return (
-    // <ProtectedRoute requireAuth={true} requireVerification={true} requiredRole={["mentee", "mentor"]}>
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
@@ -41,18 +16,18 @@ export default function SettingsPage() {
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar */}
           <div className="lg:w-64 flex-shrink-0">
-            <SettingsSidebar activeSection={activeSection} onSectionChange={setActiveSection} />
+            <SettingsSidebar />
           </div>
 
           {/* Main Content */}
           <div className="flex-1">
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 transition-colors">
-              {renderContent()}
+              {/* Nested routes render here */}
+              <Outlet />
             </div>
           </div>
         </div>
       </div>
     </div>
-
-  )
+  );
 }
