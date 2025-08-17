@@ -71,9 +71,9 @@ const ManageCommunityPage = () => {
         action, // 'accept' or 'reject'
         communityId: existingCommunity?.community?.id,
       });
-      refetchRequests();
+      await refetchRequests();
       if (action === "accept") {
-        refetchMembers();
+        await refetchMembers();
       }
     } catch (error) {
       console.error(`Failed to ${action} join request:`, error);
@@ -97,7 +97,7 @@ const ManageCommunityPage = () => {
         memberId,
         communityId: existingCommunity?.community?.id,
       });
-      refetchMembers();
+      await refetchMembers();
     } catch (error) {
       console.error("Failed to remove member:", error);
     } finally {
