@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import {
@@ -25,6 +25,7 @@ import FormField from "../features/Authenticaion/FormField";
 import WeeklyAvailability from "../features/services/WeeklyAvailability";
 import DateExceptions from "../features/services/DateExceptions";
 import ServicePreview from "../features/services/ServicePreview";
+import { transformBackendData, transformFrontendData } from "../utils/helpers";
 
 const SERVICE_TYPES = [
   { value: "career_guidance", label: "Career Guidance" },
@@ -60,7 +61,13 @@ const COMMON_TIMEZONES = [
   { value: "Asia/Dubai", label: "Dubai (GST)" },
   { value: "Australia/Sydney", label: "Sydney (AEDT)" },
 ];
-
+function transformExceptions(data) {
+  return Object.entries(data).map(([date, slots]) => ({
+    date,
+    type: slots.length === 0 ? "unavailable" : "override",
+    timeSlots: slots,
+  }));
+}
 export default function ServiceManagementPage() {
   const navigate = useNavigate();
   const { id: serviceId } = useParams();
@@ -100,6 +107,9 @@ export default function ServiceManagementPage() {
   } = useGetMyService(serviceId);
 
   const service = serviceData?.data;
+  console.log("service?.days:", service?.days);
+  const transformedAvailability = transformBackendData(service?.days);
+  console.log("transformedAvailability:", transformedAvailability);
 
   const {
     register,
@@ -121,10 +131,13 @@ export default function ServiceManagementPage() {
       reset({
         type: service.type || "",
         description: service.description || "",
-        sessionDuration: service.sessionDuration || 30,
+        sessionDuration: service.sessionTime || 30,
       });
-      setWeeklyAvailability(service.weeklyAvailability || {});
-      setDateExceptions(service.dateExceptions || []);
+
+      setWeeklyAvailability(transformedAvailability || {});
+      setDateExceptions(
+        transformExceptions(transformBackendData(service.exceptions)) || []
+      );
     }
   }, [service, reset]);
 
@@ -134,10 +147,8 @@ export default function ServiceManagementPage() {
     try {
       const serviceData = {
         type: data.type,
+        sessionTime: Number.parseInt(data.sessionDuration),
         description: data.description,
-        sessionDuration: Number.parseInt(data.sessionDuration),
-        weeklyAvailability,
-        dateExceptions,
       };
 
       await updateServiceMutation.mutateAsync({
@@ -187,9 +198,15 @@ export default function ServiceManagementPage() {
   const hasUnsavedChanges =
     isDirty ||
     JSON.stringify(weeklyAvailability) !==
-      JSON.stringify(service.weeklyAvailability || {}) ||
-    JSON.stringify(dateExceptions) !==
-      JSON.stringify(service.dateExceptions || []);
+      JSON.stringify(transformedAvailability || {}) ||
+    JSON.stringify(
+      transformFrontendData(
+        dateExceptions.reduce((acc, { date, timeSlots }) => {
+          if (date) acc[date] = timeSlots;
+          return acc;
+        }, {})
+      )
+    ) !== JSON.stringify(service.exceptions || []);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
@@ -201,7 +218,7 @@ export default function ServiceManagementPage() {
               <div className="flex items-center gap-3 mb-2">
                 <Users className="w-8 h-8 text-blue-600" />
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                  Manage Service: {service.serviceId}
+                  Manage Service: {service.id}
                 </h1>
               </div>
               <p className="text-gray-600 dark:text-gray-400">
@@ -274,7 +291,7 @@ export default function ServiceManagementPage() {
                       </h2>
                       <div className="text-sm text-gray-500 dark:text-gray-400">
                         Service ID:{" "}
-                        <span className="font-mono">{service.serviceId}</span>
+                        <span className="font-mono">{service.id}</span>
                       </div>
                     </div>
 
@@ -382,7 +399,8 @@ export default function ServiceManagementPage() {
                       <div className="text-sm text-gray-500 dark:text-gray-400">
                         Timezone:{" "}
                         {service.timezone ||
-                          Intl.DateTimeFormat().resolvedOptions().timeZone}
+                          // Intl.DateTimeFormat().resolvedOptions().timeZone
+                          currentUser?.user.timezone}
                       </div>
                     </div>
 
@@ -398,6 +416,8 @@ export default function ServiceManagementPage() {
                       <WeeklyAvailability
                         availability={weeklyAvailability}
                         onChange={setWeeklyAvailability}
+                        serviceId={service.id}
+                        pageType="manage"
                       />
                     </div>
 
@@ -413,6 +433,8 @@ export default function ServiceManagementPage() {
                       <DateExceptions
                         exceptions={dateExceptions}
                         onChange={setDateExceptions}
+                        pageType="manage"
+                        serviceId={service.id}
                       />
                     </div>
                   </div>

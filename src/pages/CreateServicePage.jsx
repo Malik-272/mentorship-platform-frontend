@@ -21,6 +21,7 @@ import LoadingSpinner from "../ui/LoadingSpinner";
 import FormField from "../features/Authenticaion/FormField";
 import WeeklyAvailability from "../features/services/WeeklyAvailability";
 import DateExceptions from "../features/services/DateExceptions";
+import { transformFrontendData } from "../utils/helpers";
 
 const SERVICE_TYPES = [
   { value: "career_guidance", label: "Career Guidance" },
@@ -48,7 +49,7 @@ export default function CreateServicePage() {
   const { data: currentUser, status, isLoading: isLoadingAuth } = useAuth();
   const [activeTab, setActiveTab] = useState("basic");
   const [weeklyAvailability, setWeeklyAvailability] = useState({});
-  const [dateExceptions, setDateExceptions] = useState(/*[]*/ {});
+  const [dateExceptions, setDateExceptions] = useState([]);
 
   // Check authentication and role
   //   useEffect(() => {
@@ -93,26 +94,7 @@ export default function CreateServicePage() {
       setValue("serviceId", generatedId);
     }
   }, [watchType, setValue]);
-  function calculateDuration(startTime, endTime) {
-    const [startHour, startMinute] = startTime.split(":").map(Number);
-    const [endHour, endMinute] = endTime.split(":").map(Number);
-    const startTotal = startHour * 60 + startMinute;
-    const endTotal = endHour * 60 + endMinute;
-    return endTotal - startTotal;
-  }
 
-  function transformAvailabilityForBackend(availability) {
-    const result = {};
-
-    for (const [day, slots] of Object.entries(availability)) {
-      result[day] = slots.map(({ startTime, endTime }) => ({
-        startTime,
-        duration: calculateDuration(startTime, endTime),
-      }));
-    }
-
-    return result;
-  }
   const onSubmit = async (data) => {
     try {
       // Get user's timezone
@@ -124,8 +106,11 @@ export default function CreateServicePage() {
         description: data.description,
         sessionTime: Number.parseInt(data.sessionDuration),
         // timezone: userTimezone,
-        days: transformAvailabilityForBackend(weeklyAvailability),
-        exceptions: dateExceptions,
+        days: transformFrontendData(weeklyAvailability),
+        exceptions: dateExceptions.reduce((acc, { date, timeSlots }) => {
+          if (date) acc[date] = timeSlots;
+          return transformFrontendData(acc);
+        }, {}),
       };
 
       await createServiceMutation.mutateAsync(serviceData);
@@ -371,7 +356,11 @@ export default function CreateServicePage() {
                     Set Your Availability
                   </h2>
                   <div className="text-sm text-gray-500 dark:text-gray-400">
-                    Timezone: {Intl.DateTimeFormat().resolvedOptions().timeZone}
+                    Timezone:{" "}
+                    {
+                      /*Intl.DateTimeFormat().resolvedOptions().timeZone*/ currentUser
+                        ?.user.timezone
+                    }
                   </div>
                 </div>
 
@@ -388,6 +377,7 @@ export default function CreateServicePage() {
                   <WeeklyAvailability
                     availability={weeklyAvailability}
                     onChange={setWeeklyAvailability}
+                    pageType="create"
                   />
                 </div>
 

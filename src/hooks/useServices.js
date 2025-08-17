@@ -63,8 +63,8 @@ const servicesApi = {
   },
 
   updateService: async (serviceId, serviceData) => {
-    const response = await fetch(`${API_BASE_URL}/services/${serviceId}`, {
-      method: "PUT",
+    const response = await fetch(`${API_BASE_URL}/services/my/${serviceId}`, {
+      method: "PATCH",
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
@@ -92,6 +92,135 @@ const servicesApi = {
     }
 
     return response.json();
+  },
+  addSlot: async (serviceId, slotData) => {
+    const response = await fetch(
+      `${API_BASE_URL}/services/my/${serviceId}/day-availabilities`,
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(slotData),
+      }
+    );
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to add slot");
+    }
+
+    return response.json();
+  },
+  updateSlot: async (serviceId, slotId, slotData) => {
+    const response = await fetch(
+      `${API_BASE_URL}/services/my/${serviceId}/day-availabilities/${slotId}`,
+      {
+        method: "PATCH",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(slotData),
+      }
+    );
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to update slot");
+    }
+
+    return response.json();
+  },
+  deleteSlot: async (serviceId, slotId) => {
+    const response = await fetch(
+      `${API_BASE_URL}/services/my/${serviceId}/day-availabilities/${slotId}`,
+      {
+        method: "DELETE",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to delete slot");
+    }
+    if (response.status === 204) {
+      return null;
+    }
+
+    return response.json();
+  },
+  addExceptionSlot: async (serviceId, slotData) => {
+    const response = await fetch(
+      `${API_BASE_URL}/services/my/${serviceId}/availability-exceptions`,
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(slotData),
+      }
+    );
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to add exception slot");
+    }
+
+    return response.json();
+  },
+  updateExceptionSlot: async (serviceId, slotId, slotData) => {
+    const response = await fetch(
+      `${API_BASE_URL}/services/my/${serviceId}/availability-exceptions/${slotId}`,
+      {
+        method: "PATCH",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(slotData),
+      }
+    );
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to update exception slot");
+    }
+
+    return response.json();
+  },
+  removeExceptionSlot: async (serviceId, slotId) => {
+    const response = await fetch(
+      `${API_BASE_URL}/services/my/${serviceId}/availability-exceptions/${slotId}`,
+      {
+        method: "DELETE",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      let errorMessage = "Failed to remove exception slot";
+      try {
+        const error = await response.json();
+        errorMessage = error.message || errorMessage;
+      } catch (e) {
+        // ignore if no JSON error body
+      }
+      throw new Error(errorMessage);
+    }
+
+    // DELETE often returns 204 No Content, so check before parsing
+    const text = await response.text();
+    return text ? JSON.parse(text) : null;
   },
 };
 
@@ -164,6 +293,93 @@ export const useDeleteService = () => {
     },
     onError: (error) => {
       console.error("Delete service error:", error);
+    },
+  });
+};
+export const useAddSlot = (serviceId) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (slotData) => servicesApi.addSlot(serviceId, slotData),
+    onSuccess: (data) => {
+      // Invalidate and refetch service slots
+      queryClient.invalidateQueries(["myService", serviceId]);
+    },
+    onError: (error) => {
+      console.error("Add slot error:", error);
+    },
+  });
+};
+export const useUpdateSlot = (serviceId) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ slotData, slotId }) =>
+      servicesApi.updateSlot(serviceId, slotId, slotData),
+    onSuccess: (data) => {
+      // Invalidate and refetch service slots
+      queryClient.invalidateQueries(["myService", serviceId]);
+    },
+    onError: (error) => {
+      console.error("Update slot error:", error);
+    },
+  });
+};
+export const useDeleteSlot = (serviceId) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (slotId) => servicesApi.deleteSlot(serviceId, slotId),
+    onSuccess: (data) => {
+      // Invalidate and refetch service slots
+      queryClient.invalidateQueries(["myService", serviceId]);
+    },
+    onError: (error) => {
+      console.error("Delete slot error:", error);
+    },
+  });
+};
+
+export const useAddExceptionSlot = (serviceId) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (slotData) => servicesApi.addExceptionSlot(serviceId, slotData),
+    onSuccess: (data) => {
+      // Invalidate and refetch service slots
+      queryClient.invalidateQueries(["myService", serviceId]);
+    },
+    onError: (error) => {
+      console.error("Add exception slot error:", error);
+    },
+  });
+};
+export const useUpdateExceptionSlot = (serviceId) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ slotId, slotData }) =>
+      servicesApi.updateExceptionSlot(serviceId, slotId, slotData),
+    onSuccess: (data) => {
+      // Invalidate and refetch service slots
+      queryClient.invalidateQueries(["myService", serviceId]);
+    },
+    onError: (error) => {
+      console.error("Update exception slot error:", error);
+    },
+  });
+};
+export const useRemoveExceptionSlot = (serviceId) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (slotId) => servicesApi.removeExceptionSlot(serviceId, slotId),
+    onSuccess: (data) => {
+      // Invalidate and refetch service slots
+      queryClient.invalidateQueries(["myService", serviceId]);
+    },
+    onError: (error) => {
+      console.error("Remove exception slot error:", error);
     },
   });
 };
