@@ -248,6 +248,7 @@ const communitiesApi = {
 };
 
 // Custom hooks
+import { communitiesApi } from "../services/communitiesApi";
 
 export const useCreateCommunity = () => {
   const queryClient = useQueryClient();

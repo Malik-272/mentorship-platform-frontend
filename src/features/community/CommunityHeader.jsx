@@ -63,17 +63,6 @@ export default function CommunityHeader({ community, isManager, isAdmin, onShowV
                     </div>
                   )}
                 </div>
-
-                {community?.organization && (
-                  <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">{community.organization}</p>
-                )}
-
-                {community?.location && (
-                  <div className="flex items-center text-gray-500 dark:text-gray-400 text-sm mt-2">
-                    <MapPin className="w-4 h-4 mr-1" />
-                    {community.location}
-                  </div>
-                )}
               </div>
 
               {/* Management Buttons */}
