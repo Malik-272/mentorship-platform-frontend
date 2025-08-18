@@ -238,11 +238,15 @@ const ManageCommunityPage = () => {
                       >
                         <div className="flex items-center gap-4">
                           <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
-                            <img
-                              src={request.user.imageUrl}
-                              alt={request.user.name}
-                              className="w-12 h-12 rounded-full"
-                            />
+                            {request.user.imageUrl ? (
+                              <img
+                                src={request.user.imageUrl}
+                                alt={request.user.name}
+                                className="w-12 h-12 rounded-full"
+                              />
+                            ) : (
+                              request.user.name.charAt(0).toUpperCase()
+                            )}
                           </div>
                           <div>
                             <h3 className="font-semibold text-gray-900 dark:text-white">
@@ -326,11 +330,15 @@ const ManageCommunityPage = () => {
                       >
                         <div className="flex items-center gap-4">
                           <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
-                            <img
-                              src={member.imageUrl}
-                              alt={member.name}
-                              className="w-12 h-12 rounded-full"
-                            />
+                            {member.imageUrl ? (
+                              <img
+                                src={member.imageUrl}
+                                alt={member.name}
+                                className="w-12 h-12 rounded-full"
+                              />
+                            ) : (
+                              member.name.charAt(0).toUpperCase()
+                            )}
                           </div>
                           <div>
                             <div className="flex items-center gap-2">
