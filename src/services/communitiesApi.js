@@ -197,7 +197,6 @@ export const communitiesApi = {
     });
 
     if (!response.ok) {
-      // handle errors safely
       const errorText = await response.text();
       let message;
       try {
@@ -208,13 +207,13 @@ export const communitiesApi = {
       throw new Error(message);
     }
 
-    // if backend returns 204 → no JSON
-    if (response.status === 204) {
-      return { success: true };
+    // 🔑 FIX: check if response has content
+    const text = await response.text();
+    if (!text) {
+      return { success: true }; // fallback if body is empty
     }
 
-    // otherwise parse JSON
-    return response.json();
+    return JSON.parse(text); // safe JSON parsing
   },
 
   requestToJoin: async (communityId) => {
