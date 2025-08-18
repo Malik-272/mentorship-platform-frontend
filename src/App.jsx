@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ThemeProvider } from "./context/ThemeContext";
@@ -19,24 +24,37 @@ import UnauthorizedAccessFallback from "./ui/UnauthorizedAccessFallback";
 import UserCommunitiesPage from "./pages/UserCommunitiesPage";
 import MentorServicesPage from "./pages/mentor/MentorServicesPage";
 import SessionRequestsPage from "./pages/mentor/SessionRequestsPage";
+import CreateServicePage from "./pages/CreateServicePage";
+import ServiceManagementPage from "./pages/ServiceManagementPage";
 const AppLayout = lazy(() => import("./ui/AppLayout"));
 const LandingPage = lazy(() => import("./pages/LandingPage"));
 
 // Auth Pages
-const SignupPage = lazy(() => import("./pages/auth/SignUpPage"))
-const SignupConfirmationPage = lazy(() => import("./pages/auth/SignupConfirmationPage"))
-const LoginPage = lazy(() => import("./pages/auth/LoginPage"))
-const ForgotPasswordPage = lazy(() => import("./pages/auth/ForgotPasswordPage"))
-const ResetPasswordPage = lazy(() => import("./pages/auth/ResetPasswordPage"))
-const TwoFactorPage = lazy(() => import("./pages/auth/TwoFactorPage"))
-const ConfirmEmailPage = lazy(() => import("./pages/auth/ConfirmEmailPage"))
-const NotFoundPage = lazy(() => import("./pages/NotFoundPage"))
-const SettingsPage = lazy(() => import("./pages/SettingsPage"))
-const PersonalInfoSection = lazy(() => import("./features/settings/PersonalInfoSection"))
-const SecuritySection = lazy(() => import("./features/settings/SecuritySection"))
-const ConnectionsSection = lazy(() => import("./features/settings/ConnectionsSection"))
-const UserProfilePage = lazy(() => import("./pages/UserProfilePage"))
-const CommunityPage = lazy(() => import("./pages/CommunityPage"))
+
+const SignupPage = lazy(() => import("./pages/auth/SignUpPage"));
+const SignupConfirmationPage = lazy(() =>
+  import("./pages/auth/SignupConfirmationPage")
+);
+const LoginPage = lazy(() => import("./pages/auth/LoginPage"));
+const ForgotPasswordPage = lazy(() =>
+  import("./pages/auth/ForgotPasswordPage")
+);
+const ResetPasswordPage = lazy(() => import("./pages/auth/ResetPasswordPage"));
+const TwoFactorPage = lazy(() => import("./pages/auth/TwoFactorPage"));
+const ConfirmEmailPage = lazy(() => import("./pages/auth/ConfirmEmailPage"));
+const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
+const SettingsPage = lazy(() => import("./pages/SettingsPage"));
+const PersonalInfoSection = lazy(() =>
+  import("./features/settings/PersonalInfoSection")
+);
+const SecuritySection = lazy(() =>
+  import("./features/settings/SecuritySection")
+);
+const ConnectionsSection = lazy(() =>
+  import("./features/settings/ConnectionsSection")
+);
+const UserProfilePage = lazy(() => import("./pages/UserProfilePage"));
+const CommunityPage = lazy(() => import("./pages/CommunityPage"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -207,10 +225,27 @@ function App() {
                     </FullProtectedRouteWithRole>
                   }
                 />
+                <Route path="/communities/:id" element={<CommunityPage />} />
                 <Route
-                  path="/communities/:id"
+                  path="/services/create"
                   element={
-                    <CommunityPage />
+                    <FullProtectedRouteWithRole
+                      roles={["MENTOR"]}
+                      fallback={<UnauthorizedAccessFallback />}
+                    >
+                      <CreateServicePage />
+                    </FullProtectedRouteWithRole>
+                  }
+                />
+                <Route
+                  path="/my/services/:id"
+                  element={
+                    <FullProtectedRouteWithRole
+                      roles={["MENTOR"]}
+                      fallback={<UnauthorizedAccessFallback />}
+                    >
+                      <ServiceManagementPage />
+                    </FullProtectedRouteWithRole>
                   }
                 />
                 <Route
