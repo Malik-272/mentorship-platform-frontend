@@ -322,7 +322,11 @@ const ManageCommunityPage = () => {
                       >
                         <div className="flex items-center gap-4">
                           <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
-                            {member.name.charAt(0).toUpperCase()}
+                            <img
+                              src={member.imageUrl}
+                              alt={member.name}
+                              className="w-12 h-12 rounded-full"
+                            />
                           </div>
                           <div>
                             <div className="flex items-center gap-2">
