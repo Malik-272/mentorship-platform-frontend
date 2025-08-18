@@ -137,34 +137,6 @@ export default function CommunityPage() {
     }
   }
 
-  // const handleCancelJoinRequest = async () => {
-  //   try {
-  //     await cancelJoinRequestMutation.mutateAsync(community.id)
-  //     RefetchCommunity()
-  //   } catch (error) {
-  //     console.error("Cancel join request failed:", error)
-  //   }
-  // }
-
-  // const handleJoinRequest = async () => {
-  //   try {
-  //     await requestToJoinMutation.mutateAsync(community.id)
-  //     RefetchCommunity()
-  //   } catch (error) {
-  //     console.error("Join request failed:", error)
-  //   }
-  // }
-
-  // const handleLeave = async () => {
-  //   try {
-  //     await leaveCommunityMutation.mutateAsync(community.id)
-  //     RefetchCommunity()
-  //     setShowLeaveConfirm(false)
-  //   } catch (error) {
-  //     console.error("Leave community failed:", error)
-  //   }
-  // }
-
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

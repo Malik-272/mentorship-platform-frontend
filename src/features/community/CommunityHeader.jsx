@@ -1,7 +1,9 @@
-import { Shield, ShieldCheck, Settings, Crown, MapPin } from "lucide-react"
+import { Shield, ShieldCheck, Settings, Crown } from "lucide-react"
 import { Link } from "react-router-dom"
 
 export default function CommunityHeader({ community, isManager, isAdmin, onShowVerification }) {
+  const communityName = community?.name?.slice(0, 50) || "" // enforce max 50 chars
+
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
       {/* Cover Image */}
@@ -9,7 +11,7 @@ export default function CommunityHeader({ community, isManager, isAdmin, onShowV
         {community?.cover_image && (
           <img
             src={community.cover_image || "/placeholder.svg"}
-            alt={`${community.name} cover`}
+            alt={`${communityName} cover`}
             className="w-full h-full object-cover"
           />
         )}
@@ -24,12 +26,12 @@ export default function CommunityHeader({ community, isManager, isAdmin, onShowV
               {community?.imageUrl ? (
                 <img
                   src={community.imageUrl || "/placeholder.svg"}
-                  alt={community.name}
+                  alt={communityName}
                   className="w-full h-full object-cover"
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600 text-white text-2xl font-bold">
-                  {community?.name?.charAt(0)}
+                  {communityName.charAt(0)}
                 </div>
               )}
             </div>
@@ -39,15 +41,17 @@ export default function CommunityHeader({ community, isManager, isAdmin, onShowV
           <div className="flex-1 min-w-0">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <div className="flex items-center space-x-3">
-                  <h1 className="text-2xl font-bold text-gray-900 dark:text-white truncate">{community?.name}</h1>
+                <div className="flex items-center space-x-3 flex-wrap">
+                  <h1 className="text-2xl font-bold text-gray-900 dark:text-white break-words max-w-full">
+                    {communityName}
+                  </h1>
                   {community?.is_verified ? (
-                    <div className="flex items-center text-blue-600 dark:text-blue-400">
+                    <div className="flex items-center text-blue-600 dark:text-blue-400 mt-3">
                       <ShieldCheck className="w-5 h-5 mr-1" />
                       <span className="text-sm font-medium">Verified</span>
                     </div>
                   ) : (
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2 mt-3">
                       <div className="flex items-center text-gray-500 dark:text-gray-400">
                         <Shield className="w-5 h-5 mr-1" />
                         <span className="text-sm">Not verified</span>
