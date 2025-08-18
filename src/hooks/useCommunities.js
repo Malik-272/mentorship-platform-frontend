@@ -112,11 +112,10 @@ export const useGetCommunityJoinRequests = () => {
 //     },
 //   });
 // };
-export const useGetMyCommunityMembers = (communityId) => {
+export const useGetMyCommunityMembers = () => {
   return useQuery({
-    queryKey: ["communityMembers", communityId],
-    queryFn: () => communitiesApi.getMyMembers(communityId),
-    enabled: !!communityId,
+    queryKey: ["communityMembers"],
+    queryFn: () => communitiesApi.getMyMembers(),
     staleTime: 2 * 60 * 1000, // 2 minutes
     cacheTime: 10 * 60 * 1000, // 10 minutes
   });
