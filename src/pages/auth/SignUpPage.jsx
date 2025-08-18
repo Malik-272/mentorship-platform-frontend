@@ -41,7 +41,7 @@ export default function SignupPage() {
     try {
       const result = await signupMutation.mutateAsync(data);
       if (result.status === "Success") {
-        navigate("/confirm-email", {
+        navigate("/successful-registration", {
           state: {
             email: result?.email || data.email,
           },
@@ -122,11 +122,10 @@ export default function SignupPage() {
             >
               <select
                 {...register("country", validationRules.country)}
-                className={`w-full px-3 py-2 border rounded-md shadow-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                  errors.country
+                className={`w-full px-3 py-2 border rounded-md shadow-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${errors.country
                     ? "border-red-300"
                     : "border-gray-300 dark:border-gray-600"
-                }`}
+                  }`}
               >
                 <option value="">Select your country</option>
                 {Object.entries(countryCodes).map(([key, country]) => (
@@ -145,11 +144,10 @@ export default function SignupPage() {
                 <button
                   type="button"
                   onClick={() => handleRoleSelect("mentee")}
-                  className={`p-4 border-2 rounded-lg text-center transition-all ${
-                    selectedRole === "mentee"
+                  className={`p-4 border-2 rounded-lg text-center transition-all ${selectedRole === "mentee"
                       ? "border-blue-500 bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-300"
                       : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-500"
-                  }`}
+                    }`}
                 >
                   <User className="w-6 h-6 mx-auto mb-2" />
                   <div className="font-medium">Mentee</div>
@@ -161,11 +159,10 @@ export default function SignupPage() {
                 <button
                   type="button"
                   onClick={() => handleRoleSelect("mentor")}
-                  className={`p-4 border-2 rounded-lg text-center transition-all ${
-                    selectedRole === "mentor"
+                  className={`p-4 border-2 rounded-lg text-center transition-all ${selectedRole === "mentor"
                       ? "border-green-500 bg-green-50 dark:bg-green-900 text-green-700 dark:text-green-300"
                       : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-500"
-                  }`}
+                    }`}
                 >
                   <UserCheck className="w-6 h-6 mx-auto mb-2" />
                   <div className="font-medium">Mentor</div>
@@ -177,11 +174,10 @@ export default function SignupPage() {
                 <button
                   type="button"
                   onClick={() => handleRoleSelect("community_manager")}
-                  className={`p-4 border-2 rounded-lg text-center transition-all ${
-                    selectedRole === "community_manager"
+                  className={`p-4 border-2 rounded-lg text-center transition-all ${selectedRole === "community_manager"
                       ? "border-purple-500 bg-purple-50 dark:bg-purple-900 text-purple-700 dark:text-purple-300"
                       : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-500"
-                  }`}
+                    }`}
                 >
                   <Shield className="w-6 h-6 mx-auto mb-2" />
                   <div className="font-medium">Community Manager</div>

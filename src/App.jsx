@@ -83,7 +83,7 @@ function App() {
                 }
               />
               <Route
-                path="/confirm-email"
+                path="/successful-registration"
                 element={
                   <PartialAuthRoute>
                     <SignupConfirmationPage />
@@ -104,7 +104,7 @@ function App() {
 
               {/* Partial auth only route - for email confirmation */}
               <Route
-                path="/confirm-email-page"
+                path="/confirm-email"
                 element={<ConfirmEmailPage />}
               />
 
