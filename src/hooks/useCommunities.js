@@ -125,15 +125,10 @@ export const useRemoveMember = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: communitiesApi.removeMember,
-    onSuccess: (data, variables) => {
+    mutationFn: (memberId) => communitiesApi.removeMember(memberId),
+    onSuccess: () => {
       // Invalidate members to refetch
-      queryClient.invalidateQueries([
-        "communityMembers",
-        variables.communityId,
-      ]);
-      // Invalidate community data to update member count
-      queryClient.invalidateQueries(["community", variables.communityId]);
+      queryClient.invalidateQueries(["communityMembers"]);
     },
     onError: (error) => {
       console.error("Remove member error:", error);

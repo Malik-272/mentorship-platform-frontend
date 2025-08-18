@@ -186,21 +186,34 @@ export const communitiesApi = {
     return response.json();
   },
 
-  removeMember: async ({ memberId }) => {
+  removeMember: async (memberId) => {
     const response = await fetch(`${API_BASE_URL}/communities/my/members`, {
       method: "DELETE",
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
-      body: { memberId },
+      body: JSON.stringify({ id: memberId }),
     });
 
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || "Failed to remove member");
+      // handle errors safely
+      const errorText = await response.text();
+      let message;
+      try {
+        message = JSON.parse(errorText).message;
+      } catch {
+        message = errorText || "Failed to remove member";
+      }
+      throw new Error(message);
     }
 
+    // if backend returns 204 → no JSON
+    if (response.status === 204) {
+      return { success: true };
+    }
+
+    // otherwise parse JSON
     return response.json();
   },
 
@@ -221,6 +234,11 @@ export const communitiesApi = {
       throw new Error(error.message || "Failed to send join request");
     }
 
+    if (response.status === 204) {
+      return { success: true };
+    }
+
+    // otherwise parse JSON
     return response.json();
   },
 
