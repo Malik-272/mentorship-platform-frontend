@@ -149,7 +149,7 @@ export const communitiesApi = {
 
     return response.json();
   },
-  getMyMembers: async (communityId) => {
+  getMyMembers: async () => {
     const response = await fetch(`${API_BASE_URL}/communities/my/members`, {
       method: "GET",
       credentials: "include",
