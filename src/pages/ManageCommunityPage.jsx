@@ -93,10 +93,7 @@ const ManageCommunityPage = () => {
 
     setRemovingMember(memberId);
     try {
-      await removeMemberMutation.mutateAsync({
-        memberId,
-        communityId: existingCommunity?.community?.id,
-      });
+      await removeMemberMutation.mutateAsync(memberId);
       await refetchMembers();
     } catch (error) {
       console.error("Failed to remove member:", error);
