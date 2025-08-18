@@ -30,7 +30,7 @@ export const PublicOnlyRoute = ({ children }) => {
       </div>
     );
   if (status === "full") return <Navigate to="/dashboard" />;
-  if (status === "partial") return <Navigate to="/confirm-email" />;
+  if (status === "partial") return <Navigate to="/successful-registration" />;
   return children;
 };
 
@@ -43,7 +43,7 @@ export function FullProtectedRoute({ children }) {
       </div>
     );
   if (status === "none") return <Navigate to="/login" />;
-  if (status === "partial") return <Navigate to="/confirm-email" />;
+  if (status === "partial") return <Navigate to="/successful-registration" />;
   return children;
 }
 export function FullProtectedRouteWithRole({
@@ -59,7 +59,7 @@ export function FullProtectedRouteWithRole({
       </div>
     );
   if (status === "none") return <Navigate to="/login" />;
-  if (status === "partial") return <Navigate to="/confirm-email" />;
+  if (status === "partial") return <Navigate to="/successful-registration" />;
   if (status === "full" && !roles.includes(data?.user?.role)) return fallback;
   return children;
 }

@@ -88,7 +88,7 @@ export default function ServiceManagementPage() {
         return;
       }
       if (status === "partial") {
-        navigate("/confirm-email");
+        navigate("/successful-registration");
         return;
       }
       if (currentUser?.user?.role !== "MENTOR") {

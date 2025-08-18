@@ -25,7 +25,7 @@ export default function LoginPage() {
       if (status === "partial") {
         // Partial user — redirect to confirm email
 
-        navigate("/confirm-email", {
+        navigate("/successful-registration", {
           state: {
             message: "Please confirm your email to proceed.",
           },
