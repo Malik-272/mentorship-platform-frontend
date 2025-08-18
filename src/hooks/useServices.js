@@ -22,6 +22,23 @@ const servicesApi = {
     return response.json();
   },
 
+  getMentorServices: async () => {
+    const response = await fetch(`${API_BASE_URL}/services/my`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    })
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch services: ${response.status} ${response.statusText}`)
+    }
+
+    const data = await response.json()
+
+    return data.services
+  },
   getMyService: async (serviceId) => {
     const response = await fetch(`${API_BASE_URL}/services/my/${serviceId}`, {
       method: "GET",
@@ -32,11 +49,12 @@ const servicesApi = {
     });
 
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || "Failed to fetch services");
+      throw new Error(`Failed to fetch service ${serviceId}: ${response.status} ${response.statusText}`)
     }
 
-    return response.json();
+    const data = await response.json()
+    console.log(data)
+    return data.data;
   },
 
   getService: async (mentorId, serviceId) => {
@@ -248,6 +266,14 @@ export const useGetMyService = (serviceId) => {
     cacheTime: 10 * 60 * 1000, // 10 minutes
   });
 };
+
+export const useGetMentorServices = () => {
+  return useQuery({
+    queryKey: ["mentorServices"],
+    queryFn: servicesApi.getMentorServices,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  })
+}
 
 export const useGetService = (mentorId, serviceId) => {
   return useQuery({

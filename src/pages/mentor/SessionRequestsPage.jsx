@@ -7,7 +7,7 @@ import {
   useRejectSessionRequest,
   useCancelSessionRequest,
 } from "../../hooks/useSessionRequests"
-import { useGetMentorService } from "../../hooks/useServices"
+import { useGetMyService as useGetMentorService } from "../../hooks/useServices"
 import LoadingSpinner from "../../ui/LoadingSpinner"
 import ErrorMessage from "../../ui/ErrorMessage"
 import SessionRequestModal from "../../features/mentor/SessionRequestModal"

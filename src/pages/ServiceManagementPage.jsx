@@ -100,13 +100,14 @@ export default function ServiceManagementPage() {
 
   // Fetch service data
   const {
-    data: serviceData,
+    data: service,
     isLoading: isLoadingService,
     error: serviceError,
     refetch: refetchService,
   } = useGetMyService(serviceId);
+  console.log("serviceData", service);
 
-  const service = serviceData?.data;
+  // const service = serviceData?.data;
   console.log("service?.days:", service?.days);
   const transformedAvailability = transformBackendData(service?.days);
   console.log("transformedAvailability:", transformedAvailability);
@@ -198,7 +199,7 @@ export default function ServiceManagementPage() {
   const hasUnsavedChanges =
     isDirty ||
     JSON.stringify(weeklyAvailability) !==
-      JSON.stringify(transformedAvailability || {}) ||
+    JSON.stringify(transformedAvailability || {}) ||
     JSON.stringify(
       transformFrontendData(
         dateExceptions.reduce((acc, { date, timeSlots }) => {
@@ -229,11 +230,10 @@ export default function ServiceManagementPage() {
             {/* Preview Toggle */}
             <button
               onClick={() => setShowPreview(!showPreview)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
-                showPreview
-                  ? "bg-blue-600 text-white hover:bg-blue-700"
-                  : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
-              }`}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${showPreview
+                ? "bg-blue-600 text-white hover:bg-blue-700"
+                : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
+                }`}
             >
               {showPreview ? (
                 <EyeOff className="w-4 h-4" />
@@ -254,11 +254,10 @@ export default function ServiceManagementPage() {
                 <nav className="flex space-x-8 px-6">
                   <button
                     onClick={() => setActiveTab("details")}
-                    className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                      activeTab === "details"
-                        ? "border-blue-500 text-blue-600 dark:text-blue-400"
-                        : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300"
-                    }`}
+                    className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === "details"
+                      ? "border-blue-500 text-blue-600 dark:text-blue-400"
+                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300"
+                      }`}
                   >
                     <div className="flex items-center gap-2">
                       <FileText className="w-4 h-4" />
@@ -267,11 +266,10 @@ export default function ServiceManagementPage() {
                   </button>
                   <button
                     onClick={() => setActiveTab("availability")}
-                    className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                      activeTab === "availability"
-                        ? "border-blue-500 text-blue-600 dark:text-blue-400"
-                        : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300"
-                    }`}
+                    className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === "availability"
+                      ? "border-blue-500 text-blue-600 dark:text-blue-400"
+                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300"
+                      }`}
                   >
                     <div className="flex items-center gap-2">
                       <Calendar className="w-4 h-4" />
