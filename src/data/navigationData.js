@@ -4,7 +4,7 @@ export const navigationData = [
   { name: "Communities", href: "/communities" },
   { name: "How It Works", href: "/how-it-works" },
   { name: "About", href: "/about" },
-]
+];
 
 export const footerData = {
   company: {
@@ -27,6 +27,6 @@ export const footerData = {
       { name: "Terms of Service", href: "/terms" },
     ],
   },
-  copyright: "© 2024 Growtly. All rights reserved. Built by Growtly Team.",
+  copyright: "© 2025 Growtly. All rights reserved. Built by Growtly Team.",
   taglineBottom: "Made with ❤️ for global mentorship",
-}
+};

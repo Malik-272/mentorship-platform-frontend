@@ -171,7 +171,7 @@ export const settingsApi = {
 
     return response.json();
   },
-  getAppConnectionsStates: async() => {
+  getAppConnectionsStates: async () => {
     const response = await fetch(`${API_BASE_URL}/auth/app-connections`, {
       method: "GET",
       headers: {
@@ -179,11 +179,28 @@ export const settingsApi = {
       },
       credentials: "include",
     });
-    
+
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || "Failed to fetch App connections state");
     }
+    return response.json();
+  },
+  disconnect: async (appName) => {
+    const response = await fetch(`${API_BASE_URL}/auth/app-connections`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ appName }),
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to disconnect app");
+    }
+
     return response.json();
   },
 };

@@ -1,8 +1,16 @@
-import { useGetAppConnectionsStates } from "../../hooks/useSettings";
+import {
+  useDisconnectApp,
+  useGetAppConnectionsStates,
+} from "../../hooks/useSettings";
+import LoadingSpinner from "../../ui/LoadingSpinner";
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-const REDIRECT_URI = encodeURIComponent("http://localhost:3000/api/v1/auth/google-callback");
-const SCOPE = encodeURIComponent("openid email profile https://www.googleapis.com/auth/calendar");
+const REDIRECT_URI = encodeURIComponent(
+  "http://localhost:3000/api/v1/auth/google-callback"
+);
+const SCOPE = encodeURIComponent(
+  "openid email profile https://www.googleapis.com/auth/calendar"
+);
 const RESPONSE_TYPE = "code";
 const ACCESS_TYPE = "offline";
 const PROMPT = "consent";
@@ -11,8 +19,12 @@ const PROMPT = "consent";
 const GOOGLE_AUTH_URL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=${SCOPE}&access_type=${ACCESS_TYPE}&prompt=${PROMPT}`;
 
 export default function ConnectionsSection() {
-  const { refetch, data: connectionState } = useGetAppConnectionsStates();
-
+  const {
+    refetch,
+    data: connectionState,
+    isLoading,
+  } = useGetAppConnectionsStates();
+  const disconnectApp = useDisconnectApp();
   const googleConnection = connectionState?.appConnections?.GoogleCalendar;
   const isConnected = googleConnection?.connected;
   const connectedEmail = googleConnection?.email;
@@ -45,16 +57,20 @@ export default function ConnectionsSection() {
               </p>
               {isConnected && connectedEmail && (
                 <p className="text-xs text-gray-400 mt-1">
-                  Connected as: <span className="font-medium">{connectedEmail}</span>
+                  Connected as:{" "}
+                  <span className="font-medium">{connectedEmail}</span>
                 </p>
               )}
             </div>
           </div>
 
-          {isConnected ? (
+          {isLoading ? (
+            <LoadingSpinner />
+          ) : isConnected ? (
             <a
               onClick={() => {
-                alert("It's too late my mate :)");
+                disconnectApp.mutate("GoogleCalendar");
+                refetch();
               }}
               href={""}
               className="ml-4 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md text-sm font-medium transition-colors"
