@@ -98,14 +98,32 @@ function App() {
                   </PublicOnlyRoute>
                 }
               />
-              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-              <Route path="/reset-password" element={<ResetPasswordPage />} />
+              <Route 
+                path="/forgot-password"
+                element={
+                <PublicOnlyRoute>
+                  <ForgotPasswordPage />
+                </PublicOnlyRoute>
+                }
+              />
+              <Route
+                path="/reset-password"
+                element={
+                <PublicOnlyRoute>
+                  <ResetPasswordPage />
+                </PublicOnlyRoute>
+                }
+              />
               <Route path="/2fa-verification" element={<TwoFactorPage />} />
 
               {/* Partial auth only route - for email confirmation */}
               <Route
                 path="/confirm-email"
-                element={<ConfirmEmailPage />}
+                element={
+                <PartialAuthRoute>
+                  <ConfirmEmailPage />
+                </PartialAuthRoute>
+              }
               />
 
               {/* Main App Routes (with AppLayout) */}
@@ -225,7 +243,14 @@ function App() {
                     </FullProtectedRouteWithRole>
                   }
                 />
-                <Route path="/communities/:id" element={<CommunityPage />} />
+                <Route
+                  path="/communities/:id"
+                  element={
+                  <FullProtectedRoute>
+                    <CommunityPage />
+                  </FullProtectedRoute>
+                  }
+                />
                 <Route
                   path="/services/create"
                   element={
