@@ -68,9 +68,9 @@ export default function ConnectionsSection() {
             <LoadingSpinner />
           ) : isConnected ? (
             <a
-              onClick={() => {
+              onClick={async () => {
                 disconnectApp.mutate("GoogleCalendar");
-                refetch();
+                await refetch();
               }}
               href={""}
               className="ml-4 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md text-sm font-medium transition-colors"
