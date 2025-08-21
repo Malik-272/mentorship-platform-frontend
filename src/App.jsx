@@ -55,6 +55,7 @@ const ConnectionsSection = lazy(() =>
 );
 const UserProfilePage = lazy(() => import("./pages/UserProfilePage"));
 const CommunityPage = lazy(() => import("./pages/CommunityPage"));
+const MenteeSessionRequestsPage = lazy(() => import("./pages/mentee/MenteeSessionRequestsPage"))
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -276,19 +277,24 @@ function App() {
                 <Route
                   path="my/services"
                   element={
-                    <FullProtectedRoute>
+                    <FullProtectedRouteWithRole
+                      roles={["MENTOR"]}
+                      fallback={<UnauthorizedAccessFallback />}>
                       <MentorServicesPage />
-                    </FullProtectedRoute>
+                    </FullProtectedRouteWithRole>
                   }
                 />
                 <Route
                   path="my/services/:id/session-requests"
                   element={
-                    <FullProtectedRoute>
+                    <FullProtectedRouteWithRole
+                      roles={["MENTOR"]}
+                      fallback={<UnauthorizedAccessFallback />}>
                       <SessionRequestsPage />
-                    </FullProtectedRoute>
+                    </FullProtectedRouteWithRole>
                   }
                 />
+                <Route path="my/session-requests" element={<MenteeSessionRequestsPage />} />
                 <Route path="*" element={<NotFoundPage />} />
               </Route>
             </Routes>
