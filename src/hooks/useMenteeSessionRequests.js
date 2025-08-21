@@ -33,7 +33,7 @@ const menteeSessionRequestsApi = {
       throw new Error(`Failed to withdraw session request: ${response.status} ${response.statusText}`)
     }
 
-    return { success: true, message: `Session request by ${requestId} was deleted` };
+    return { success: true, message: `Session request by ${requestId} was deleted` }
   },
 
   updateSessionRequestAgenda: async ({ requestId, agenda }) => {
@@ -69,14 +69,43 @@ export const useWithdrawSessionRequest = () => {
 
   return useMutation({
     mutationFn: menteeSessionRequestsApi.withdrawSessionRequest,
-    onSuccess: () => {
-      // Invalidate and refetch session requests
-      queryClient.invalidateQueries({
-        queryKey: ["menteeSessionRequests"],
+    onMutate: async (requestId) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ["menteeSessionRequests"] })
+
+      // Snapshot the previous value
+      const previousData = queryClient.getQueryData(["menteeSessionRequests"])
+
+      // Optimistically update by removing the request
+      queryClient.setQueryData(["menteeSessionRequests"], (old) => {
+        if (!old?.sessionRequests) return old
+
+        const updatedRequests = { ...old.sessionRequests }
+
+        // Find and remove the request from all status arrays
+        Object.keys(updatedRequests).forEach((status) => {
+          updatedRequests[status] = updatedRequests[status].filter((request) => request.id !== requestId)
+        })
+
+        return {
+          ...old,
+          sessionRequests: updatedRequests,
+        }
       })
+
+      // Return context with previous data for rollback
+      return { previousData }
     },
-    onError: (error) => {
+    onError: (error, requestId, context) => {
+      // Rollback on error
+      if (context?.previousData) {
+        queryClient.setQueryData(["menteeSessionRequests"], context.previousData)
+      }
       console.error("Failed to withdraw session request:", error)
+    },
+    onSettled: () => {
+      // Optionally refetch to ensure consistency (but not required for immediate UI update)
+      // queryClient.invalidateQueries({ queryKey: ["menteeSessionRequests"] })
     },
   })
 }
@@ -86,14 +115,45 @@ export const useUpdateSessionRequestAgenda = () => {
 
   return useMutation({
     mutationFn: menteeSessionRequestsApi.updateSessionRequestAgenda,
-    onSuccess: () => {
-      // Invalidate and refetch session requests
-      queryClient.invalidateQueries({
-        queryKey: ["menteeSessionRequests"],
+    onMutate: async ({ requestId, agenda }) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ["menteeSessionRequests"] })
+
+      // Snapshot the previous value
+      const previousData = queryClient.getQueryData(["menteeSessionRequests"])
+
+      // Optimistically update the agenda
+      queryClient.setQueryData(["menteeSessionRequests"], (old) => {
+        if (!old?.sessionRequests) return old
+
+        const updatedRequests = { ...old.sessionRequests }
+
+        // Find and update the request in all status arrays
+        Object.keys(updatedRequests).forEach((status) => {
+          updatedRequests[status] = updatedRequests[status].map((request) =>
+            request.id === requestId ? { ...request, agenda } : request,
+          )
+        })
+
+        return {
+          ...old,
+          sessionRequests: updatedRequests,
+        }
       })
+
+      // Return context with previous data for rollback
+      return { previousData }
     },
-    onError: (error) => {
+    onError: (error, variables, context) => {
+      // Rollback on error
+      if (context?.previousData) {
+        queryClient.setQueryData(["menteeSessionRequests"], context.previousData)
+      }
       console.error("Failed to update session agenda:", error)
+    },
+    onSettled: () => {
+      // Optionally refetch to ensure consistency (but not required for immediate UI update)
+      // queryClient.invalidateQueries({ queryKey: ["menteeSessionRequests"] })
     },
   })
 }
