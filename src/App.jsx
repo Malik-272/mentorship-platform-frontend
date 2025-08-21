@@ -99,20 +99,20 @@ function App() {
                   </PublicOnlyRoute>
                 }
               />
-              <Route 
+              <Route
                 path="/forgot-password"
                 element={
-                <PublicOnlyRoute>
-                  <ForgotPasswordPage />
-                </PublicOnlyRoute>
+                  <PublicOnlyRoute>
+                    <ForgotPasswordPage />
+                  </PublicOnlyRoute>
                 }
               />
               <Route
                 path="/reset-password"
                 element={
-                <PublicOnlyRoute>
-                  <ResetPasswordPage />
-                </PublicOnlyRoute>
+                  <PublicOnlyRoute>
+                    <ResetPasswordPage />
+                  </PublicOnlyRoute>
                 }
               />
               <Route path="/2fa-verification" element={<TwoFactorPage />} />
@@ -121,10 +121,10 @@ function App() {
               <Route
                 path="/confirm-email"
                 element={
-                <PartialAuthRoute>
-                  <ConfirmEmailPage />
-                </PartialAuthRoute>
-              }
+                  <PartialAuthRoute>
+                    <ConfirmEmailPage />
+                  </PartialAuthRoute>
+                }
               />
 
               {/* Main App Routes (with AppLayout) */}
@@ -247,9 +247,9 @@ function App() {
                 <Route
                   path="/communities/:id"
                   element={
-                  <FullProtectedRoute>
-                    <CommunityPage />
-                  </FullProtectedRoute>
+                    <FullProtectedRoute>
+                      <CommunityPage />
+                    </FullProtectedRoute>
                   }
                 />
                 <Route
@@ -294,7 +294,12 @@ function App() {
                     </FullProtectedRouteWithRole>
                   }
                 />
-                <Route path="my/session-requests" element={<MenteeSessionRequestsPage />} />
+                <Route path="my/session-requests" element={
+                  <FullProtectedRouteWithRole
+                    roles={["MENTEE"]}
+                    fallback={<UnauthorizedAccessFallback />}>
+                    <MenteeSessionRequestsPage />
+                  </FullProtectedRouteWithRole>} />
                 <Route path="*" element={<NotFoundPage />} />
               </Route>
             </Routes>
