@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
-import { Plus, Settings, Calendar, Clock, Users, AlertCircle } from 'lucide-react'
-import { useGetMentorServices } from "../../hooks/useServices"
+import { Plus, Settings, Calendar, Clock, Users, AlertCircle, Trash2, X } from "lucide-react"
+import { useGetMentorServices, useDeleteService } from "../../hooks/useServices"
 import LoadingSpinner from "../../ui/LoadingSpinner"
 import ErrorMessage from "../../ui/ErrorMessage"
 
@@ -17,8 +17,77 @@ const formatDuration = (minutes) => {
   return `${hours}h ${remainingMinutes}min`
 }
 
+const DeleteConfirmationModal = ({ isOpen, onClose, onConfirm, serviceName, isDeleting }) => {
+  if (!isOpen) return null
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full">
+        <div className="p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Delete Service</h3>
+            <button
+              onClick={onClose}
+              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              disabled={isDeleting}
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          <div className="mb-6">
+            <div className="flex items-center mb-4">
+              <div className="w-12 h-12 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center">
+                <Trash2 className="w-6 h-6 text-red-600 dark:text-red-400" />
+              </div>
+              <div className="ml-4">
+                <p className="text-gray-900 dark:text-white font-medium">
+                  Are you sure you want to delete this service?
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 mb-4">
+              <p className="text-sm font-medium text-gray-900 dark:text-white">Service: {serviceName}</p>
+            </div>
+
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              This action cannot be undone. The service and all associated data will be permanently deleted.
+            </p>
+          </div>
+
+          <div className="flex space-x-3">
+            <button
+              onClick={onClose}
+              disabled={isDeleting}
+              className="flex-1 px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors disabled:opacity-50"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={onConfirm}
+              disabled={isDeleting}
+              className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center"
+            >
+              {isDeleting ? (
+                <>
+                  <LoadingSpinner size="sm" className="mr-2" />
+                  Deleting...
+                </>
+              ) : (
+                "Delete Service"
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function MentorServicesPage() {
   const [filter, setFilter] = useState("all") // all, active, inactive
+  const [deleteModal, setDeleteModal] = useState({ isOpen: false, service: null })
 
   // API hooks
   const {
@@ -27,8 +96,30 @@ export default function MentorServicesPage() {
     error: servicesError,
     refetch: refetchServices,
   } = useGetMentorServices()
+
+  const deleteServiceMutation = useDeleteService()
+
   console.log("services: ", services)
 
+  const handleDeleteService = async (serviceId) => {
+    try {
+      await deleteServiceMutation.mutateAsync(serviceId)
+      setDeleteModal({ isOpen: false, service: null })
+    } catch (error) {
+      console.error("Error deleting service:", error)
+      alert(error.message || "Failed to delete service. Please try again.")
+    }
+  }
+
+  const openDeleteModal = (service) => {
+    setDeleteModal({ isOpen: true, service })
+  }
+
+  const closeDeleteModal = () => {
+    if (!deleteServiceMutation.isPending) {
+      setDeleteModal({ isOpen: false, service: null })
+    }
+  }
 
   // Authentication and authorization checks
   if (servicesLoading) {
@@ -99,30 +190,6 @@ export default function MentorServicesPage() {
             </div>
           </div>
 
-          {/* <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
-            <div className="flex items-center">
-              <div className="p-2 bg-green-100 dark:bg-green-900/20 rounded-lg">
-                <Eye className="w-5 h-5 text-green-600 dark:text-green-400" />
-              </div>
-              <div className="ml-3">
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Active Services</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.active}</p>
-              </div>
-            </div>
-          </div> */}
-
-          {/* <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
-            <div className="flex items-center">
-              <div className="p-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                <EyeOff className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-              </div>
-              <div className="ml-3">
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Inactive Services</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.inactive}</p>
-              </div>
-            </div>
-          </div> */}
-
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
             <div className="flex items-center">
               <div className="p-2 bg-orange-100 dark:bg-orange-900/20 rounded-lg">
@@ -141,7 +208,10 @@ export default function MentorServicesPage() {
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300 mr-2">Filter:</span>
             {[
-              { value: "all", label: "All Services" },
+              {
+                value: "all",
+                label: "All Services",
+              },
               { value: "active", label: "Active Only" },
               { value: "inactive", label: "Inactive Only" },
             ].map((option) => (
@@ -176,7 +246,7 @@ export default function MentorServicesPage() {
               </p>
               {filter === "all" && (
                 <Link
-                  to="/my/services/new"
+                  to="/services/create"
                   className="inline-flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
                 >
                   <Plus className="w-4 h-4" />
@@ -195,14 +265,9 @@ export default function MentorServicesPage() {
                   <div className="flex-1">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center space-x-3">
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                          {service.type}
-                        </h3>
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{service.type}</h3>
                         <div className="flex items-center space-x-2">
-                          <div
-                            className={`w-2 h-2 rounded-full ${service.active ? "bg-green-500" : "bg-gray-400"
-                              }`}
-                          />
+                          <div className={`w-2 h-2 rounded-full ${service.active ? "bg-green-500" : "bg-gray-400"}`} />
                           <span
                             className={`text-xs font-medium px-2 py-1 rounded-full ${service.active
                               ? "bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-300"
@@ -213,17 +278,6 @@ export default function MentorServicesPage() {
                           </span>
                         </div>
                       </div>
-                      {/* <button
-                        onClick={() => handleToggleStatus(service.id, service.isActive)}
-                        disabled={toggleServiceMutation.isPending}
-                        className={`p-1 rounded-md transition-colors ${service.isActive
-                          ? "text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20"
-                          : "text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700"
-                          }`}
-                        title={service.isActive ? "Deactivate service" : "Activate service"}
-                      >
-                        {service.isActive ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-                      </button> */}
                     </div>
 
                     <p className="text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">{service.description}</p>
@@ -267,6 +321,15 @@ export default function MentorServicesPage() {
                       <Settings className="w-4 h-4" />
                       <span>Manage Service</span>
                     </Link>
+
+                    <button
+                      onClick={() => openDeleteModal(service)}
+                      className="inline-flex items-center justify-center space-x-2 px-4 py-2 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
+                      title="Delete service"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      <span>Delete</span>
+                    </button>
                   </div>
                 </div>
 
@@ -296,7 +359,14 @@ export default function MentorServicesPage() {
           </div>
         )}
       </div>
+
+      <DeleteConfirmationModal
+        isOpen={deleteModal.isOpen}
+        onClose={closeDeleteModal}
+        onConfirm={() => handleDeleteService(deleteModal.service?.id)}
+        serviceName={deleteModal.service?.type}
+        isDeleting={deleteServiceMutation.isPending}
+      />
     </div>
   )
 }
-

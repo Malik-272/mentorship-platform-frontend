@@ -97,20 +97,20 @@ const servicesApi = {
 
     return response.json();
   },
-
   deleteService: async (serviceId) => {
-    const response = await fetch(`${API_BASE_URL}/services/${serviceId}`, {
+    const response = await fetch(`${API_BASE_URL}/services/my/${serviceId}`, {
       method: "DELETE",
       credentials: "include",
-    });
+    })
 
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || "Failed to delete service");
+      const error = await response.json()
+      throw new Error(error.message || "Failed to delete service")
     }
 
-    return response.json();
+    return { status: "success", message: "Service deleted successfully" }
   },
+
   addSlot: async (serviceId, slotData) => {
     const response = await fetch(
       `${API_BASE_URL}/services/my/${serviceId}/day-availabilities`,
@@ -307,21 +307,40 @@ export const useUpdateService = () => {
 };
 
 export const useDeleteService = () => {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: servicesApi.deleteService,
-    onSuccess: (data, serviceId) => {
-      // Remove from cache
-      queryClient.removeQueries(["service"]);
-      // Invalidate related queries
-      queryClient.invalidateQueries(["myServices"]);
+    onMutate: async (serviceId) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ["mentorServices"] })
+
+      // Snapshot the previous value
+      const previousData = queryClient.getQueryData(["mentorServices"])
+
+      // Optimistically update by removing the service
+      queryClient.setQueryData(["mentorServices"], (oldServices) => {
+        if (!oldServices) return oldServices
+        return oldServices.filter((service) => service.id !== serviceId)
+      })
+
+      // Return context with previous data for rollback
+      return { previousData }
     },
-    onError: (error) => {
-      console.error("Delete service error:", error);
+    onError: (error, serviceId, context) => {
+      // Rollback on error
+      if (context?.previousData) {
+        queryClient.setQueryData(["mentorServices"], context.previousData)
+      }
+      console.error("Failed to delete service:", error)
     },
-  });
-};
+    onSettled: () => {
+      // Optionally refetch to ensure consistency (but not required for immediate UI update)
+      // queryClient.invalidateQueries({ queryKey: ["mentorServices"] })
+    },
+  })
+}
+
 export const useAddSlot = (serviceId) => {
   const queryClient = useQueryClient();
 
