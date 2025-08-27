@@ -24,20 +24,22 @@ const servicesApi = {
 
   getMentorServices: async () => {
     const response = await fetch(`${API_BASE_URL}/services/my`, {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      credentials: 'include',
-    })
+      credentials: "include",
+    });
 
     if (!response.ok) {
-      throw new Error(`Failed to fetch services: ${response.status} ${response.statusText}`)
+      throw new Error(
+        `Failed to fetch services: ${response.status} ${response.statusText}`
+      );
     }
 
-    const data = await response.json()
+    const data = await response.json();
 
-    return data.services
+    return data.services;
   },
   getMyService: async (serviceId) => {
     const response = await fetch(`${API_BASE_URL}/services/my/${serviceId}`, {
@@ -49,17 +51,19 @@ const servicesApi = {
     });
 
     if (!response.ok) {
-      throw new Error(`Failed to fetch service ${serviceId}: ${response.status} ${response.statusText}`)
+      throw new Error(
+        `Failed to fetch service ${serviceId}: ${response.status} ${response.statusText}`
+      );
     }
 
-    const data = await response.json()
-    console.log(data)
+    const data = await response.json();
+    console.log(data);
     return data.data;
   },
 
   getService: async (mentorId, serviceId) => {
     const response = await fetch(
-      `${API_BASE_URL}/mentors/${mentorId}/services/${serviceId}`,
+      `${API_BASE_URL}/users/${mentorId}/services/${serviceId}`,
       {
         method: "GET",
         credentials: "include",
@@ -76,8 +80,8 @@ const servicesApi = {
       const error = await response.json();
       throw new Error(error.message || "Failed to fetch service");
     }
-
-    return response.json();
+    const res = await response.json();
+    return res;
   },
 
   updateService: async (serviceId, serviceData) => {
@@ -240,6 +244,26 @@ const servicesApi = {
     const text = await response.text();
     return text ? JSON.parse(text) : null;
   },
+  bookSession: async (mentorId, serviceId, bookingData) => {
+    const response = await fetch(
+      `${API_BASE_URL}/users/${mentorId}/services/${serviceId}/book`,
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bookingData),
+      }
+    );
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to book session");
+    }
+
+    return response.json();
+  },
 };
 
 // Custom hooks
@@ -272,8 +296,8 @@ export const useGetMentorServices = () => {
     queryKey: ["mentorServices"],
     queryFn: servicesApi.getMentorServices,
     staleTime: 5 * 60 * 1000, // 5 minutes
-  })
-}
+  });
+};
 
 export const useGetService = (mentorId, serviceId) => {
   return useQuery({
@@ -406,6 +430,21 @@ export const useRemoveExceptionSlot = (serviceId) => {
     },
     onError: (error) => {
       console.error("Remove exception slot error:", error);
+    },
+  });
+};
+export const useBookSession = (mentorId, serviceId) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (bookingData) =>
+      servicesApi.bookSession(mentorId, serviceId, bookingData),
+    onSuccess: (data) => {
+      // Invalidate and refetch service slots
+      queryClient.invalidateQueries(["myService", data.mentorId]);
+    },
+    onError: (error) => {
+      console.error("Book session error:", error);
     },
   });
 };
