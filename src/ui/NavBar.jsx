@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 
 import NavLogo from "./NavLogo";
@@ -8,7 +10,7 @@ import MobileNav from "./MobileNav";
 function NavBar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   return (
-    <nav className="bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50 transition-colors">
+    <nav className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border sticky top-0 z-50 transition-all duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <NavLogo />

@@ -1,9 +1,10 @@
+"use client";
+
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
   Settings,
   Flag,
-  MapPin,
   Globe,
   Calendar,
   ExternalLink,
@@ -13,9 +14,12 @@ import {
   Users,
   Clock,
   Tag,
+  Briefcase,
+  DollarSign,
 } from "lucide-react";
 
 import { useGetUserProfile } from "../hooks/useProfile";
+import { useGetMentorServices } from "../hooks/useServices";
 
 import ReportUserModal from "./ReportUserModal";
 import LoadingSpinner from "../ui/LoadingSpinner";
@@ -61,7 +65,7 @@ export default function UserProfilePage() {
 
   // BUGGGG
   // const user = { ...profileData?.user, ...currentUser?.user };
-  const user = { ...profileData?.user }
+  const user = { ...profileData?.user };
   console.log("user:", user);
 
   return (
@@ -76,7 +80,7 @@ export default function UserProfilePage() {
 
         <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            <ProfileInfo user={user} />
+            <ProfileInfo user={user} isOwnProfile={isOwnProfile} />
           </div>
           <div className="lg:col-span-1">
             <ProfileSidebar user={user} />
@@ -239,7 +243,7 @@ function ProfileHeader({ user, isOwnProfile, onReport }) {
 }
 
 // Profile Info Component
-function ProfileInfo({ user }) {
+function ProfileInfo({ user, isOwnProfile }) {
   return (
     <div className="space-y-6">
       {/* About Section */}
@@ -252,6 +256,11 @@ function ProfileInfo({ user }) {
             {user.bio}
           </p>
         </div>
+      )}
+
+      {/* Services Section */}
+      {user?.role === "MENTOR" && user?.services?.length > 0 && (
+        <ServicesSection user={user} isOwnProfile={isOwnProfile} />
       )}
 
       {/* Skills Section */}
@@ -304,6 +313,93 @@ function ProfileInfo({ user }) {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+// ServicesSection Component
+function ServicesSection({ user, isOwnProfile }) {
+  // For own profile, use the mentor services hook
+  // const { data: services, isLoading, error } = useGetMentorServices();
+  const services = user?.services || [];
+  console.log("services", services);
+  // For other profiles, we'll use the services from the user object (when available)
+  // This would need to be updated when the API provides services in the user profile response
+
+  // if (isLoading) {
+  //   return (
+  //     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+  //       <div className="flex items-center justify-center py-8">
+  //         <LoadingSpinner size="sm" />
+  //       </div>
+  //     </div>
+  //   );
+  // }
+
+  if (!services || services.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+        <Briefcase className="w-5 h-5 mr-2" />
+        Services
+      </h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {services.map((service) => (
+          <ServiceCard
+            key={service.id}
+            service={service}
+            userId={user.id}
+            isOwnProfile={isOwnProfile}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ServiceCard Component
+function ServiceCard({ service, userId, isOwnProfile }) {
+  const handleServiceClick = () => {
+    if (isOwnProfile) {
+      // Navigate to service management page
+      window.location.href = `/my/services/${service.id}`;
+    } else {
+      // Navigate to booking page
+      window.location.href = `/users/${userId}/services/${service.id}/book`;
+    }
+  };
+
+  return (
+    <div
+      onClick={handleServiceClick}
+      className="border border-gray-200 dark:border-gray-600 rounded-lg p-4 hover:border-gray-300 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer group"
+    >
+      <div className="flex items-start justify-between mb-2">
+        <h3 className="font-medium text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+          {service.title}
+        </h3>
+        {/* <div className="flex items-center text-green-600 dark:text-green-400 text-sm font-medium">
+          <DollarSign className="w-4 h-4 mr-1" />
+          {service.price}
+        </div> */}
+      </div>
+
+      {service.description && (
+        <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">
+          {service.description}
+        </p>
+      )}
+
+      <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+        <div className="flex items-center">
+          <Clock className="w-3 h-3 mr-1" />
+          {service.duration} min
+        </div>
+        <div className="text-right">{isOwnProfile ? "Manage" : "Book Now"}</div>
+      </div>
     </div>
   );
 }
@@ -364,10 +460,10 @@ function ProfileSidebar({ user }) {
               <div className="text-sm text-gray-500 dark:text-gray-400">
                 {user?.dateJoined
                   ? new Date(user.dateJoined).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })
                   : "Unknown"}
               </div>
             </div>

@@ -6,6 +6,21 @@ export const navigationData = [
   { name: "About", href: "/about" },
 ];
 
+export const roleBasedNavigation = {
+  MENTOR: [
+    { name: "My Services", href: "/my/services" },
+    { name: "My Communities", href: "/my/communities" },
+  ],
+  MENTEE: [
+    { name: "Session Requests", href: "/my/session-requests" },
+    { name: "My Communities", href: "/my/communities" },
+  ],
+  COMMUNITY_MANAGER: [
+    { name: "Community Settings", href: "/communities/my/settings" },
+    { name: "Manage Community", href: "/communities/my/manage" },
+  ],
+};
+
 export const footerData = {
   company: {
     name: "Growtly",
