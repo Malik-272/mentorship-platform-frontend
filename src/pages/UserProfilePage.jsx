@@ -379,7 +379,7 @@ function ServiceCard({ service, userId, isOwnProfile }) {
     >
       <div className="flex items-start justify-between mb-2">
         <h3 className="font-medium text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-          {service.title}
+          {service.type}
         </h3>
         {/* <div className="flex items-center text-green-600 dark:text-green-400 text-sm font-medium">
           <DollarSign className="w-4 h-4 mr-1" />
@@ -396,7 +396,7 @@ function ServiceCard({ service, userId, isOwnProfile }) {
       <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
         <div className="flex items-center">
           <Clock className="w-3 h-3 mr-1" />
-          {service.duration} min
+          {service.sessionTime} min
         </div>
         <div className="text-right">{isOwnProfile ? "Manage" : "Book Now"}</div>
       </div>
