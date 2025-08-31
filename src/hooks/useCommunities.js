@@ -193,10 +193,13 @@ export const useCancelRequestToJoin = () => {
     mutationFn: communitiesApi.cancelRequestToJoin,
     onSuccess: (data, communityId) => {
       // Update the community cache to reflect the new membership status
-      queryClient.setQueryData(["community", communityId], (oldData) => ({
-        ...oldData,
-        userMembership: null,
-      }));
+      // queryClient.setQueryData(["community", communityId], (oldData) => ({
+      //   ...oldData,
+      //   userMembership: null,
+      // }));
+      queryClient.setQueryData(["joinRequests"], (old = []) =>
+        old.filter((r) => r.communityId !== communityId)
+      );
     },
   });
 };
@@ -208,16 +211,33 @@ export const useLeaveCommunity = () => {
     mutationFn: communitiesApi.leaveCommunity,
     onSuccess: (data, communityId) => {
       // Update the community cache
-      queryClient.setQueryData(["community", communityId], (oldData) => ({
-        ...oldData,
-        userMembership: null,
-        community: {
-          ...oldData.community,
-          member_count: Math.max((oldData.community.member_count || 1) - 1, 0),
-        },
-      }));
+      // queryClient.setQueryData(["community", communityId], (oldData) => ({
+      //   ...oldData,
+      //   userMembership: null,
+      //   community: {
+      //     ...oldData.community,
+      //     member_count: Math.max((oldData.community.member_count || 1) - 1, 0),
+      //   },
+      // }));
+      queryClient.setQueryData(["memberships"], (old = []) =>
+        old.filter((c) => c.id !== communityId)
+      );
       // Invalidate members list
       queryClient.invalidateQueries(["communityMembers", communityId]);
     },
+  });
+};
+
+export const useMemberships = () => {
+  return useQuery({
+    queryKey: ["memberships"],
+    queryFn: communitiesApi.fetchMemberships,
+  });
+};
+
+export const useJoinRequests = () => {
+  return useQuery({
+    queryKey: ["joinRequests"],
+    queryFn: communitiesApi.fetchJoinRequests,
   });
 };

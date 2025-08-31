@@ -260,4 +260,25 @@ export const communitiesApi = {
 
     return { success: true, message: "Request to join community cancelled" };
   },
+
+  fetchMemberships: async () => {
+    const res = await fetch(`${API_BASE_URL}/communities/my/memberships`, {
+      credentials: "include",
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || "Failed to fetch memberships");
+    return data.memberships;
+  },
+
+  // for mentor and mentee
+  fetchJoinRequests: async () => {
+    const res = await fetch(`${API_BASE_URL}/users/me/join-requests`, {
+      credentials: "include",
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || "Failed to fetch join requests");
+    return data.joinRequests;
+  },
 };
