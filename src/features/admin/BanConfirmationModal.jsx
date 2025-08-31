@@ -87,17 +87,26 @@ export default function BanConfirmationModal({ report, onClose, onSuccess }) {
               <div className="flex items-center gap-2">
                 <User className="w-4 h-4 text-gray-400" />
                 <span className="text-gray-600 dark:text-gray-300">Reporter:</span>
-                <span className="font-medium text-gray-900 dark:text-white">{report.reporterId}</span>
+                <span className="font-medium text-gray-900 dark:text-white">{report.userId}</span>
               </div>
               <div>
                 <span className="text-gray-600 dark:text-gray-300">Violation:</span>
-                <p className="font-medium text-gray-900 dark:text-white mt-1">{report.reason}</p>
+                <p className="font-medium text-gray-900 dark:text-white mt-1">{report.violation}</p>
               </div>
               {report.additionalDetails && (
+                // <div>
+                //   <span className="text-gray-600 dark:text-gray-300">Additional Details:</span>
+                //   <p className="font-medium text-gray-900 dark:text-white mt-1">{report.additionalDetails}</p>
+                // </div>
                 <div>
-                  <span className="text-gray-600 dark:text-gray-300">Additional Details:</span>
-                  <p className="font-medium text-gray-900 dark:text-white mt-1">{report.additionalDetails}</p>
+                  <span className="text-gray-600 dark:text-gray-300">
+                    Additional Details:
+                  </span>
+                  <p className="font-medium text-gray-900 dark:text-white mt-1 break-words whitespace-pre-line line-clamp-5">
+                    {report.additionalDetails}
+                  </p>
                 </div>
+
               )}
             </div>
           </div>

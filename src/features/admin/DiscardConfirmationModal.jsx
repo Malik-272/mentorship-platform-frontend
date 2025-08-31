@@ -39,9 +39,9 @@ export default function DiscardConfirmationModal({ report, onClose, onSuccess })
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white dark:bg-gray-800 rounded-lg max-w-md w-full">
+      <div className="bg-white dark:bg-gray-800 rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+        < div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700" >
           <div className="flex items-center gap-3">
             <div className="p-2 bg-gray-100 dark:bg-gray-900/20 rounded-lg">
               <Trash2 className="w-5 h-5 text-gray-600 dark:text-gray-400" />
@@ -54,12 +54,12 @@ export default function DiscardConfirmationModal({ report, onClose, onSuccess })
           >
             <X className="w-5 h-5 text-gray-500 dark:text-gray-400" />
           </button>
-        </div>
+        </div >
 
         {/* Content */}
-        <div className="p-6">
+        < div className="p-6" >
           {/* Info */}
-          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-6">
+          < div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-6" >
             <div className="flex items-start gap-3">
               <div className="p-1 bg-blue-100 dark:bg-blue-900/40 rounded">
                 <Trash2 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
@@ -73,10 +73,10 @@ export default function DiscardConfirmationModal({ report, onClose, onSuccess })
                 </p>
               </div>
             </div>
-          </div>
+          </div >
 
           {/* Report Details */}
-          <div className="bg-gray-50 dark:bg-gray-900/50 rounded-lg p-4 mb-6">
+          < div className="bg-gray-50 dark:bg-gray-900/50 rounded-lg p-4 mb-6" >
             <h3 className="font-medium text-gray-900 dark:text-white mb-3">Report Details</h3>
             <div className="space-y-2 text-sm">
               <div className="flex items-center gap-2">
@@ -87,7 +87,7 @@ export default function DiscardConfirmationModal({ report, onClose, onSuccess })
               <div className="flex items-center gap-2">
                 <User className="w-4 h-4 text-gray-400" />
                 <span className="text-gray-600 dark:text-gray-300">Reporter:</span>
-                <span className="font-medium text-gray-900 dark:text-white">{report.reporterId}</span>
+                <span className="font-medium text-gray-900 dark:text-white">{report.userId}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-gray-400" />
@@ -96,22 +96,30 @@ export default function DiscardConfirmationModal({ report, onClose, onSuccess })
               </div>
               <div>
                 <span className="text-gray-600 dark:text-gray-300">Violation:</span>
-                <p className="font-medium text-gray-900 dark:text-white mt-1">{report.reason}</p>
+                <p className="font-medium text-gray-900 dark:text-white mt-1">{report.violation}</p>
               </div>
               {report.additionalDetails && (
+                // <div>
+                //   <span className="text-gray-600 dark:text-gray-300">Additional Details:</span>
+                //   <p className="font-medium text-gray-900 dark:text-white mt-1">{report.additionalDetails}</p>
+                // </div>
                 <div>
                   <span className="text-gray-600 dark:text-gray-300">Additional Details:</span>
-                  <p className="font-medium text-gray-900 dark:text-white mt-1">{report.additionalDetails}</p>
+                  <p className="font-medium text-gray-900 dark:text-white mt-1 break-words whitespace-pre-line">
+                    {report.additionalDetails}
+                  </p>
                 </div>
+
               )}
             </div>
-          </div>
+          </div >
 
           {error && (
             <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
               <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
             </div>
-          )}
+          )
+          }
 
           {/* Actions */}
           <div className="flex gap-3">
@@ -131,8 +139,8 @@ export default function DiscardConfirmationModal({ report, onClose, onSuccess })
               {isSubmitting ? "Discarding..." : "Discard Report"}
             </button>
           </div>
-        </div>
-      </div>
-    </div>
+        </div >
+      </div >
+    </div >
   )
 }

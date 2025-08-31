@@ -156,6 +156,9 @@ export default function UserReportsPage() {
                       Violation
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Additional Details
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Reported At
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
@@ -189,11 +192,27 @@ export default function UserReportsPage() {
                       <td className="px-6 py-4">
                         <div className="max-w-xs">
                           <p className="text-sm text-gray-900 dark:text-white font-medium">{report.reason}</p>
-                          {report.additionalDetails && (
-                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{report.additionalDetails}</p>
+                          {report.violation && (
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{report.violation}</p>
                           )}
                         </div>
                       </td>
+                      <td className="px-6 py-4 align-top max-w-xs">
+                        <div className="flex flex-col">
+                          <p className="text-sm text-gray-900 dark:text-white font-medium break-words whitespace-normal">
+                            {report.reason}
+                          </p>
+                          {report.additionalDetails && (
+                            <p
+                              className="text-xs text-gray-500 dark:text-gray-400 mt-1 truncate"
+                              title={report.additionalDetails}
+                            >
+                              {report.additionalDetails}
+                            </p>
+                          )}
+                        </div>
+                      </td>
+
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
                           <Calendar className="w-4 h-4" />
@@ -201,37 +220,27 @@ export default function UserReportsPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="relative">
+                        <div className="flex items-center gap-3">
+                          {/* Ban User */}
                           <button
-                            onClick={() => toggleDropdown(report.id)}
-                            className="inline-flex items-center gap-2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+                            onClick={() => handleActionClick(report, "ban")}
+                            className="p-2 rounded-full text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors"
+                            title="Ban User"
                           >
-                            Actions
-                            <ChevronDown className="w-4 h-4" />
+                            <Ban className="w-5 h-5" />
                           </button>
 
-                          {openDropdown === report.id && (
-                            <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-10">
-                              <div className="py-1">
-                                <button
-                                  onClick={() => handleActionClick(report, "ban")}
-                                  className="flex items-center gap-2 w-full px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
-                                >
-                                  <Ban className="w-4 h-4" />
-                                  Ban User
-                                </button>
-                                <button
-                                  onClick={() => handleActionClick(report, "discard")}
-                                  className="flex items-center gap-2 w-full px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-                                >
-                                  <X className="w-4 h-4" />
-                                  Discard Report
-                                </button>
-                              </div>
-                            </div>
-                          )}
+                          {/* Discard Report */}
+                          <button
+                            onClick={() => handleActionClick(report, "discard")}
+                            className="p-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                            title="Discard Report"
+                          >
+                            <X className="w-5 h-5" />
+                          </button>
                         </div>
                       </td>
+
                     </tr>
                   ))}
                 </tbody>
@@ -268,6 +277,9 @@ export default function UserReportsPage() {
                       Violation
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Additional Details
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Reported At
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
@@ -301,11 +313,27 @@ export default function UserReportsPage() {
                       <td className="px-6 py-4">
                         <div className="max-w-xs">
                           <p className="text-sm text-gray-900 dark:text-white font-medium">{report.reason}</p>
-                          {report.additionalDetails && (
-                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{report.additionalDetails}</p>
+                          {report.violation && (
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{report.violation}</p>
                           )}
                         </div>
                       </td>
+                      <td className="px-6 py-4 align-top max-w-xs">
+                        <div className="flex flex-col">
+                          <p className="text-sm text-gray-900 dark:text-white font-medium break-words whitespace-normal">
+                            {report.reason}
+                          </p>
+                          {report.additionalDetails && (
+                            <p
+                              className="text-xs text-gray-500 dark:text-gray-400 mt-1 truncate"
+                              title={report.additionalDetails}
+                            >
+                              {report.additionalDetails}
+                            </p>
+                          )}
+                        </div>
+                      </td>
+
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
                           <Calendar className="w-4 h-4" />
