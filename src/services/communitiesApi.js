@@ -281,4 +281,22 @@ export const communitiesApi = {
     if (!res.ok) throw new Error(data.message || "Failed to fetch join requests");
     return data.joinRequests;
   },
+
+  // Add to communitiesApi.js
+  getCommunityServices: async (communityId) => {
+    const response = await fetch(`${API_BASE_URL}/communities/${communityId}/services`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to fetch community services");
+    }
+
+    return response.json();
+  },
 };
