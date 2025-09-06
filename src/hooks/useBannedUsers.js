@@ -36,7 +36,9 @@ const bannedUsersApi = {
       throw new Error("Failed to unban user");
     }
 
-    return response.json();
+    // Check if response has body
+    const text = await response.text();
+    return text ? JSON.parse(text) : { success: true };
   },
 };
 

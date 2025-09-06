@@ -337,12 +337,12 @@ function App() {
                 <Route
                   path="management/banned-users"
                   element={
-                    // <FullProtectedRouteWithRole
-                    //   roles={["ADMIN"]}
-                    //   fallback={<UnauthorizedAccessFallback />}
-                    // >
-                    <BannedUsersPage />
-                    // </FullProtectedRouteWithRole>
+                    <FullProtectedRouteWithRole
+                      roles={["ADMIN"]}
+                      fallback={<UnauthorizedAccessFallback />}
+                    >
+                      <BannedUsersPage />
+                    </FullProtectedRouteWithRole>
                   }
                 />
                 <Route path="*" element={<NotFoundPage />} />
