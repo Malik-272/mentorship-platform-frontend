@@ -28,6 +28,7 @@ import CreateServicePage from "./pages/CreateServicePage";
 import ServiceManagementPage from "./pages/ServiceManagementPage";
 import ServiceBookingPage from "./pages/ServiceBookingPage";
 import UserReportsPage from "./pages/admin/UserReportsPage";
+import UserPreviewPage from "./pages/admin/UserPreviewPage";
 const AppLayout = lazy(() => import("./ui/AppLayout"));
 const LandingPage = lazy(() => import("./pages/LandingPage"));
 
@@ -330,6 +331,17 @@ function App() {
                       fallback={<UnauthorizedAccessFallback />}
                     >
                       <UserReportsPage />
+                    </FullProtectedRouteWithRole>
+                  }
+                />
+                <Route
+                  path="management/users/:id"
+                  element={
+                    <FullProtectedRouteWithRole
+                      roles={["ADMIN"]}
+                      fallback={<UnauthorizedAccessFallback />}
+                    >
+                      <UserPreviewPage />
                     </FullProtectedRouteWithRole>
                   }
                 />
