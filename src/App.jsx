@@ -19,6 +19,7 @@ import { AuthProvider } from "./context/AuthContext";
 import CreateCommunityPage from "./pages/CreateCommunityPage";
 import ManageCommunityPage from "./pages/ManageCommunityPage";
 import CommunityManagerOnlyFallback from "./ui/CommunityManagerOnlyFallback";
+import BannedUserPage from "./pages/auth/BannedUserPage";
 import CommunitySettingsPage from "./pages/CommunitySettingsPage";
 import UnauthorizedAccessFallback from "./ui/UnauthorizedAccessFallback";
 import UserCommunitiesPage from "./pages/UserCommunitiesPage";
@@ -319,6 +320,12 @@ function App() {
                     >
                       <MenteeSessionRequestsPage />
                     </FullProtectedRouteWithRole>
+                  }
+                />
+                <Route
+                  path="/banned"
+                  element={
+                    <BannedUserPage />
                   }
                 />
                 <Route path="*" element={<NotFoundPage />} />
