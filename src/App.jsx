@@ -335,7 +335,7 @@ function App() {
                   }
                 />
                 <Route
-                  path="management/users/:id"
+                  path="management/users"
                   element={
                     <FullProtectedRouteWithRole
                       roles={["ADMIN"]}

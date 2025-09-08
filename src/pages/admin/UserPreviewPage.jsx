@@ -19,11 +19,14 @@ import {
   MapPin,
   Zap,
 } from "lucide-react"
+
 import LoadingSpinner from "../../ui/LoadingSpinner"
 import ErrorMessage from "../../ui/ErrorMessage"
 import BanUserModal from "../../features/admin/BanUserModal"
 import UnbanUserModal from "../../features/admin/UnbanUserModal"
-import { useUserPreview } from "../../hooks/useUserPreview"
+
+// Import the new React Query hooks
+import { useUserPreview, useBanUser, useUnbanUser } from "../../hooks/useUserPreview"
 
 export default function UserPreviewPage() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -33,32 +36,39 @@ export default function UserPreviewPage() {
   const [activeTab, setActiveTab] = useState("all")
 
   const userId = searchParams.get("id")
-  const { user, isLoading, error, searchUser, banUser, unbanUser } = useUserPreview()
+
+  const { data: user, isLoading, error } = useUserPreview(userId)
+  const { mutate: banUser, isLoading: isBanning } = useBanUser()
+  const { mutate: unbanUser, isLoading: isUnbanning } = useUnbanUser()
 
   const handleSearch = (e) => {
     e.preventDefault()
     if (searchId.trim()) {
       setSearchParams({ id: searchId.trim() })
-      searchUser(searchId.trim())
     }
   }
 
-  const handleBanUser = async (banReason) => {
-    try {
-      await banUser(userId, banReason)
-      setShowBanModal(false)
-    } catch (error) {
-      console.error("Failed to ban user:", error)
+  const handleBanUser = (banReason) => {
+    // Add a pre-check to prevent banning an admin
+    if (user?.basicDetails?.role === "ADMIN") {
+      console.warn("Attempt to ban another admin was prevented.");
+      return; // Exit the function
     }
+
+    banUser(
+      { userId, banReason },
+      {
+        onSuccess: () => setShowBanModal(false),
+        onError: (err) => console.error("Failed to ban user:", err),
+      }
+    )
   }
 
-  const handleUnbanUser = async () => {
-    try {
-      await unbanUser(userId)
-      setShowUnbanModal(false)
-    } catch (error) {
-      console.error("Failed to unban user:", error)
-    }
+  const handleUnbanUser = () => {
+    unbanUser(userId, {
+      onSuccess: () => setShowUnbanModal(false),
+      onError: (err) => console.error("Failed to unban user:", err),
+    })
   }
 
   const formatDate = (dateString) => {
@@ -359,7 +369,9 @@ export default function UserPreviewPage() {
                   <div className="flex items-center gap-2">
                     {getStatusIcon(request.status)}
                     <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(request.status)}`}
+                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
+                        request.status,
+                      )}`}
                     >
                       {request.status}
                     </span>
@@ -405,7 +417,7 @@ export default function UserPreviewPage() {
                 </div>
                 {request.agenda && (
                   <div className="mt-2 pt-2 border-t border-gray-200 dark:border-gray-700">
-                    <p className="text-sm">
+                    <p className="text-sm break-words whitespace-pre-line">
                       <span className="font-medium">Agenda:</span> {request.agenda}
                     </p>
                   </div>
@@ -523,7 +535,6 @@ export default function UserPreviewPage() {
         <h1 className="text-3xl font-bold">User Preview</h1>
       </div>
 
-      {/* Search Bar */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
         <div className="p-6">
           <form onSubmit={handleSearch} className="flex gap-4">
@@ -548,14 +559,12 @@ export default function UserPreviewPage() {
         </div>
       </div>
 
-      {/* Loading State */}
       {isLoading && (
         <div className="flex justify-center py-12">
           <LoadingSpinner />
         </div>
       )}
 
-      {/* Error State */}
       {error && !isLoading && (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
           <div className="p-6">
@@ -564,40 +573,42 @@ export default function UserPreviewPage() {
         </div>
       )}
 
-      {/* User Information */}
       {user && !isLoading && !error && (
         <div className="space-y-6">
           {/* Action Buttons */}
           <div className="flex justify-end gap-2">
-            {user.basicDetails.isBanned ? (
-              <button
-                onClick={() => setShowUnbanModal(true)}
-                className="inline-flex items-center px-4 py-2 border border-green-600 text-sm font-medium rounded-md text-green-600 bg-white hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 dark:bg-gray-800 dark:hover:bg-green-950"
-              >
-                <CheckCircle className="h-4 w-4 mr-2" />
-                Unban User
-              </button>
-            ) : (
-              <button
-                onClick={() => setShowBanModal(true)}
-                className="inline-flex items-center px-4 py-2 border border-red-600 text-sm font-medium rounded-md text-red-600 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:bg-gray-800 dark:hover:bg-red-950"
-              >
-                <Ban className="h-4 w-4 mr-2" />
-                Ban User
-              </button>
+            {/* Conditional Rendering of Ban/Unban buttons */}
+            {user.basicDetails.role !== "ADMIN" && (
+              <>
+                {user.basicDetails.isBanned ? (
+                  <button
+                    onClick={() => setShowUnbanModal(true)}
+                    className="inline-flex items-center px-4 py-2 border border-green-600 text-sm font-medium rounded-md text-green-600 bg-white hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 dark:bg-gray-800 dark:hover:bg-green-950"
+                    disabled={isUnbanning}
+                  >
+                    <CheckCircle className="h-4 w-4 mr-2" />
+                    Unban User
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => setShowBanModal(true)}
+                    className="inline-flex items-center px-4 py-2 border border-red-600 text-sm font-medium rounded-md text-red-600 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:bg-gray-800 dark:hover:bg-red-950"
+                    disabled={isBanning}
+                  >
+                    <Ban className="h-4 w-4 mr-2" />
+                    Ban User
+                  </button>
+                )}
+              </>
             )}
+            {/* You could add an else block here to show a message if the user is an admin,
+                for example: `user.basicDetails.role === "ADMIN" && <span className="text-sm text-gray-500">Cannot ban administrators.</span>`
+            */}
           </div>
 
-          {/* Basic Information */}
           {renderBasicInfo()}
-
-          {/* Links */}
           {renderLinks()}
-
-          {/* Communities */}
           {renderCommunities()}
-
-          {/* Role-specific content */}
           {user.basicDetails.role === "MENTEE" && renderSessionRequests()}
           {user.basicDetails.role === "MENTOR" && (
             <>
@@ -609,7 +620,6 @@ export default function UserPreviewPage() {
         </div>
       )}
 
-      {/* Ban User Modal */}
       <BanUserModal
         isOpen={showBanModal}
         onClose={() => setShowBanModal(false)}
@@ -617,7 +627,6 @@ export default function UserPreviewPage() {
         user={user}
       />
 
-      {/* Unban User Modal */}
       <UnbanUserModal
         isOpen={showUnbanModal}
         onClose={() => setShowUnbanModal(false)}
