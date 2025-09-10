@@ -61,6 +61,7 @@ const CommunityPage = lazy(() => import("./pages/CommunityPage"));
 const MenteeSessionRequestsPage = lazy(() =>
   import("./pages/mentee/MenteeSessionRequestsPage")
 );
+const BannedUsersPage = lazy(() => import("./pages/admin/BannedUsersPage"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -339,6 +340,17 @@ function App() {
                       <UserReportsPage />
                     </FullProtectedRouteWithRole>
 
+                  }
+                />
+                <Route
+                  path="management/banned-users"
+                  element={
+                    <FullProtectedRouteWithRole
+                      roles={["ADMIN"]}
+                      fallback={<UnauthorizedAccessFallback />}
+                    >
+                      <BannedUsersPage />
+                    </FullProtectedRouteWithRole>
                   }
                 />
                 <Route path="*" element={<NotFoundPage />} />
