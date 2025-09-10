@@ -19,6 +19,7 @@ import { AuthProvider } from "./context/AuthContext";
 import CreateCommunityPage from "./pages/CreateCommunityPage";
 import ManageCommunityPage from "./pages/ManageCommunityPage";
 import CommunityManagerOnlyFallback from "./ui/CommunityManagerOnlyFallback";
+import BannedUserPage from "./pages/auth/BannedUserPage";
 import CommunitySettingsPage from "./pages/CommunitySettingsPage";
 import UnauthorizedAccessFallback from "./ui/UnauthorizedAccessFallback";
 import UserCommunitiesPage from "./pages/UserCommunitiesPage";
@@ -323,6 +324,12 @@ function App() {
                   }
                 />
                 <Route
+
+                  path="/banned"
+                  element={
+                    <BannedUserPage />
+                  }/>
+                    <Route 
                   path="management/user-reports"
                   element={
                     <FullProtectedRouteWithRole
@@ -331,6 +338,7 @@ function App() {
                     >
                       <UserReportsPage />
                     </FullProtectedRouteWithRole>
+
                   }
                 />
                 <Route path="*" element={<NotFoundPage />} />

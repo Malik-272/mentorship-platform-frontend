@@ -8,6 +8,7 @@ const AuthContext = createContext();
 export const authInitialState = {
   user: null,
   status: "none", // 'none', 'partial', 'full'
+  banned: false,
 };
 
 export const authReducer = (state, action) => {
@@ -18,6 +19,8 @@ export const authReducer = (state, action) => {
       return { ...state, status: action.payload };
     case "RESET":
       return authInitialState;
+    case "SET_BANNED":
+      return { ...state, banned: action.payload }
     default:
       return state;
   }
@@ -63,11 +66,32 @@ export const AuthProvider = ({ children }) => {
     return decoded ? (decoded.partial ? "partial" : "full") : "none";
   };
 
+  const checkIfUserBanned = () => {
+    if (document.cookie === "") {
+      return false;
+    }
+    let decoded = null;
+    const tokenCookie = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("token="));
+
+    if (tokenCookie) {
+      const token = tokenCookie.split("=")[1];
+      try {
+        decoded = jwtDecode(token);
+      } catch (err) {
+        console.error("Failed to decode token:", err);
+      }
+    }
+
+    return decoded ? (decoded.banned ? true : false) : false;
+  };
+
   useEffect(() => {
     async function fetchData() {
       const { data: user } = await refetch();
-
       const userStatus = getUserStatus();
+
       if (userStatus === "none") {
         dispatch({ type: "SET_USER", payload: null });
         dispatch({
@@ -82,6 +106,9 @@ export const AuthProvider = ({ children }) => {
           type: "SET_STATUS",
           payload: userStatus,
         });
+      } else if (!user && checkIfUserBanned()){
+          dispatch({ type: "SET_STATUS", payload: userStatus })
+          dispatch({ type: "SET_BANNED", payload: true });
       } else {
         dispatch({ type: "SET_USER", payload: null });
         dispatch({
@@ -94,12 +121,14 @@ export const AuthProvider = ({ children }) => {
     fetchData();
     // getUserStatus();
   }, [refetch]);
+
   const login = useMutation({
     mutationFn: authApi.login,
     onSuccess: async (data) => {
       queryClient.invalidateQueries(["currentUser"]);
       const { data: user } = await refetch();
       dispatch({ type: "SET_STATUS", payload: getUserStatus() });
+      dispatch({ type: "SET_BANNED", payload: checkIfUserBanned() })
       dispatch({ type: "SET_USER", payload: user });
     },
   });
@@ -174,6 +203,7 @@ export const AuthProvider = ({ children }) => {
         isError,
         isAuthenticated: state.status !== "none",
         status: state.status,
+        banned: state.banned,
 
         login,
         logout,

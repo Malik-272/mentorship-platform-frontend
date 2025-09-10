@@ -1,6 +1,7 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import LoadingSpinner from "./LoadingSpinner";
+
 export const ProtectedRoute = ({ children }) => {
   const { status, isLoading } = useAuth();
   if (isLoading) return null;
@@ -35,7 +36,7 @@ export const PublicOnlyRoute = ({ children }) => {
 };
 
 export function FullProtectedRoute({ children }) {
-  const { status, isLoading } = useAuth();
+  const { status, isLoading, banned } = useAuth();
   if (isLoading)
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
@@ -44,14 +45,16 @@ export function FullProtectedRoute({ children }) {
     );
   if (status === "none") return <Navigate to="/login" />;
   if (status === "partial") return <Navigate to="/successful-registration" />;
+  if (banned) return <Navigate to= "/banned"/>;
   return children;
-}
+};
+
 export function FullProtectedRouteWithRole({
   children,
   roles = [],
   fallback,
 }) {
-  const { status, isLoading, data } = useAuth();
+  const { status, isLoading, data, banned } = useAuth();
   if (isLoading)
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
@@ -60,6 +63,7 @@ export function FullProtectedRouteWithRole({
     );
   if (status === "none") return <Navigate to="/login" />;
   if (status === "partial") return <Navigate to="/successful-registration" />;
+  if (banned) return <Navigate to= "/banned"/>;
   if (status === "full" && !roles.includes(data?.user?.role)) return fallback;
   return children;
-}
+};
