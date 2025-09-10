@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { useAuth } from "../context/AuthContext"
-import { useCancelRequestToJoin, useGetCommunity, useLeaveCommunity, useRequestToJoin } from "../hooks/useCommunities"
+import { useCancelRequestToJoin, useGetCommunity, useGetCommunityServices, useLeaveCommunity, useRequestToJoin } from "../hooks/useCommunities"
 import MembersModal from "../features/community/MembersModal"
 import VerificationHelpModal from "../features/community/VerificationHelpModal"
 import CommunitySidebar from "../features/community/CommunitySidebar"
@@ -9,6 +9,7 @@ import CommunityHeader from "../features/community/CommunityHeader"
 import CommunityInfo from "../features/community/CommunityInfo"
 import LoadingSpinner from "../ui/LoadingSpinner"
 import ErrorMessage from "../ui/ErrorMessage"
+import CommunityServices from "../features/community/CommunityServices"
 
 export default function CommunityPage() {
   const { id } = useParams()
@@ -21,6 +22,7 @@ export default function CommunityPage() {
 
   const { data: communityData, isLoading, error, refetch: RefetchCommunity } = useGetCommunity(id)
   const leaveCommunityMutation = useLeaveCommunity()
+  const { data: servicesData, isLoading: servicesLoading, error: servicesError } = useGetCommunityServices(id)
   const requestToJoinMutation = useRequestToJoin()
   const cancelJoinRequestMutation = useCancelRequestToJoin()
 
@@ -148,8 +150,13 @@ export default function CommunityPage() {
         />
 
         <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 space-y-6">
             <CommunityInfo community={community} />
+            <CommunityServices
+              services={servicesData?.services}
+              isLoading={servicesLoading}
+              error={servicesError}
+            />
           </div>
           <div className="lg:col-span-1">
             <CommunitySidebar

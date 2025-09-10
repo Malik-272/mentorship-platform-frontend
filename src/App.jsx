@@ -28,6 +28,7 @@ import SessionRequestsPage from "./pages/mentor/SessionRequestsPage";
 import CreateServicePage from "./pages/CreateServicePage";
 import ServiceManagementPage from "./pages/ServiceManagementPage";
 import ServiceBookingPage from "./pages/ServiceBookingPage";
+import UserReportsPage from "./pages/admin/UserReportsPage";
 const AppLayout = lazy(() => import("./ui/AppLayout"));
 const LandingPage = lazy(() => import("./pages/LandingPage"));
 
@@ -323,9 +324,21 @@ function App() {
                   }
                 />
                 <Route
+
                   path="/banned"
                   element={
                     <BannedUserPage />
+                  }/>
+                    <Route 
+                  path="management/user-reports"
+                  element={
+                    <FullProtectedRouteWithRole
+                      roles={["ADMIN"]}
+                      fallback={<UnauthorizedAccessFallback />}
+                    >
+                      <UserReportsPage />
+                    </FullProtectedRouteWithRole>
+
                   }
                 />
                 <Route path="*" element={<NotFoundPage />} />
