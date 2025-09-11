@@ -41,7 +41,7 @@ const banUserApi = async ({ userId, banReason }) => {
 
   if (!response.ok) {
     const errorData = await response.json();
-    throw new Error(errorData.message || "Failed to ban user");
+    return errorData;
   }
 
   return response.json();
@@ -55,7 +55,7 @@ const unbanUserApi = async (userId) => {
 
   if (!response.ok) {
     const errorData = await response.json();
-    throw new Error(errorData.message || "Failed to unban user");
+    return errorData;
   }
 
   return { "status": "Success", "message": "User unbanned successfully" };
