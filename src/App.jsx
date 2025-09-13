@@ -30,6 +30,7 @@ import ServiceManagementPage from "./pages/ServiceManagementPage";
 import ServiceBookingPage from "./pages/ServiceBookingPage";
 import UserReportsPage from "./pages/admin/UserReportsPage";
 import UserPreviewPage from "./pages/admin/UserPreviewPage";
+import DashboardPage from "./pages/DashboardPage";
 const AppLayout = lazy(() => import("./ui/AppLayout"));
 const LandingPage = lazy(() => import("./pages/LandingPage"));
 
@@ -178,9 +179,10 @@ function App() {
                   path="dashboard"
                   element={
                     <FullProtectedRoute>
-                      <div className="p-8 text-center">
+                      {/* <div className="p-8 text-center">
                         Dashboard coming soon...
-                      </div>
+                      </div> */}
+                      <DashboardPage />
                     </FullProtectedRoute>
                   }
                 />
@@ -330,8 +332,8 @@ function App() {
                   path="/banned"
                   element={
                     <BannedUserPage />
-                  }/>
-                    <Route 
+                  } />
+                <Route
                   path="management/user-reports"
                   element={
                     <FullProtectedRouteWithRole
@@ -365,6 +367,17 @@ function App() {
                     </FullProtectedRouteWithRole>
                   }
                 />
+                {/* <Route
+                  path="/dashboard"
+                  element={
+                    <FullProtectedRouteWithRole
+                      roles={["MENTEE", "MENTOR", "COMMUNITY_MANAGER", "ADMIN"]}
+                      fallback={<UnauthorizedAccessFallback />}
+                    >
+                      <DashboardPage />
+                    </FullProtectedRouteWithRole>
+                  }
+                /> */}
                 <Route path="*" element={<NotFoundPage />} />
               </Route>
             </Routes>
