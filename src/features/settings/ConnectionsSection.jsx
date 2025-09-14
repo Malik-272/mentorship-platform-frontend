@@ -8,9 +8,17 @@ const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 const REDIRECT_URI = encodeURIComponent(
   "http://localhost:3000/api/v1/auth/google-callback"
 );
+
 const SCOPE = encodeURIComponent(
-  "openid email profile https://www.googleapis.com/auth/calendar"
+  [
+    "openid",
+    "email",
+    "profile",
+    "https://www.googleapis.com/auth/calendar",
+    "https://www.googleapis.com/auth/calendar.events",
+  ].join(" ")
 );
+
 const RESPONSE_TYPE = "code";
 const ACCESS_TYPE = "offline";
 const PROMPT = "consent";
