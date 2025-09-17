@@ -36,9 +36,9 @@ function MobileNav({ isMenuOpen, setIsMenuOpen }) {
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-t border-border transition-all duration-200">
             {!isAuthenticated &&
               navigationData.map((item) => (
-                <Link
+                <a
                   key={item.name}
-                  to={item.href}
+                  href={item.href}
                   className={`block px-4 py-3 rounded-lg text-base font-medium transition-all duration-200 ${
                     isActive(item.href)
                       ? "bg-secondary text-secondary-foreground shadow-sm"
@@ -47,7 +47,7 @@ function MobileNav({ isMenuOpen, setIsMenuOpen }) {
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {item.name}
-                </Link>
+                </a>
               ))}
             {isAuthenticated &&
               getRoleBasedNavItems().map((item) => (

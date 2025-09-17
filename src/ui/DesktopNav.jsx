@@ -44,9 +44,9 @@ function DesktopNav() {
         <div className="ml-10 flex items-baseline space-x-1">
           {!isAuthenticated &&
             navigationData.map((item) => (
-              <Link
+              <a
                 key={item.name}
-                to={item.href}
+                href={item.href}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                   isActive(item.href)
                     ? "bg-secondary text-secondary-foreground shadow-sm"
@@ -54,7 +54,7 @@ function DesktopNav() {
                 }`}
               >
                 {item.name}
-              </Link>
+              </a>
             ))}
           {isAuthenticated &&
             getRoleBasedNavItems().map((item) => (

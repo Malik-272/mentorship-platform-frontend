@@ -1,9 +1,8 @@
 export const navigationData = [
-  { name: "Home", href: "/" },
-  { name: "Find Mentors", href: "/mentors" },
-  { name: "Communities", href: "/communities" },
-  { name: "How It Works", href: "/how-it-works" },
-  { name: "About", href: "/about" },
+  { name: "Features", href: "#features" },
+  { name: "How it works", href: "#how-it-works" },
+  { name: "Communities", href: "#communities" },
+  { name: "Testimonials", href: "#testimonials" },
 ];
 
 export const roleBasedNavigation = {
