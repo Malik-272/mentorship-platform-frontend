@@ -82,12 +82,12 @@ export default function SignupConfirmationPage() {
           <div className="mt-6 text-center">
             <p className="text-xs text-gray-500 dark:text-gray-400">
               Didn't receive the email? Check your spam folder or{" "}
-              <Link
-                to="/contact"
+              <a
+                href="mailto:sgrowthly@gmail.com"
                 className="text-blue-600 hover:text-blue-500 dark:hover:text-blue-400"
               >
                 contact support
-              </Link>
+              </a>
             </p>
           </div>
         </div>

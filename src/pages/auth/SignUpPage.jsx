@@ -7,7 +7,6 @@ import FormField from "../../features/Authenticaion/FormField";
 import PasswordStrengthIndicator from "../../features/Authenticaion/PasswordStrengthIndicator";
 import Logo from "../../ui/Logo";
 import { useAuth } from "../../context/AuthContext";
-import { jwtDecode } from "jwt-decode";
 
 export default function SignupPage() {
   const [selectedRole, setSelectedRole] = useState("");
