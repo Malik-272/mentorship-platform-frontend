@@ -75,6 +75,7 @@ export default function LoginPage() {
             <FormField
               label="Email"
               name="email"
+              type="email"
               placeholder="Enter your email"
               register={register}
               error={errors.email}
