@@ -50,12 +50,6 @@ export default function CTASection() {
             <span>{ctaData.cta.primary.text}</span>
             <ArrowRight className="w-5 h-5" />
           </Link>
-          <Link
-            to={ctaData.cta.secondary.link}
-            className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-8 py-4 rounded-lg text-lg font-semibold transition-colors"
-          >
-            {ctaData.cta.secondary.text}
-          </Link>
         </div>
       </div>
     </section>

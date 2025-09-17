@@ -176,10 +176,6 @@ export const ctaData = {
     primary: {
       text: "Start Your Journey",
       link: "/signup",
-    },
-    secondary: {
-      text: "Have Questions?",
-      link: "/contact",
-    },
+    }
   },
 }
