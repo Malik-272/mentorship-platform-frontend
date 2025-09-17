@@ -30,7 +30,7 @@ function Footer() {
             </div>
 
             {/* Quick Links */}
-            <div>
+            {/* <div>
               <h3 className="text-lg font-semibold mb-4">Platform</h3>
               <ul className="space-y-2">
                 {footerData.links.platform.map((link) => (
@@ -44,10 +44,10 @@ function Footer() {
                   </li>
                 ))}
               </ul>
-            </div>
+            </div> */}
 
             {/* Support */}
-            <div>
+            {/* <div>
               <h3 className="text-lg font-semibold mb-4">Support</h3>
               <ul className="space-y-2">
                 {footerData.links.support.map((link) => (
@@ -61,7 +61,7 @@ function Footer() {
                   </li>
                 ))}
               </ul>
-            </div>
+            </div> */}
           </div>
 
           <div className="border-t border-gray-800 dark:border-gray-700 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
