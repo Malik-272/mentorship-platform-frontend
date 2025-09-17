@@ -138,39 +138,11 @@ function App() {
 
               <Route element={<AppLayout />}>
                 {/* Public routes */}
-                <Route path="/" element={<LandingPage />} />
-                <Route
-                  path="mentors"
-                  element={
-                    <div className="p-8 text-center">
-                      Mentors page coming soon...
-                    </div>
-                  }
-                />
-                <Route
-                  path="communities"
-                  element={
-                    <div className="p-8 text-center">
-                      Communities page coming soon...
-                    </div>
-                  }
-                />
-                <Route
-                  path="how-it-works"
-                  element={
-                    <div className="p-8 text-center">
-                      How it works page coming soon...
-                    </div>
-                  }
-                />
-                <Route
-                  path="about"
-                  element={
-                    <div className="p-8 text-center">
-                      About page coming soon...
-                    </div>
-                  }
-                />
+                <Route path="/" element={
+                  <PublicOnlyRoute>
+                    <LandingPage />
+                  </PublicOnlyRoute>
+                  } />
 
                 {/* Protected dashboard route - requires full authentication */}
 

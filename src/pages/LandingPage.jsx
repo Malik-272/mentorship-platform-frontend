@@ -13,10 +13,21 @@ export default function LandingPage() {
     <div className="bg-white dark:bg-gray-800">
       <HeroSection />
       <StatsSection />
-      <FeaturesSection />
-      <HowItWorksSection />
-      <CommunitiesSection />
-      <TestimonialsSection />
+      <section id="features">
+        <FeaturesSection />
+      </section>
+
+      <section id="how-it-works">
+        <HowItWorksSection />
+      </section>
+
+      <section id="communities">
+        <CommunitiesSection />
+      </section>
+
+      <section id="testimonials">
+        <TestimonialsSection />
+      </section>
       <CTASection />
     </div>
   )
