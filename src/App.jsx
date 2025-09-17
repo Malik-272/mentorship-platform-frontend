@@ -138,7 +138,11 @@ function App() {
 
               <Route element={<AppLayout />}>
                 {/* Public routes */}
-                <Route path="/" element={<LandingPage />} />
+                <Route path="/" element={
+                  <PublicOnlyRoute>
+                    <LandingPage />
+                  </PublicOnlyRoute>
+                  } />
 
                 {/* Protected dashboard route - requires full authentication */}
 
