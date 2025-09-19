@@ -14,6 +14,7 @@ import {
   PublicOnlyRoute,
 } from "./ui/ProtectedRoute";
 
+import { Toaster } from "react-hot-toast";
 import { lazy } from "react";
 import { AuthProvider } from "./context/AuthContext";
 import CreateCommunityPage from "./pages/CreateCommunityPage";
@@ -80,6 +81,7 @@ function App() {
       <ThemeProvider defaultTheme="system" storageKey="growtly-theme">
         <AuthProvider>
           <Router>
+            <Toaster position="top-right"/>
             <Routes>
               {/* Public-only Auth Routes (redirect if authenticated) */}
               <Route

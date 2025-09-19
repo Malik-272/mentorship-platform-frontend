@@ -21,6 +21,7 @@ import {
   Shield,
   User,
 } from "lucide-react";
+import toast from "react-hot-toast";
 
 const ManageCommunityPage = () => {
   const navigate = useNavigate();
@@ -28,6 +29,7 @@ const ManageCommunityPage = () => {
   const [activeTab, setActiveTab] = useState("requests");
   const [processingRequest, setProcessingRequest] = useState(null);
   const [removingMember, setRemovingMember] = useState(null);
+  const [confirmingRemove, setConfirmingRemove] = useState(null);
 
   // Check if user has a community
   const {
@@ -72,35 +74,39 @@ const ManageCommunityPage = () => {
         communityId: existingCommunity?.community?.id,
       });
       await refetchRequests();
-      if (action === "accept") {
-        await refetchMembers();
-      }
+      if (action === "accept") await refetchMembers();
+      toast.success(`Request ${action}ed successfully`);
     } catch (error) {
       console.error(`Failed to ${action} join request:`, error);
+      toast.error(`Failed to ${action} request`);
     } finally {
       setProcessingRequest(null);
     }
   };
 
   const handleRemoveMember = async (memberId) => {
-    if (
-      !window.confirm(
-        "Are you sure you want to remove this member from your community?"
-      )
-    ) {
-      return;
-    }
-
-    setRemovingMember(memberId);
-    try {
-      await removeMemberMutation.mutateAsync(memberId);
-      await refetchMembers();
-    } catch (error) {
-      console.error("Failed to remove member:", error);
-    } finally {
-      setRemovingMember(null);
-    }
+    setConfirmingRemove(memberId);
   };
+
+  const handleConfirmRemove = async () => {
+  if (!confirmingRemove) return;
+  setRemovingMember(confirmingRemove);
+  try {
+    await removeMemberMutation.mutateAsync(confirmingRemove);
+    await refetchMembers();
+    toast.success("Member removed successfully");
+  } catch (error) {
+    console.error("Failed to remove member:", error);
+    toast.error("Failed to remove member");
+  } finally {
+    setRemovingMember(null);
+    setConfirmingRemove(null);
+  }
+};
+
+const handleCancelRemove = () => {
+  setConfirmingRemove(null); // Just close the modal
+};
 
   const getRoleIcon = (role) => {
     switch (role) {
@@ -151,6 +157,29 @@ const ManageCommunityPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      {/* Back Arrow Navigation */}
+      <div className="max-w-6xl mx-auto px-4 pt-8">
+        <button
+          onClick={() => navigate("/communities/my")}
+          className="text-blue-600 hover:text-blue-800 font-medium text-sm flex items-center gap-2 mb-4"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+          Back to community
+        </button>
+      </div>
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -390,6 +419,37 @@ const ManageCommunityPage = () => {
           </div>
         )}
       </div>
+      {confirmingRemove && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-md">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              Confirm Removal
+            </h3>
+            <p className="text-gray-700 dark:text-gray-300 mb-6">
+              Are you sure you want to remove this member from your community?
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={handleCancelRemove}
+                className="px-4 py-2 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmRemove}
+                disabled={removingMember === confirmingRemove}
+                className="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700 disabled:bg-red-400"
+              >
+                {removingMember === confirmingRemove ? (
+                  <LoadingSpinner size="sm" />
+                ) : (
+                  "Remove"
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
