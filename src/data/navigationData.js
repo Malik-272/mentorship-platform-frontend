@@ -15,6 +15,7 @@ export const roleBasedNavigation = {
     { name: "My Communities", href: "/my/communities" },
   ],
   COMMUNITY_MANAGER: [
+    { name: "My Community", href: "/communities/my" },
     { name: "Community Settings", href: "/communities/my/settings" },
     { name: "Manage Community", href: "/communities/my/manage" },
   ],

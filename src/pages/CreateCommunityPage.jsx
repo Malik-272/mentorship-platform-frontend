@@ -4,8 +4,6 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import {
-  Upload,
-  X,
   Users,
   Globe,
   FileText,
@@ -17,16 +15,12 @@ import { useAuth } from "../context/AuthContext";
 import { useCreateCommunity, useGetMyCommunity } from "../hooks/useCommunities";
 import FormField from "../features/Authenticaion/FormField";
 import LoadingSpinner from "../ui/LoadingSpinner";
-import {
-  FullProtectedRouteWithRole,
-  ProtectedRoute,
-} from "../ui/ProtectedRoute";
 
 export default function CreateCommunityPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [imagePreview, setImagePreview] = useState(null);
-  const [imageFile, setImageFile] = useState(null);
+  // const [imagePreview, setImagePreview] = useState(null);
+  // const [imageFile, setImageFile] = useState(null);
 
   // Check if user already has a community
   const { data: existingCommunity, isLoading: checkingExisting } =
@@ -65,41 +59,41 @@ export default function CreateCommunityPage() {
         .replace(/\s+/g, "-")
         .replace(/-+/g, "-")
         .trim()
-        .substring(0, 50);
+        .substring(0, 32);
       setValue("communityId", generatedId);
     }
   }, [watchName, setValue]);
 
-  const handleImageUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      // Validate file type
-      if (!file.type.startsWith("image/")) {
-        alert("Please select an image file");
-        return;
-      }
+  // const handleImageUpload = (event) => {
+  //   const file = event.target.files[0];
+  //   if (file) {
+  //     // Validate file type
+  //     if (!file.type.startsWith("image/")) {
+  //       alert("Please select an image file");
+  //       return;
+  //     }
 
-      // Validate file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        alert("Image size must be less than 5MB");
-        return;
-      }
+  //     // Validate file size (max 5MB)
+  //     if (file.size > 5 * 1024 * 1024) {
+  //       alert("Image size must be less than 5MB");
+  //       return;
+  //     }
 
-      setImageFile(file);
+  //     setImageFile(file);
 
-      // Create preview
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setImagePreview(e.target.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  //     // Create preview
+  //     const reader = new FileReader();
+  //     reader.onload = (e) => {
+  //       setImagePreview(e.target.result);
+  //     };
+  //     reader.readAsDataURL(file);
+  //   }
+  // };
 
-  const removeImage = () => {
-    setImageFile(null);
-    setImagePreview(null);
-  };
+  // const removeImage = () => {
+  //   setImageFile(null);
+  //   setImagePreview(null);
+  // };
 
   const onSubmit = async (data) => {
     try {
@@ -148,7 +142,7 @@ export default function CreateCommunityPage() {
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-8">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {/* Community Image Upload */}
-            <div>
+            {/* <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3">
                 Community Image
               </label>
@@ -188,7 +182,7 @@ export default function CreateCommunityPage() {
                   </label>
                 </div>
               )}
-            </div>
+            </div> */}
 
             {/* Community Name */}
             <FormField
@@ -204,8 +198,8 @@ export default function CreateCommunityPage() {
                   message: "Name must be at least 3 characters",
                 },
                 maxLength: {
-                  value: 100,
-                  message: "Name must not exceed 100 characters",
+                  value: 50,
+                  message: "Name must not exceed 50 characters",
                 },
               }}
             >
@@ -219,8 +213,8 @@ export default function CreateCommunityPage() {
                       message: "Name must be at least 3 characters",
                     },
                     maxLength: {
-                      value: 100,
-                      message: "Name must not exceed 100 characters",
+                      value: 50,
+                      message: "Name must not exceed 50 characters",
                     },
                   })}
                   className="w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:text-white"
@@ -247,8 +241,8 @@ export default function CreateCommunityPage() {
                   message: "ID must be at least 3 characters",
                 },
                 maxLength: {
-                  value: 50,
-                  message: "ID must not exceed 50 characters",
+                  value: 32,
+                  message: "ID must not exceed 32 characters",
                 },
               }}
             >
@@ -267,8 +261,8 @@ export default function CreateCommunityPage() {
                       message: "ID must be at least 3 characters",
                     },
                     maxLength: {
-                      value: 50,
-                      message: "ID must not exceed 50 characters",
+                      value: 32,
+                      message: "ID must not exceed 32 characters",
                     },
                   })}
                   className="w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:text-white"
@@ -294,8 +288,8 @@ export default function CreateCommunityPage() {
                   message: "Description must be at least 20 characters",
                 },
                 maxLength: {
-                  value: 500,
-                  message: "Description must not exceed 500 characters",
+                  value: 1000,
+                  message: "Description must not exceed 1000 characters",
                 },
               }}
             >
@@ -309,8 +303,8 @@ export default function CreateCommunityPage() {
                       message: "Description must be at least 20 characters",
                     },
                     maxLength: {
-                      value: 500,
-                      message: "Description must not exceed 500 characters",
+                      value: 1000,
+                      message: "Description must not exceed 1000 characters",
                     },
                   })}
                   rows={4}
@@ -319,7 +313,7 @@ export default function CreateCommunityPage() {
                 />
               </div>
               <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                {watch("description")?.length || 0}/500 characters
+                {watch("description")?.length || 0}/1000 characters
               </p>
             </FormField>
 
