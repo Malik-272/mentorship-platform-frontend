@@ -56,6 +56,17 @@ export const useUpdateCommunity = () => {
   });
 };
 
+export const useUploadCommunityImage = () => {
+  return useMutation({
+    mutationFn: communitiesApi.uploadCommunityImage,
+  });
+}
+
+export const useDeleteCommunityImage = () => {
+  return useMutation({
+    mutationFn: communitiesApi.deleteCommunityImage,
+  });
+}
 // export const useDeleteCommunity = () => {
 //   const queryClient = useQueryClient();
 

@@ -11,9 +11,14 @@ import {
   AlertCircle,
   CheckCircle,
 } from "lucide-react";
+import toast from "react-hot-toast";
 
 import { useAuth } from "../context/AuthContext";
-import { useGetMyCommunity, useUpdateCommunity } from "../hooks/useCommunities";
+import { useGetMyCommunity,
+  useUpdateCommunity,
+  useUploadCommunityImage,
+  useDeleteCommunityImage,
+} from "../hooks/useCommunities";
 import LoadingSpinner from "../ui/LoadingSpinner";
 import ErrorMessage from "../ui/ErrorMessage";
 import FormField from "../features/Authenticaion/FormField";
@@ -25,6 +30,9 @@ export default function CommunitySettingsPage() {
   const [imageFile, setImageFile] = useState(null);
   const [avatarHover, setAvatarHover] = useState(false);
   const [hasImageChanges, setHasImageChanges] = useState(false);
+  const uploadCommunityImageMutation = useUploadCommunityImage();
+  const deleteCommunityImageMutation = useDeleteCommunityImage();
+
 
   // Check authentication and role
   //   useEffect(() => {
@@ -89,24 +97,34 @@ export default function CommunitySettingsPage() {
   const updateCommunityMutation = useUpdateCommunity();
 
   // Handle image upload
-  const handleImageUpload = (event) => {
+  const handleImageUpload = async (event) => {
     const file = event.target.files[0];
     if (file) {
+      const formData = new FormData();
       // Validate file type
       if (!file.type.startsWith("image/")) {
-        alert("Please select an image file");
+        toast.error('Please select an image file');
         return;
       }
 
       // Validate file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        alert("Image size must be less than 5MB");
+      if (file.size > 2 * 1024 * 1024) {
+        toast.error("Image size must be less than 2MB");
         return;
       }
 
+      formData.append("image", file);
       setImageFile(file);
       setHasImageChanges(true);
 
+      try {
+        await uploadCommunityImageMutation.mutateAsync(formData);
+        toast.success('Image uploaded successfully');
+      }
+      catch(error){
+        toast.error('Failed to upload image');
+        return;
+      }
       // Create preview
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -117,10 +135,18 @@ export default function CommunitySettingsPage() {
   };
 
   // Handle image removal
-  const handleImageRemove = () => {
-    setImageFile(null);
-    setImagePreview(null);
-    setHasImageChanges(true);
+  const handleImageRemove = async () => {
+    try {
+      await deleteCommunityImageMutation.mutateAsync();
+      setImageFile(null);
+      setImagePreview(null);
+      setHasImageChanges(true);
+      toast.success('Community image removed successfully');
+    }
+    catch(error){
+      console.log(error.message)
+      toast.error('Failed to remove community image');
+    }
   };
 
   // Form submission
@@ -247,14 +273,14 @@ export default function CommunitySettingsPage() {
                             accept="image/*"
                             onChange={handleImageUpload}
                             className="hidden"
-                            disabled={updateCommunityMutation.isPending}
+                            disabled={uploadCommunityImageMutation.isPending}
                           />
                         </label>
                         {imagePreview && (
                           <button
                             type="button"
                             onClick={handleImageRemove}
-                            disabled={updateCommunityMutation.isPending}
+                            disabled={deleteCommunityImageMutation.isPending}
                             className="p-2 bg-white bg-opacity-20 rounded-full hover:bg-opacity-30 transition-colors"
                           >
                             <Trash2 className="w-5 h-5 text-white" />
@@ -272,6 +298,12 @@ export default function CommunitySettingsPage() {
               </div>
 
               <div className="mt-4 text-center">
+                {(uploadCommunityImageMutation.isPending ||
+                  deleteCommunityImageMutation.isPending) && (
+                    <div className="mt-2 text-sm text-blue-600 dark:text-blue-400">
+                      {uploadCommunityImageMutation.isPending ? "Uploading..." : "Deleting..."}
+                    </div>
+                  )}
                 <h3 className="text-lg font-medium text-gray-900 dark:text-white">
                   {community.name}
                 </h3>
@@ -302,8 +334,8 @@ export default function CommunitySettingsPage() {
                     message: "Name must be at least 3 characters",
                   },
                   maxLength: {
-                    value: 100,
-                    message: "Name must not exceed 100 characters",
+                    value: 50,
+                    message: "Name must not exceed 50 characters",
                   },
                 }}
               >
@@ -317,8 +349,8 @@ export default function CommunitySettingsPage() {
                         message: "Name must be at least 3 characters",
                       },
                       maxLength: {
-                        value: 100,
-                        message: "Name must not exceed 100 characters",
+                        value: 50,
+                        message: "Name must not exceed 50 characters",
                       },
                     })}
                     className="w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:text-white"
@@ -340,8 +372,8 @@ export default function CommunitySettingsPage() {
                     message: "Description must be at least 20 characters",
                   },
                   maxLength: {
-                    value: 500,
-                    message: "Description must not exceed 500 characters",
+                    value: 1000,
+                    message: "Description must not exceed 1000 characters",
                   },
                 }}
               >
@@ -355,8 +387,8 @@ export default function CommunitySettingsPage() {
                         message: "Description must be at least 20 characters",
                       },
                       maxLength: {
-                        value: 500,
-                        message: "Description must not exceed 500 characters",
+                        value: 1000,
+                        message: "Description must not exceed 1000 characters",
                       },
                     })}
                     rows={4}

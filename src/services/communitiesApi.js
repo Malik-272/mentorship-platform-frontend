@@ -299,4 +299,32 @@ export const communitiesApi = {
 
     return response.json();
   },
+  uploadCommunityImage: async (formData) => {
+    const response = await fetch(`${API_BASE_URL}/communities/my/picture`, {
+      method: 'PUT',
+      credentials: 'include',
+      body: formData
+    });
+
+    if(!response.ok){
+      const error = await response.json();
+      throw new Error(error.message || "Failed to upload community image");
+    }
+
+    return response.json();
+  },
+  deleteCommunityImage: async () => {
+    const response = await fetch(`${API_BASE_URL}/communities/my/picture`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to delete community image");
+    }
+
+    return;
+  },
+  
 };
