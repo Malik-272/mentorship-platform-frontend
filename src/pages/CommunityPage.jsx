@@ -73,6 +73,7 @@ export default function CommunityPage() {
   const isMember = userMembership === "MEMBER"
   const isPending = userMembership === "PENDING"
   const canViewMembers = isMember || isManager || isAdmin
+  const canViewServices = isMember || isAdmin || isManager
   const canRequestJoin = (user?.role === "MENTEE" || user?.role === "MENTOR") && !isMember && !isPending
 
   const handleCancelJoinRequest = async () => {
@@ -152,11 +153,11 @@ export default function CommunityPage() {
         <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
             <CommunityInfo community={community} />
-            <CommunityServices
+            {canViewServices && <CommunityServices
               services={servicesData?.services}
               isLoading={servicesLoading}
               error={servicesError}
-            />
+            />}
           </div>
           <div className="lg:col-span-1">
             <CommunitySidebar

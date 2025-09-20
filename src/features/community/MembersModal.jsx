@@ -2,6 +2,7 @@ import { useState } from "react"
 import { X, Users, Search, Crown, Shield, User } from "lucide-react"
 import { useGetCommunityMembers } from "../../hooks/useCommunities"
 import LoadingSpinner from "../../ui/LoadingSpinner"
+import { Link } from "react-router-dom";
 
 export default function MembersModal({ isOpen, onClose, communityId, communityName }) {
   const [searchTerm, setSearchTerm] = useState("")
@@ -140,7 +141,12 @@ export default function MembersModal({ isOpen, onClose, communityId, communityNa
                         {getRoleIcon(member.role)}
                       </div>
                       <div className="flex items-center space-x-2 mt-1">
-                        <div className="text-xs text-gray-500 dark:text-gray-400 truncate">@{member.id}</div>
+                        <Link
+                          to={`/profile/${member.id}`}
+                          target="_blank"
+                          className="text-xs text-blue-600 dark:text-blue-400 hover:underline truncate">
+                            @{member.id}
+                        </Link>
                         <span className="text-xs text-gray-400">•</span>
                         <div className="text-xs text-gray-500 dark:text-gray-400">{getRoleLabel(member.role)}</div>
                       </div>
