@@ -45,7 +45,7 @@ export default function CommunityHeader({ community, isManager, isAdmin, onShowV
                   <h1 className="text-2xl font-bold text-gray-900 dark:text-white break-words max-w-full">
                     {communityName}
                   </h1>
-                  {community?.is_verified ? (
+                  {community?.verified ? (
                     <div className="flex items-center text-blue-600 dark:text-blue-400 mt-3">
                       <ShieldCheck className="w-5 h-5 mr-1" />
                       <span className="text-sm font-medium">Verified</span>
@@ -56,7 +56,7 @@ export default function CommunityHeader({ community, isManager, isAdmin, onShowV
                         <Shield className="w-5 h-5 mr-1" />
                         <span className="text-sm">Not verified</span>
                       </div>
-                      {isManager && (
+                      {isManager && !isAdmin && (
                         <button
                           onClick={onShowVerification}
                           className="text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 text-sm font-medium transition-colors"
@@ -70,7 +70,7 @@ export default function CommunityHeader({ community, isManager, isAdmin, onShowV
               </div>
 
               {/* Management Buttons */}
-              {isManager && (
+              {isManager && !isAdmin && (
                 <div className="flex items-center space-x-3 mt-4 sm:mt-0">
                   <Link
                     to="/communities/my/manage"

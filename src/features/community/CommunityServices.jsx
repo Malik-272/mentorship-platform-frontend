@@ -88,7 +88,7 @@ export default function CommunityServices({ services, isLoading, error, communit
               <div className="flex items-center space-x-2">
                 <User className="h-5 w-5 text-gray-400" />
                 <span className="font-medium text-gray-900 dark:text-white">
-                  {isServiceOwner(mentorId) ? "My Services" : "Mentor Services"}
+                  {isServiceOwner(mentorId) ? "My Services" : mentorId}
                 </span>
                 {!isServiceOwner(mentorId) && user?.role === "MENTOR" && (
                   <span className="text-xs text-gray-500 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
