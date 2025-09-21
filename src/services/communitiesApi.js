@@ -49,7 +49,8 @@ export const communitiesApi = {
 
     if (!response.ok) {
       if (response.status === 404) {
-        throw new Error("Community not found");
+        // throw new Error("Community not found");
+        return null;
       }
       const error = await response.json();
       throw new Error(error.message || "Failed to fetch community");
@@ -144,6 +145,10 @@ export const communitiesApi = {
 
     if (!response.ok) {
       const error = await response.json();
+
+      if (response.status === 404) {
+        return []; // No join requests found
+      }
       throw new Error(error.message || "Failed to fetch join requests");
     }
 

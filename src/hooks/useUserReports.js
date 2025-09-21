@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 const API_BASE_URL = "http://localhost:3000/api/v1"
 
 // Mock API functions - replace with actual API calls
-const userReportsApi = {
+export const userReportsApi = {
   getUserReports: async () => {
     // Simulate API call
     const response = await fetch(`${API_BASE_URL}/admin/user-reports`, {

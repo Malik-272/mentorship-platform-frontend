@@ -1,6 +1,8 @@
 import { useQuery, useQueries } from "@tanstack/react-query"
 import { useAuth } from "../context/AuthContext"
 import { communitiesApi } from "../services/communitiesApi"
+import { userReportsApi } from "./useUserReports"
+import { bannedUsersApi, useBannedUsers } from "./useBannedUsers"
 
 // API functions
 // const fetchUserData = async () => {
@@ -58,27 +60,15 @@ const getUserProfile = async (userId) => {
 };
 
 const fetchTodayEvents = async () => {
-  // const response = await fetch("/api/dashboard/todayEvent", {
-  //   headers: { "Content-Type": "application/json" },
-  // })
-  // if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
-  // const data = await response.json()
-  // if (data.status !== "Success") throw new Error(data.message || "Failed to fetch today events")
-  // return data.data || []
+  const response = await fetch("http://localhost:3000/api/v1/dashboard/today-events", {
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+  })
+  if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
+  const data = await response.json()
+  if (data.status !== "Success") throw new Error(data.message || "Failed to fetch today events")
+  return data.events || []
 
-  return [
-    {
-      startTime: "10:00",
-      duration: 30,
-      serviceId: "cv_review",
-      mentorId: "ahmadbarasy",
-      menteeId: "ahmadanas",
-      communityId: "iug",
-      communityName: "The Islamic University of Gaza",
-      meetLink: "https://meet.google.com/pqk-gvur-wiu",
-      meetTitle: "Ahmad & Ahmad - CV review session",
-    },
-  ]
 }
 
 // const fetchRoleDashboardData = async (role) => {
@@ -155,6 +145,26 @@ export function useDashboard() {
         queryFn: fetchTodayEvents,
         enabled: !!user && (user.role === "MENTEE" || user.role === "MENTOR"),
       },
+      {
+        queryKey: ["my-Community"],
+        queryFn: communitiesApi.getMyCommunity,
+        enabled: !!user && user.role == "COMMUNITY_MANAGER"
+      },
+      {
+        queryKey: ["join-request-dashboard"],
+        queryFn: communitiesApi.getJoinRequests,
+        enabled: !!user && user.role == "COMMUNITY_MANAGER"
+      },
+      {
+        queryKey: ["pendingReports"],
+        queryFn: userReportsApi.getUserReports,
+        enabled: !!user && user.role === "ADMIN",
+      },
+      {
+        queryKey: ["bannedUsers"],
+        queryFn: bannedUsersApi.getBannedUsers,
+        enabled: !!user && user.role === "ADMIN",
+      }
       // {
       //   queryKey: ["dashboard-data", user?.role],
       //   queryFn: () => fetchRoleDashboardData(user.role),
@@ -162,8 +172,8 @@ export function useDashboard() {
       // },
     ],
   })
-
-  const [userDataQuery, membershipsQuery, sessionRequestsQuery, todayEventsQuery, dashboardDataQuery] = queries
+  console.log("Queries", queries)
+  const [userDataQuery, membershipsQuery, sessionRequestsQuery, todayEventsQuery, myCommunity, joinRequestsQuery, pendingReportsQuery, bannedUsersQuery, dashboardDataQuery] = queries
 
   // Combine all data
   const dashboardData = {
@@ -172,6 +182,10 @@ export function useDashboard() {
     communities: membershipsQuery.data,
     sessionRequests: sessionRequestsQuery.data,
     todayEvents: todayEventsQuery.data,
+    community: myCommunity.data,
+    joinRequests: joinRequestsQuery.data,
+    userReports: pendingReportsQuery.data,
+    bannedUsers: bannedUsersQuery.data,
   }
 
   // Overall loading state

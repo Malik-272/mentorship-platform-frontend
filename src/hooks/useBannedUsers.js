@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 const API_BASE_URL = "http://localhost:3000/api/v1";
 
 // API functions for banned users management
-const bannedUsersApi = {
+export const bannedUsersApi = {
   getBannedUsers: async () => {
     const response = await fetch(`${API_BASE_URL}/admin/banned-users`, {
       method: "GET",
