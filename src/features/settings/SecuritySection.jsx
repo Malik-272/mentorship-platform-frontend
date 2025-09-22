@@ -181,7 +181,7 @@ export default function SecuritySection({ user }) {
             <div className="flex items-center">
               <button
                 onClick={handleToggle2FA}
-                disabled={toggle2FAMutation.isPending}
+                disabled={true}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${user?.is_2fa_enabled ? "bg-blue-600" : "bg-gray-200 dark:bg-gray-600"
                   }`}
               >
@@ -207,9 +207,7 @@ export default function SecuritySection({ user }) {
                 className={`text-sm ${user?.is_2fa_enabled ? "text-green-700 dark:text-green-400" : "text-yellow-700 dark:text-yellow-400"
                   }`}
               >
-                {user?.is_2fa_enabled
-                  ? "Two-factor authentication is enabled. You'll receive a code via email when signing in."
-                  : "Two-factor authentication is disabled. Enable it to add an extra layer of security to your account."}
+                {"Two-factor authentication will be implemented soon."}
               </p>
             </div>
           </div>
