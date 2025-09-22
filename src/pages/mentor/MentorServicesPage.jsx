@@ -4,6 +4,7 @@ import { Plus, Settings, Calendar, Clock, Users, AlertCircle, Trash2, X } from "
 import { useGetMentorServices, useDeleteService } from "../../hooks/useServices"
 import LoadingSpinner from "../../ui/LoadingSpinner"
 import ErrorMessage from "../../ui/ErrorMessage"
+import toast from "react-hot-toast"
 
 const formatDuration = (minutes) => {
   if (minutes < 60) {
@@ -105,9 +106,11 @@ export default function MentorServicesPage() {
     try {
       await deleteServiceMutation.mutateAsync(serviceId)
       setDeleteModal({ isOpen: false, service: null })
+      toast.success('Service deleted successfully');
+
     } catch (error) {
       console.error("Error deleting service:", error)
-      alert(error.message || "Failed to delete service. Please try again.")
+      toast.error(error.message || "Failed to delete service. Please try again.")
     }
   }
 
