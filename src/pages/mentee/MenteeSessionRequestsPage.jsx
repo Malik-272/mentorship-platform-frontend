@@ -11,6 +11,7 @@ import ErrorMessage from "../../ui/ErrorMessage"
 import MenteeSessionRequestModal from "../../features/mentee/MenteeSessionRequestModal"
 import WithdrawConfirmationModal from "../../features/mentee/WithdrawConfirmationModal"
 import UpdateAgendaModal from "../../features/mentee/UpdateAgendaModal"
+import toast from "react-hot-toast"
 
 const STATUS_CONFIG = {
   PENDING: {
@@ -282,8 +283,10 @@ export default function MenteeSessionRequestsPage() {
       await withdrawMutation.mutateAsync(selectedRequest.id)
       setShowWithdrawModal(false)
       setSelectedRequest(null)
+      toast.success('Session request has been withdrawn successfully')
     } catch (error) {
       console.error("Failed to withdraw request:", error)
+      toast.error("Failed to withdraw request: ", error.message)
     }
   }
 
@@ -295,8 +298,10 @@ export default function MenteeSessionRequestsPage() {
       })
       setShowUpdateAgendaModal(false)
       setSelectedRequest(null)
+      toast.success('Session agenda has been updated successfully')
     } catch (error) {
       console.error("Failed to update agenda:", error)
+      toast.error('Failed to updated agenda:', error.message)
     }
   }
 
