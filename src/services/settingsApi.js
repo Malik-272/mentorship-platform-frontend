@@ -62,7 +62,7 @@ export const settingsApi = {
       throw new Error(error.message || "Failed to delete avatar");
     }
 
-    return response.json();
+    return;
   },
 
   // Updated link operations to match your API endpoints
