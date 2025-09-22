@@ -151,8 +151,8 @@ export default function UpdateAgendaModal({ request, onConfirm, onCancel, isLoad
       return
     }
 
-    if (agenda.trim().length > 500) {
-      setError("Agenda is too long (maximum 500 characters)")
+    if (agenda.trim().length > 1000) {
+      setError("Agenda is too long (maximum 1000 characters)")
       return
     }
 
@@ -207,7 +207,7 @@ export default function UpdateAgendaModal({ request, onConfirm, onCancel, isLoad
               disabled={isLoading}
             />
             <div className="flex justify-between items-center mt-1">
-              <div className="text-xs text-gray-500">{agenda.length}/500 characters</div>
+              <div className="text-xs text-gray-500">{agenda.length}/1000 characters</div>
               {error && <div className="text-xs text-red-600 dark:text-red-400">{error}</div>}
             </div>
           </div>
