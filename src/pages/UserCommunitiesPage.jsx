@@ -7,6 +7,34 @@ import {
   useLeaveCommunity,
   useCancelRequestToJoin,
 } from "../hooks/useCommunities";
+import toast from "react-hot-toast";
+
+// 🔹 ConfirmModal component
+function ConfirmModal({ open, title, message, onCancel, onConfirm }) {
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-50 bg-black bg-opacity-40 flex items-center justify-center">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-sm w-full p-6 border dark:border-gray-700">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{title}</h3>
+        <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">{message}</p>
+        <div className="flex justify-end space-x-3">
+          <button
+            onClick={onCancel}
+            className="px-4 py-2 text-sm bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            className="px-4 py-2 text-sm bg-red-600 text-white rounded-md hover:bg-red-700"
+          >
+            Confirm
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function UserCommunitiesPage() {
   const [actionError, setActionError] = useState(null);
@@ -15,8 +43,32 @@ export default function UserCommunitiesPage() {
   const { data: memberships = [], isLoading: loadingMemberships, error: membershipError } = useMemberships();
   const { data: joinRequests = [] } = useJoinRequests();
 
-  const { mutate: leaveCommunity, isPending: isLeaving, error: leaveError } = useLeaveCommunity();
-  const { mutate: cancelRequest, isPending: isWithdrawing, error: withdrawError } = useCancelRequestToJoin();
+  const { mutateAsync: leaveCommunity, isPending: isLeaving, error: leaveError } = useLeaveCommunity();
+  const { mutateAsync: cancelRequest, isPending: isWithdrawing, error: withdrawError } = useCancelRequestToJoin();
+
+  const [showModal, setShowModal] = useState(false);
+  const [modalData, setModalData] = useState({ type: "", id: "", name: "" });
+
+  const handleConfirm = async() => {
+    if (modalData.type === "leave") {
+      try{
+        await leaveCommunity(modalData.id);
+        toast.success('Left community successfully');
+      }
+      catch(error){
+        toast.error('Failed to leave community:', error.message);
+      }
+    } else if (modalData.type === "withdraw") {
+      try{
+      await cancelRequest(modalData.id);
+      toast.success('Your join request has been withdrawn successfully');
+      }
+      catch(error){
+        toast.error('Failed to withdraw join request:', error.message);
+      }
+    }
+    setShowModal(false);
+  };
 
   // Placeholder avatar generator
   const getPlaceholderImage = (name) => {
@@ -77,7 +129,7 @@ export default function UserCommunitiesPage() {
                 <Users className="w-12 h-12 mx-auto text-gray-300 mb-3" />
                 <p>You are not a member of any communities yet.</p>
                 <button
-                  onClick={() => navigate("/communities")}
+                  onClick={() => navigate("/dashboard")}
                   className="mt-4 text-blue-600 dark:text-blue-400 hover:underline"
                 >
                   Browse communities
@@ -102,7 +154,10 @@ export default function UserCommunitiesPage() {
                     </Link>
 
                     <button
-                      onClick={() => leaveCommunity(community.id)}
+                      onClick={() => {
+                        setModalData({ type: "leave", id: community.id, name: community.name });
+                        setShowModal(true);
+                      }}
                       disabled={isLeaving}
                       className="ml-4 bg-white dark:bg-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 font-medium py-2 px-4 rounded-lg disabled:opacity-50 flex items-center"
                     >
@@ -153,7 +208,10 @@ export default function UserCommunitiesPage() {
                     </div>
 
                     <button
-                      onClick={() => cancelRequest(req.communityId)}
+                      onClick={() => {
+                        setModalData({ type: "withdraw", id: req.communityId, name: req.name });
+                        setShowModal(true);
+                      }}
                       disabled={isWithdrawing}
                       className="ml-4 bg-white dark:bg-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 font-medium py-2 px-4 rounded-lg disabled:opacity-50 flex items-center"
                     >
@@ -172,7 +230,19 @@ export default function UserCommunitiesPage() {
           </section>
         </div>
       </div>
+
+      {/* 🔻 Confirmation Modal */}
+      <ConfirmModal
+        open={showModal}
+        title={modalData.type === "leave" ? "Leave Community?" : "Withdraw Join Request?"}
+        message={
+          modalData.type === "leave"
+            ? `Are you sure you want to leave "${modalData.name}"?`
+            : `Are you sure you want to withdraw your request to join "${modalData.name}"?`
+        }
+        onCancel={() => setShowModal(false)}
+        onConfirm={handleConfirm}
+      />
     </div>
   );
 }
-
