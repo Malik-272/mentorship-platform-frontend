@@ -15,7 +15,7 @@ import {
   Clock,
   Tag,
   Briefcase,
-  DollarSign,
+  UserCog,
 } from "lucide-react";
 
 import { useGetUserProfile } from "../hooks/useProfile";
@@ -34,6 +34,7 @@ export default function UserProfilePage() {
 
   const { data: profileData, isLoading, error } = useGetUserProfile(id);
   const isOwnProfile = currentUser?.user?.id === id;
+  const isAdmin = currentUser?.user?.role === "ADMIN";
 
   if (isLoading || isLoadingCurrentUser) {
     return (
@@ -66,6 +67,7 @@ export default function UserProfilePage() {
   // BUGGGG
   // const user = { ...profileData?.user, ...currentUser?.user };
   const user = { ...profileData?.user };
+  const isAdminProfile = user?.role === "ADMIN";
   console.log("user:", user);
 
   return (
@@ -75,6 +77,8 @@ export default function UserProfilePage() {
         <ProfileHeader
           user={user}
           isOwnProfile={isOwnProfile}
+          isAdmin={isAdmin}
+          isAdminProfile={isAdminProfile}
           onReport={() => setShowReportModal(true)}
         />
 
@@ -102,7 +106,7 @@ export default function UserProfilePage() {
 }
 
 // Profile Header Component
-function ProfileHeader({ user, isOwnProfile, onReport }) {
+function ProfileHeader({ user, isOwnProfile, onReport, isAdmin, isAdminProfile }) {
   const getInitials = (name) => {
     return name
       ?.split(" ")
@@ -224,7 +228,7 @@ function ProfileHeader({ user, isOwnProfile, onReport }) {
                     <Settings className="w-4 h-4 mr-2" />
                     Edit Profile
                   </Link>
-                ) : (
+                ) : !isAdmin && !isAdminProfile && (
                   <button
                     onClick={onReport}
                     className="inline-flex items-center px-4 py-2 border border-red-300 dark:border-red-600 rounded-md shadow-sm text-sm font-medium text-red-700 dark:text-red-400 bg-white dark:bg-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
@@ -232,6 +236,15 @@ function ProfileHeader({ user, isOwnProfile, onReport }) {
                     <Flag className="w-4 h-4 mr-2" />
                     Report User
                   </button>
+                )}
+                {!isOwnProfile && isAdmin && (
+                  <Link
+                    to={`/management/users?id=${user?.id}`}
+                    className="inline-flex items-center px-4 py-2 border border-blue-300 dark:border-blue-600 rounded-md shadow-sm text-sm font-medium text-blue-700 dark:text-blue-400 bg-white dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+                  >
+                    <UserCog className="w-4 h-4 mr-2" />
+                    Manage User
+                  </Link>
                 )}
               </div>
             </div>

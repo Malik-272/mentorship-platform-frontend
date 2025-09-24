@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { X, Flag, AlertTriangle } from "lucide-react";
 import { useReportUser } from "../hooks/useProfile";
+import toast from "react-hot-toast";
 
 const VIOLATION_TYPES = [
   {
@@ -75,6 +76,7 @@ export default function ReportUserModal({ isOpen, onClose, reportedUser }) {
       reset();
       setSelectedViolation("");
       onClose();
+      toast.success("User reported successfully");
     } catch (error) {
       console.error("Report submission failed:", error);
     } finally {
