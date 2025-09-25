@@ -768,7 +768,7 @@ export default function DateExceptions({
                 <option value="override">
                   Override with custom availability
                 </option>
-                <option value="unavailable">Mark as unavailable</option>
+                {/* <option value="unavailable">Mark as unavailable</option> */}
               </select>
             </div>
 
@@ -795,7 +795,7 @@ export default function DateExceptions({
                     {newException.timeSlots.map((slot, index) => (
                       <div key={index} className="flex items-center gap-3">
                         <Clock className="w-4 h-4 text-gray-400 flex-shrink-0" />
-                        <TimeSlotEditor slot={slot} showEditButton={true} />
+                        <TimeSlotEditor slot={slot} showEditButton={false} />
                         <button
                           type="button"
                           onClick={() => removeTimeSlotFromNewException(index)}
