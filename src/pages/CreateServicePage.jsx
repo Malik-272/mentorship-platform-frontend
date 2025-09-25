@@ -21,16 +21,7 @@ import LoadingSpinner from "../ui/LoadingSpinner";
 import FormField from "../features/Authenticaion/FormField";
 import WeeklyAvailability from "../features/services/WeeklyAvailability";
 import DateExceptions from "../features/services/DateExceptions";
-import { transformFrontendData } from "../utils/helpers";
-
-const SESSION_DURATIONS = [
-  { value: 15, label: "15 minutes" },
-  { value: 30, label: "30 minutes" },
-  { value: 45, label: "45 minutes" },
-  { value: 60, label: "1 hour" },
-  { value: 90, label: "1.5 hours" },
-  { value: 120, label: "2 hours" },
-];
+import { transformFrontendData, structureAvailabilityExceptions } from "../utils/helpers";
 
 export default function CreateServicePage() {
   const navigate = useNavigate();
@@ -81,20 +72,14 @@ export default function CreateServicePage() {
   
   const onSubmit = async (data) => {
     try {
-      // Get user's timezone
-      // const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
       const serviceData = {
         id: data.serviceId,
         type: data.type,
         description: data.description,
         sessionTime: Number.parseInt(data.sessionDuration),
-        // timezone: userTimezone,
         days: transformFrontendData(weeklyAvailability),
-        exceptions: dateExceptions.reduce((acc, { date, timeSlots }) => {
-          if (date) acc[date] = timeSlots;
-          return transformFrontendData(acc);
-        }, {}),
+        exceptions: structureAvailabilityExceptions(dateExceptions),
       };
 
       await createServiceMutation.mutateAsync(serviceData);
@@ -278,28 +263,50 @@ export default function CreateServicePage() {
 
                 {/* Session Duration */}
                 <FormField
-                  label="Session Duration"
+                  label="Session Duration (in minutes)"
                   name="sessionDuration"
                   register={register}
                   error={errors.sessionDuration}
-                  rules={{ required: "Session duration is required" }}
+                  rules={{
+                    required: "Session duration is required",
+                    min: {
+                      value: 10,
+                      message: "Minimum duration is 10 minutes",
+                    },
+                    max: {
+                      value: 360,
+                      message: "Maximum duration is 360 minutes",
+                    },
+                    validate: (value) =>
+                      value % 5 === 0 || "Duration must be a multiple of 5",
+                  }}
                 >
                   <div className="relative">
                     <Timer className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                    <select
+                    <input
+                      type="number"
+                      min={10}
+                      max={360}
+                      step={5}
                       {...register("sessionDuration", {
                         required: "Session duration is required",
+                        min: {
+                          value: 10,
+                          message: "Minimum duration is 10 minutes",
+                        },
+                        max: {
+                          value: 360,
+                          message: "Maximum duration is 360 minutes",
+                        },
+                        validate: (value) =>
+                          value % 5 === 0 || "Duration must be a multiple of 5",
                       })}
                       className="w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-                    >
-                      {SESSION_DURATIONS.map((duration) => (
-                        <option key={duration.value} value={duration.value}>
-                          {duration.label}
-                        </option>
-                      ))}
-                    </select>
+                      placeholder="e.g. 30"
+                    />
                   </div>
                 </FormField>
+
 
                 {/* Description */}
                 <FormField
