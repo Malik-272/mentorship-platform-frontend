@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { X, Trash2, User, Calendar } from "lucide-react"
 import { useResolveUserReport } from "../../hooks/useUserReports"
+import toast from "react-hot-toast"
 
 export default function DiscardConfirmationModal({ report, onClose, onSuccess }) {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -30,6 +31,7 @@ export default function DiscardConfirmationModal({ report, onClose, onSuccess })
         action: "discard",
       })
       onSuccess()
+      toast.success("Report discarded successfully")
     } catch (err) {
       setError(err.message || "Failed to discard report")
     } finally {

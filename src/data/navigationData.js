@@ -19,6 +19,11 @@ export const roleBasedNavigation = {
     { name: "Community Settings", href: "/communities/my/settings" },
     { name: "Manage Community", href: "/communities/my/manage" },
   ],
+  ADMIN: [
+    { name: "User reports", href: "/management/user-reports" },
+    { name: "Banned Users", href: "/management/banned-users" },
+    { name: "User management", href: "/management/users" }
+  ]
 };
 
 export const footerData = {
