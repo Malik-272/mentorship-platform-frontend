@@ -23,18 +23,6 @@ import WeeklyAvailability from "../features/services/WeeklyAvailability";
 import DateExceptions from "../features/services/DateExceptions";
 import { transformFrontendData } from "../utils/helpers";
 
-// const SERVICE_TYPES = [
-//   { value: "career_guidance", label: "Career Guidance" },
-//   { value: "mock_interview", label: "Mock Interview" },
-//   { value: "resume_review", label: "Resume Review" },
-//   { value: "skill_development", label: "Skill Development" },
-//   { value: "networking", label: "Networking Advice" },
-//   { value: "industry_insights", label: "Industry Insights" },
-//   { value: "leadership_coaching", label: "Leadership Coaching" },
-//   { value: "startup_advice", label: "Startup Advice" },
-//   { value: "other", label: "Other" },
-// ];
-
 const SESSION_DURATIONS = [
   { value: 15, label: "15 minutes" },
   { value: 30, label: "30 minutes" },
@@ -326,8 +314,8 @@ export default function CreateServicePage() {
                       message: "Description must be at least 20 characters",
                     },
                     maxLength: {
-                      value: 500,
-                      message: "Description must not exceed 500 characters",
+                      value: 300,
+                      message: "Description must not exceed 300 characters",
                     },
                   }}
                 >
@@ -341,8 +329,8 @@ export default function CreateServicePage() {
                           message: "Description must be at least 20 characters",
                         },
                         maxLength: {
-                          value: 500,
-                          message: "Description must not exceed 500 characters",
+                          value: 300,
+                          message: "Description must not exceed 300 characters",
                         },
                       })}
                       rows={4}
@@ -351,7 +339,7 @@ export default function CreateServicePage() {
                     />
                   </div>
                   <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    {watch("description")?.length || 0}/500 characters
+                    {watch("description")?.length || 0}/300 characters
                   </p>
                 </FormField>
 
