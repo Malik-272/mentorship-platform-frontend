@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Check, X, Edit2, Loader2 } from "lucide-react";
+import { Check, X, Edit2, Loader2, Moon } from "lucide-react";
 import { set } from "react-hook-form";
 
 const TIME_OPTIONS = [];
@@ -153,25 +153,38 @@ export default function TimeSlotEditor({
 
   // Display mode (for existing slots)
   if (!isInEditMode && slot) {
-    return (
-      <div ref={containerRef} className="relative flex items-center gap-3">
-        <span className="text-gray-700 dark:text-gray-300">
-          {slot.startTime} - {slot.endTime}
-        </span>
-        {showEditButtonMode && (
-          <button
-            type="button"
-            onClick={handleStartEdit}
-            className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-            title="Edit time slot"
+  const overflowsToNextDay = slot.endTime < slot.startTime;
+
+  return (
+    <div ref={containerRef} className="relative flex items-center gap-3">
+      <span className="text-gray-700 dark:text-gray-300 flex items-center gap-1">
+        {slot.startTime} - {slot.endTime}
+        {overflowsToNextDay && (
+          <span
+            className="inline-flex items-center text-xs text-yellow-600 dark:text-yellow-300 ml-1"
+            title="This time slot ends on the next day"
           >
-            <Edit2 className="w-4 h-4" />
-          </button>
+            <Moon className="w-4 h-4" />
+            <span className="ml-1">+1 day</span>
+          </span>
         )}
-        <FeedbackMessage />
-      </div>
-    );
-  }
+      </span>
+
+      {showEditButtonMode && (
+        <button
+          type="button"
+          onClick={handleStartEdit}
+          className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+          title="Edit time slot"
+        >
+          <Edit2 className="w-4 h-4" />
+        </button>
+      )}
+
+      <FeedbackMessage />
+    </div>
+  );
+}
 
   // Edit/Add mode
   if (isInEditMode || (!slot && !showEditButton)) {
