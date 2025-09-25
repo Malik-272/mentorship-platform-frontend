@@ -6,9 +6,11 @@ import { ThemeProvider } from "../context/ThemeContext";
 export default function AppLayout() {
   return (
     <ThemeProvider defaultTheme="system" storageKey="growtly-theme">
-      <div className="min-h-screen bg-white  dark:bg-gray-900 transition-colors">
+      <div className="min-h-screen bg-white flex flex-col dark:bg-gray-900 transition-colors">
         <NavBar />
-        <Main />
+        <main className="flex-1">
+          <Main />
+        </main>
         <Footer />
       </div>
     </ThemeProvider>
