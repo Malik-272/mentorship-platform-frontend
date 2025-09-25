@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { X, Ban, AlertTriangle, User } from "lucide-react"
 import { useResolveUserReport } from "../../hooks/useUserReports"
+import toast from "react-hot-toast"
 
 export default function BanConfirmationModal({ report, onClose, onSuccess }) {
   // const resolveUserReport = useResolveUserReport()
@@ -32,6 +33,7 @@ export default function BanConfirmationModal({ report, onClose, onSuccess }) {
         banReason: banReason.trim(),
       })
       onSuccess()
+      toast.success("User has been banned successfully");
     } catch (err) {
       setError(err.message || "Failed to ban user")
     } finally {
@@ -102,7 +104,7 @@ export default function BanConfirmationModal({ report, onClose, onSuccess }) {
                   <span className="text-gray-600 dark:text-gray-300">
                     Additional Details:
                   </span>
-                  <p className="font-medium text-gray-900 dark:text-white mt-1 break-words whitespace-pre-line line-clamp-5">
+                  <p className="font-medium text-gray-900 dark:text-white mt-1 break-words whitespace-pre-line">
                     {report.additionalDetails}
                   </p>
                 </div>
