@@ -25,10 +25,18 @@ export function transformBackendData(days) {
 
 export function calculateDuration(startTime, endTime) {
   console.log(startTime, endTime);
+
   const [startHour, startMinute] = startTime.split(":").map(Number);
   const [endHour, endMinute] = endTime.split(":").map(Number);
+
   const startTotal = startHour * 60 + startMinute;
   const endTotal = endHour * 60 + endMinute;
+
+  // If end is earlier than start, it overflows to the next day
+  if (endTotal < startTotal) {
+    return endTotal + 1440 - startTotal; // add 24 hours (in minutes)
+  }
+
   return endTotal - startTotal;
 }
 
@@ -42,4 +50,12 @@ export function transformFrontendData(availability) {
     }));
   }
   return result;
+}
+
+export function structureAvailabilityExceptions(availabilities){
+  const result = {};
+  Array.from(availabilities).forEach((dateAvailabilities) => {
+    result[dateAvailabilities.date] = dateAvailabilities.timeSlots;
+  });
+  return transformFrontendData(result);
 }

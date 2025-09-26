@@ -21,28 +21,8 @@ import LoadingSpinner from "../ui/LoadingSpinner";
 import FormField from "../features/Authenticaion/FormField";
 import WeeklyAvailability from "../features/services/WeeklyAvailability";
 import DateExceptions from "../features/services/DateExceptions";
-import { transformFrontendData } from "../utils/helpers";
-
-const SERVICE_TYPES = [
-  { value: "career_guidance", label: "Career Guidance" },
-  { value: "mock_interview", label: "Mock Interview" },
-  { value: "resume_review", label: "Resume Review" },
-  { value: "skill_development", label: "Skill Development" },
-  { value: "networking", label: "Networking Advice" },
-  { value: "industry_insights", label: "Industry Insights" },
-  { value: "leadership_coaching", label: "Leadership Coaching" },
-  { value: "startup_advice", label: "Startup Advice" },
-  { value: "other", label: "Other" },
-];
-
-const SESSION_DURATIONS = [
-  { value: 15, label: "15 minutes" },
-  { value: 30, label: "30 minutes" },
-  { value: 45, label: "45 minutes" },
-  { value: 60, label: "1 hour" },
-  { value: 90, label: "1.5 hours" },
-  { value: 120, label: "2 hours" },
-];
+import { transformFrontendData, structureAvailabilityExceptions } from "../utils/helpers";
+import toast from "react-hot-toast";
 
 export default function CreateServicePage() {
   const navigate = useNavigate();
@@ -50,24 +30,8 @@ export default function CreateServicePage() {
   const [activeTab, setActiveTab] = useState("basic");
   const [weeklyAvailability, setWeeklyAvailability] = useState({});
   const [dateExceptions, setDateExceptions] = useState([]);
+  const [isServiceIdModified, setIsServiceIdModified] = useState(false);
 
-  // Check authentication and role
-  //   useEffect(() => {
-  //     if (!isLoadingAuth) {
-  //       if (status === "none") {
-  //         navigate("/login")
-  //         return
-  //       }
-  //       if (status === "partial") {
-  //         navigate("/confirm-email")
-  //         return
-  //       }
-  //       if (currentUser?.user?.role !== "MENTOR") {
-  //         navigate("/dashboard")
-  //         return
-  //       }
-  //     }
-  //   }, [status, currentUser, isLoadingAuth, navigate])
 
   const {
     register,
@@ -85,35 +49,42 @@ export default function CreateServicePage() {
   });
 
   const createServiceMutation = useCreateService();
+  const serviceId = watch("serviceId");
 
-  // Auto-generate service ID from type
-  const watchType = watch("type");
+
   useEffect(() => {
-    if (watchType && watchType !== "other") {
-      const generatedId = watchType;
-      setValue("serviceId", generatedId);
-    }
-  }, [watchType, setValue]);
+  const subscription = watch((value, { name }) => {
+    if (name !== "type") return;
+    if (isServiceIdModified) return;
 
+    const type = value?.type || "";
+
+    const formatted = type
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9-]/g, "")
+      .slice(0, 32);
+
+    setValue("serviceId", formatted);
+  });
+
+  return () => subscription.unsubscribe();
+}, [watch, setValue, isServiceIdModified]);
+  
   const onSubmit = async (data) => {
     try {
-      // Get user's timezone
-      // const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
       const serviceData = {
         id: data.serviceId,
         type: data.type,
         description: data.description,
         sessionTime: Number.parseInt(data.sessionDuration),
-        // timezone: userTimezone,
         days: transformFrontendData(weeklyAvailability),
-        exceptions: dateExceptions.reduce((acc, { date, timeSlots }) => {
-          if (date) acc[date] = timeSlots;
-          return transformFrontendData(acc);
-        }, {}),
+        exceptions: structureAvailabilityExceptions(dateExceptions),
       };
 
       await createServiceMutation.mutateAsync(serviceData);
+      toast.success("Service has been created successfully")
       navigate(`/my/services/${data.serviceId}`);
     } catch (error) {
       console.error("Service creation failed:", error);
@@ -197,100 +168,147 @@ export default function CreateServicePage() {
                   name="type"
                   register={register}
                   error={errors.type}
-                  rules={{ required: "Service type is required" }}
+                  rules={{
+                    required: "Service type is required",
+                    maxLength: {
+                      value: 50,
+                      message: "Maximum 50 characters allowed",
+                    },
+                  }}
                 >
-                  <select
+                  <input
+                    type="text"
                     {...register("type", {
                       required: "Service type is required",
+                      maxLength: {
+                        value: 50,
+                        message: "Maximum 50 characters allowed",
+                      },
                     })}
+                    maxLength={50}
+                    placeholder="Enter a service type"
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-                  >
-                    <option value="">Select a service type</option>
-                    {SERVICE_TYPES.map((type) => (
-                      <option key={type.value} value={type.value}>
-                        {type.label}
-                      </option>
-                    ))}
-                  </select>
+                  />
                 </FormField>
 
                 {/* Service ID */}
                 <FormField
-                  label="Service ID"
-                  name="serviceId"
-                  register={register}
-                  error={errors.serviceId}
-                  rules={{
-                    required: "Service ID is required",
-                    pattern: {
-                      value: /^[a-zA-Z0-9_]+$/,
-                      message:
-                        "ID can only contain lowercase letters, numbers, and underscores",
-                    },
-                    minLength: {
-                      value: 3,
-                      message: "ID must be at least 3 characters",
-                    },
-                    maxLength: {
-                      value: 50,
-                      message: "ID must not exceed 50 characters",
-                    },
+                label="Service ID"
+                name="serviceId"
+                register={register}
+                error={errors.serviceId}
+                rules={{
+                  required: "Service ID is required",
+                  pattern: {
+                    value: /^[a-zA-Z0-9-]+$/,
+                    message: "ID can only contain letters, numbers, and dashes",
+                  },
+                  minLength: {
+                    value: 3,
+                    message: "ID must be at least 3 characters",
+                  },
+                  maxLength: {
+                    value: 32,
+                    message: "ID must not exceed 32 characters",
+                  },
+                }}
+              >
+                <div className="relative">
+                  <Hash className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    {...register("serviceId", {
+                      required: "Service ID is required",
+                      pattern: {
+                        value: /^[a-zA-Z0-9-]+$/,
+                        message: "ID can only contain letters, numbers, and dashes",
+                      },
+                      minLength: {
+                        value: 3,
+                        message: "ID must be at least 3 characters",
+                      },
+                      maxLength: {
+                        value: 32,
+                        message: "ID must not exceed 32 characters",
+                      },
+                    })}
+                    onChange={(e) => {
+                      setIsServiceIdModified(true); // track that user has edited the field
+                      // let react-hook-form still handle the input
+                      register("serviceId").onChange(e);
+                    }}
+                    className="w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                    placeholder="service-id"
+                  />
+                </div>
+                {serviceId?.length > 0 && (<button
+                  type="button"
+                  onClick={() => {
+                    const type = watch("type") || "";
+                    const formatted = type
+                      .toLowerCase()
+                      .replace(/\s+/g, "-")
+                      .replace(/[^a-z0-9-]/g, "")
+                      .slice(0, 32);
+                    setValue("serviceId", formatted);
+                    setIsServiceIdModified(false); // resume auto-updating
                   }}
+                  className="text-sm text-blue-500 hover:underline mt-2"
                 >
-                  <div className="relative">
-                    <Hash className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                    <input
-                      {...register("serviceId", {
-                        required: "Service ID is required",
-                        pattern: {
-                          value: /^[a-zA-Z0-9_]+$/,
-                          message:
-                            "ID can only contain lowercase letters, numbers, and underscores",
-                        },
-                        minLength: {
-                          value: 3,
-                          message: "ID must be at least 3 characters",
-                        },
-                        maxLength: {
-                          value: 50,
-                          message: "ID must not exceed 50 characters",
-                        },
-                      })}
-                      className="w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-                      placeholder="service-id"
-                    />
-                  </div>
-                  <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    This will be used in URLs: /mentors/{currentUser?.user?.id}
-                    /services/
-                    {watch("serviceId") || "your-id"}
-                  </p>
-                </FormField>
+                  Reset to auto-generated ID
+                </button>
+                )}
+                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                  This will be used in URLs: /users/{currentUser?.user?.id}/services/{serviceId || "your-id"}/book
+                </p>
+              </FormField>
+
 
                 {/* Session Duration */}
                 <FormField
-                  label="Session Duration"
+                  label="Session Duration (in minutes)"
                   name="sessionDuration"
                   register={register}
                   error={errors.sessionDuration}
-                  rules={{ required: "Session duration is required" }}
+                  rules={{
+                    required: "Session duration is required",
+                    min: {
+                      value: 10,
+                      message: "Minimum duration is 10 minutes",
+                    },
+                    max: {
+                      value: 360,
+                      message: "Maximum duration is 360 minutes",
+                    },
+                    validate: (value) =>
+                      value % 5 === 0 || "Duration must be a multiple of 5",
+                  }}
                 >
                   <div className="relative">
                     <Timer className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                    <select
+                    <input
+                      type="number"
+                      min={10}
+                      max={360}
+                      step={5}
                       {...register("sessionDuration", {
                         required: "Session duration is required",
+                        min: {
+                          value: 10,
+                          message: "Minimum duration is 10 minutes",
+                        },
+                        max: {
+                          value: 360,
+                          message: "Maximum duration is 360 minutes",
+                        },
+                        validate: (value) =>
+                          value % 5 === 0 || "Duration must be a multiple of 5",
                       })}
                       className="w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-                    >
-                      {SESSION_DURATIONS.map((duration) => (
-                        <option key={duration.value} value={duration.value}>
-                          {duration.label}
-                        </option>
-                      ))}
-                    </select>
+                      placeholder="e.g. 30"
+                    />
                   </div>
                 </FormField>
+
 
                 {/* Description */}
                 <FormField
@@ -305,8 +323,8 @@ export default function CreateServicePage() {
                       message: "Description must be at least 20 characters",
                     },
                     maxLength: {
-                      value: 500,
-                      message: "Description must not exceed 500 characters",
+                      value: 300,
+                      message: "Description must not exceed 300 characters",
                     },
                   }}
                 >
@@ -320,8 +338,8 @@ export default function CreateServicePage() {
                           message: "Description must be at least 20 characters",
                         },
                         maxLength: {
-                          value: 500,
-                          message: "Description must not exceed 500 characters",
+                          value: 300,
+                          message: "Description must not exceed 300 characters",
                         },
                       })}
                       rows={4}
@@ -330,7 +348,7 @@ export default function CreateServicePage() {
                     />
                   </div>
                   <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    {watch("description")?.length || 0}/500 characters
+                    {watch("description")?.length || 0}/300 characters
                   </p>
                 </FormField>
 
