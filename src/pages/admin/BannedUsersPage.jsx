@@ -14,6 +14,7 @@ import {
 import LoadingSpinner from "../../ui/LoadingSpinner";
 import ErrorMessage from "../../ui/ErrorMessage";
 import { useBannedUsers, useUnbanUser } from "../../hooks/useBannedUsers";
+import toast from "react-hot-toast";
 
 const UnbanConfirmationModal = ({
   isOpen,
@@ -119,9 +120,10 @@ export default function BannedUsersPage() {
     try {
       await unbanUserMutation.mutateAsync(userId);
       setUnbanModal({ isOpen: false, user: null });
+      toast.success("Ban lifted successfully")
     } catch (error) {
       console.error("Error unbanning user:", error);
-      alert(error.message || "Failed to unban user. Please try again.");
+      toast.error("Failed to ban user")
     }
   };
 
