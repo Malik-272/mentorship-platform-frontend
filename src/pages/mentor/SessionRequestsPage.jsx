@@ -16,6 +16,7 @@ import RejectReasonModal from "../../features/mentor/RejectReasonModal"
 import CancelConfirmationModal from "../../features/mentor/CancelConfirmationModal"
 import { STATUS_CONFIG } from "../../data/MentorData"
 import { formatDateTime, formatDuration } from "../../utils/formating"
+import toast from "react-hot-toast"
 
 const canCancelSession = (date, startTime) => {
   const sessionDateTime = new Date(`${date}T${startTime}`)
@@ -274,8 +275,10 @@ export default function SessionRequestsPage() {
       })
       setShowAcceptModal(false)
       setSelectedRequest(null)
+      toast.success("Session accepted successfully, check the invitation we sent to your calendar")
     } catch (error) {
       console.error("Failed to accept request:", error)
+      toast.error("Failed to accept session request")
     }
   }
 
@@ -288,8 +291,10 @@ export default function SessionRequestsPage() {
       })
       setShowRejectModal(false)
       setSelectedRequest(null)
+      toast.success("Request rejected successfully")
     } catch (error) {
       console.error("Failed to reject request:", error)
+      toast.error("Failed to reject request")
     }
   }
 
@@ -302,8 +307,10 @@ export default function SessionRequestsPage() {
       })
       setShowCancelModal(false)
       setSelectedRequest(null)
+      toast.success("Session cancelled successfully")
     } catch (error) {
       console.error("Failed to cancel session:", error)
+      toast.error("Failed to cancel session")
     }
   }
 
