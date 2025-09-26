@@ -22,6 +22,7 @@ import FormField from "../features/Authenticaion/FormField";
 import WeeklyAvailability from "../features/services/WeeklyAvailability";
 import DateExceptions from "../features/services/DateExceptions";
 import { transformFrontendData, structureAvailabilityExceptions } from "../utils/helpers";
+import toast from "react-hot-toast";
 
 export default function CreateServicePage() {
   const navigate = useNavigate();
@@ -83,6 +84,7 @@ export default function CreateServicePage() {
       };
 
       await createServiceMutation.mutateAsync(serviceData);
+      toast.success("Service has been created successfully")
       navigate(`/my/services/${data.serviceId}`);
     } catch (error) {
       console.error("Service creation failed:", error);

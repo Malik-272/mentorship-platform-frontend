@@ -9,6 +9,7 @@ import {
   useUpdateExceptionSlot,
 } from "../../hooks/useServices";
 import { calculateDuration } from "../../utils/helpers";
+import toast from "react-hot-toast";
 
 export default function DateExceptions({
   exceptions,
@@ -36,6 +37,16 @@ export default function DateExceptions({
 
   const addException = () => {
     if (!newException.date) return;
+
+    // Prevent duplicate date exceptions
+  const isDuplicate = exceptions.some(
+    (exception) => exception.date === newException.date
+  );
+
+  if (isDuplicate) {
+    toast.error("You already added availability for this date.");
+    return;
+  }
     console.log("exceptions", exceptions);
     const updatedExceptions = [
       ...exceptions,
@@ -177,6 +188,18 @@ export default function DateExceptions({
 
   const saveEditingException = () => {
     if (editingException === null || !editingExceptionData) return;
+
+    const newDate = editingExceptionData.date;
+
+    // Check for duplicate date (excluding the one being edited)
+    const isDuplicate = exceptions.some((ex, idx) => 
+      idx !== editingException && ex.date === newDate
+    );
+
+    if (isDuplicate) {
+      toast.error("Another exception already exists for this date.");
+      return;
+    }
 
     const updatedExceptions = [...exceptions];
     updatedExceptions[editingException] = {
