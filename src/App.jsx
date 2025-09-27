@@ -82,7 +82,16 @@ function App() {
       <ThemeProvider defaultTheme="system" storageKey="growtly-theme">
         <AuthProvider>
           <Router>
-            <Toaster position="top-right"/>
+            <Toaster position="top-right"
+              toastOptions={{
+                success: {
+                  iconTheme: {
+                    primary: "#7C3AED",   // blue checkmark
+                    secondary: "#EFF6FF", // light blue background
+                  },
+                },
+              }}
+            />
             <Routes>
               {/* Public-only Auth Routes (redirect if authenticated) */}
               <Route
@@ -145,7 +154,7 @@ function App() {
                   <PublicOnlyRoute>
                     <LandingPage />
                   </PublicOnlyRoute>
-                  } />
+                } />
 
                 {/* Protected dashboard route - requires full authentication */}
 
