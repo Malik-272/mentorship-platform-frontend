@@ -65,7 +65,9 @@ export default function CreateServicePage() {
       .replace(/[^a-z0-9-]/g, "")
       .slice(0, 32);
 
-    setValue("serviceId", formatted);
+    if (formatted !== watch("serviceId")) {
+      setValue("serviceId", formatted);
+    }
   });
 
   return () => subscription.unsubscribe();
