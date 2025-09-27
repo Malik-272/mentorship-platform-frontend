@@ -26,7 +26,6 @@ import WeeklyAvailability from "../features/services/WeeklyAvailability";
 import DateExceptions from "../features/services/DateExceptions";
 import ServicePreview from "../features/services/ServicePreview";
 import { transformBackendData, transformFrontendData } from "../utils/helpers";
-import toast from "react-hot-toast";
 
 // Common timezones for preview
 const COMMON_TIMEZONES = [

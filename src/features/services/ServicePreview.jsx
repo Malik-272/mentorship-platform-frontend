@@ -138,10 +138,10 @@ export default function ServicePreview({ service, mentor, previewTimezone }) {
           <span>Online Session</span>
         </div>
 
-        <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+        {/* <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
           <Star className="w-4 h-4 text-yellow-500" />
           <span>4.9 (127 reviews)</span>
-        </div>
+        </div> */}
       </div>
 
       {/* Description */}
