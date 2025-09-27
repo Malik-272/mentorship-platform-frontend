@@ -149,8 +149,10 @@ export default function DateExceptions({
     if (pageType === "manage" && slot.id) {
       try {
         await removeExceptionSlotMutation.mutateAsync(slot.id);
+        toast.success("Time slot has been removed successfully")
       } catch (error) {
         console.error("Error removing slot:", error);
+        toast.error(`Failed to remove time slot: ${error.message}`)
         return;
       }
     }
