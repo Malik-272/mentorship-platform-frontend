@@ -27,27 +27,6 @@ import DateExceptions from "../features/services/DateExceptions";
 import ServicePreview from "../features/services/ServicePreview";
 import { transformBackendData, transformFrontendData } from "../utils/helpers";
 
-const SERVICE_TYPES = [
-  { value: "career_guidance", label: "Career Guidance" },
-  { value: "mock_interview", label: "Mock Interview" },
-  { value: "resume_review", label: "Resume Review" },
-  { value: "skill_development", label: "Skill Development" },
-  { value: "networking", label: "Networking Advice" },
-  { value: "industry_insights", label: "Industry Insights" },
-  { value: "leadership_coaching", label: "Leadership Coaching" },
-  { value: "startup_advice", label: "Startup Advice" },
-  { value: "other", label: "Other" },
-];
-
-const SESSION_DURATIONS = [
-  { value: 15, label: "15 minutes" },
-  { value: 30, label: "30 minutes" },
-  { value: 45, label: "45 minutes" },
-  { value: 60, label: "1 hour" },
-  { value: 90, label: "1.5 hours" },
-  { value: 120, label: "2 hours" },
-];
-
 // Common timezones for preview
 const COMMON_TIMEZONES = [
   { value: "America/New_York", label: "Eastern Time (ET)" },
@@ -299,45 +278,72 @@ export default function ServiceManagementPage() {
                       name="type"
                       register={register}
                       error={errors.type}
-                      rules={{ required: "Service type is required" }}
+                      rules={{
+                    required: "Service type is required",
+                    maxLength: {
+                      value: 50,
+                      message: "Maximum 50 characters allowed",
+                    },
+                  }}
                     >
-                      <select
-                        {...register("type", {
-                          required: "Service type is required",
-                        })}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-                      >
-                        <option value="">Select a service type</option>
-                        {SERVICE_TYPES.map((type) => (
-                          <option key={type.value} value={type.value}>
-                            {type.label}
-                          </option>
-                        ))}
-                      </select>
+                      <input
+                    type="text"
+                    {...register("type", {
+                      required: "Service type is required",
+                      maxLength: {
+                        value: 50,
+                        message: "Maximum 50 characters allowed",
+                      },
+                    })}
+                    maxLength={50}
+                    placeholder="Enter a service type"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                  />
                     </FormField>
 
                     {/* Session Duration */}
                     <FormField
-                      label="Session Duration"
+                      label="Session Duration (in minutes)"
                       name="sessionDuration"
                       register={register}
                       error={errors.sessionDuration}
-                      rules={{ required: "Session duration is required" }}
+                      rules={{
+                      required: "Session duration is required",
+                      min: {
+                        value: 10,
+                        message: "Minimum duration is 10 minutes",
+                      },
+                      max: {
+                        value: 360,
+                        message: "Maximum duration is 360 minutes",
+                      },
+                      validate: (value) =>
+                        value % 5 === 0 || "Duration must be a multiple of 5",
+                    }}
                     >
                       <div className="relative">
                         <Timer className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                        <select
+                        <input
+                          type="number"
+                          min={10}
+                          max={360}
+                          step={5}
                           {...register("sessionDuration", {
                             required: "Session duration is required",
+                            min: {
+                              value: 10,
+                              message: "Minimum duration is 10 minutes",
+                            },
+                            max: {
+                              value: 360,
+                              message: "Maximum duration is 360 minutes",
+                            },
+                            validate: (value) =>
+                              value % 5 === 0 || "Duration must be a multiple of 5",
                           })}
                           className="w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-                        >
-                          {SESSION_DURATIONS.map((duration) => (
-                            <option key={duration.value} value={duration.value}>
-                              {duration.label}
-                            </option>
-                          ))}
-                        </select>
+                          placeholder="e.g. 30"
+                        />
                       </div>
                     </FormField>
 
@@ -354,8 +360,8 @@ export default function ServiceManagementPage() {
                           message: "Description must be at least 20 characters",
                         },
                         maxLength: {
-                          value: 500,
-                          message: "Description must not exceed 500 characters",
+                          value: 300,
+                          message: "Description must not exceed 300 characters",
                         },
                       }}
                     >
@@ -370,9 +376,9 @@ export default function ServiceManagementPage() {
                                 "Description must be at least 20 characters",
                             },
                             maxLength: {
-                              value: 500,
+                              value: 300,
                               message:
-                                "Description must not exceed 500 characters",
+                                "Description must not exceed 300 characters",
                             },
                           })}
                           rows={4}
@@ -381,7 +387,7 @@ export default function ServiceManagementPage() {
                         />
                       </div>
                       <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                        {watch("description")?.length || 0}/500 characters
+                        {watch("description")?.length || 0}/300 characters
                       </p>
                     </FormField>
                   </div>

@@ -8,6 +8,7 @@ import {
   useUpdateSlot,
 } from "../../hooks/useServices";
 import { calculateDuration } from "../../utils/helpers";
+import toast from "react-hot-toast";
 
 const DAYS_OF_WEEK = [
   { key: "monday", label: "Monday" },
@@ -49,6 +50,7 @@ export default function WeeklyAvailability({
           startTime: slot.startTime,
           duration: calculateDuration(slot.startTime, slot.endTime),
         });
+        toast.success("Slot has been added successfully")
         newAvailability = {
           ...availability,
           [day]: [
@@ -86,8 +88,6 @@ export default function WeeklyAvailability({
         ...availability,
         [day]: newSlots,
       };
-      onChange(newAvailability);
-      setEditingSlot(null);
       if (pageType === "manage") {
         const id = newSlots[index].id;
         await updateSlotMutation.mutateAsync({
@@ -97,7 +97,10 @@ export default function WeeklyAvailability({
             duration: calculateDuration(slot.startTime, slot.endTime),
           },
         });
+        toast.success("Slot has been updated successfully")
       }
+      onChange(newAvailability);
+      setEditingSlot(null);
     } catch (error) {
       console.error("Error updating slot:", error);
       throw error; // Re-throw to let TimeSlotEditor handle the error feedback
@@ -108,23 +111,31 @@ export default function WeeklyAvailability({
     setEditingSlot(null);
   };
 
-  const removeTimeSlot = (day, index) => {
-    const newSlots = [...(availability[day] || [])];
-    newSlots.splice(index, 1);
-    // const slotToRemove = newSlots.findIndex((s) => s.id === index);
+  const removeTimeSlot = async (day, index) => {
+    try{
+      const newSlots = [...(availability[day] || [])];
+      console.log("New slots: ", newSlots)
+      const slotIdToRemove = newSlots[index]?.id;
 
-    const newAvailability = {
-      ...availability,
-      [day]: newSlots.length > 0 ? newSlots : undefined,
-    };
-    if (newSlots.length === 0) {
-      delete newAvailability[day];
-    }
-    onChange(newAvailability);
-    setEditingSlot(null);
-    if (pageType === "manage") {
-      const id = newSlots[index].id;
-      deleteSlotMutation.mutate(id);
+      if (pageType === "manage") {
+        await deleteSlotMutation.mutateAsync(slotIdToRemove);
+        toast.success("Time slot has been deleted successfully");
+      }
+
+      newSlots.splice(index, 1);
+      const newAvailability = {
+        ...availability,
+        [day]: newSlots.length > 0 ? newSlots : undefined,
+      };
+      if (newSlots.length === 0) {
+        delete newAvailability[day];
+      }
+      onChange(newAvailability);
+      setEditingSlot(null);
+    } catch(error){
+      if(pageType === "manage"){
+        toast.error(`Failed to delete time slot: ${error.message}`)
+      }
     }
   };
 
