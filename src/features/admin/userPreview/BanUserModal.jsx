@@ -97,12 +97,12 @@ export default function BanUserModal({ isOpen, onClose, onConfirm, user }) {
                     value={banReason}
                     onChange={(e) => setBanReason(e.target.value)}
                     className="w-full min-h-[100px] px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:text-white resize-none"
-                    maxLength={500}
+                    maxLength={100}
                     required
                   />
                   <div className="flex justify-between text-xs text-gray-600 dark:text-gray-400">
                     <span>Minimum 10 characters required</span>
-                    <span>{banReason.length}/500</span>
+                    <span>{banReason.length}/100</span>
                   </div>
                 </div>
 

@@ -1,4 +1,5 @@
 import { Users } from "lucide-react"
+import { Link } from "react-router-dom"
 
 export default function UserCommunities({ user }) {
   if (!user.communities || user.communities.length === 0) return null
@@ -33,7 +34,12 @@ export default function UserCommunities({ user }) {
               </div>
               <div className="flex-1">
                 <h4 className="font-medium">{community.name}</h4>
-                <p className="text-sm text-gray-600 dark:text-gray-400">ID: {community.communityId}</p>
+                <Link
+                  to={`/communities/${community.communityId}`}
+                  className="flex-1 block"
+                >
+                  <p className="text-sm text-blue-600 dark:text-blue-400">@{community.communityId}</p>
+                </Link>
               </div>
             </div>
           ))}

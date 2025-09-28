@@ -1,7 +1,8 @@
 import { Users, Calendar, ShieldCheck } from "lucide-react"
+import { Link } from "react-router-dom"
 
 export default function CommunityOwnership({ user }) {
-  if (!user.community) return null
+  if (!user.community || Object.keys(user.community).length === 0) return null
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -41,7 +42,12 @@ export default function CommunityOwnership({ user }) {
               <h4 className="text-lg font-medium">{user.community.name}</h4>
               {user.community.verified && <ShieldCheck className="h-5 w-5 text-blue-500" />}
             </div>
-            <p className="text-sm text-gray-600 dark:text-gray-400">ID: {user.community.id}</p>
+            <Link
+            to={`/communities/${user.community.id}`}
+            className="flex-1 block"
+            >
+              <p className="text-sm text-blue-600 dark:text-blue-400">@{user.community.id}</p>
+            </Link>
             <p className="text-sm">{user.community.description}</p>
             <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
               <span className="flex items-center gap-1">

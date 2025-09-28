@@ -17,6 +17,7 @@ import UserServices from "../../features/admin/userPreview/UserServices"
 import CommunityOwnership from "../../features/admin/userPreview/CommunityOwnership"
 
 import { useUserPreview, useBanUser, useUnbanUser } from "../../hooks/useUserPreview"
+import toast from "react-hot-toast"
 
 export default function UserPreviewPage() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -46,16 +47,28 @@ export default function UserPreviewPage() {
     banUser(
       { userId, banReason },
       {
-        onSuccess: () => setShowBanModal(false),
-        onError: (err) => console.error("Failed to ban user:", err),
+        onSuccess: () => {
+          toast.success(`${user?.basicDetails?.id} has been banned successfully`);
+          setShowBanModal(false);
+        },
+        onError: (err) => {
+          console.error("Failed to ban user:", err);
+          toast.error(`Failed to ban ${user?.basicDetails?.id}: ${err.message}`);
+        },
       }
     )
   }
 
   const handleUnbanUser = () => {
     unbanUser(userId, {
-      onSuccess: () => setShowUnbanModal(false),
-      onError: (err) => console.error("Failed to unban user:", err),
+      onSuccess: () => {
+        setShowUnbanModal(false);
+        toast.success(`${user?.basicDetails?.id} has been unbaned successfully`);
+      },
+      onError: (err) => {
+        console.error("Failed to unban user:", err);
+        toast.error(`Failed to unban ${user?.basicDetails?.id}: ${err.message}`);
+      },
     })
   }
 
