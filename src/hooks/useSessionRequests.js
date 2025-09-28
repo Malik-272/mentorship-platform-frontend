@@ -36,7 +36,8 @@ const sessionRequestsApi = {
     })
 
     if (!response.ok) {
-      throw new Error(`Failed to update session request: ${response.status} ${response.statusText}`)
+      const res = await response.json();
+      throw new Error( res.message ||`Failed to update session request: ${response.status} ${response.statusText}`)
     }
 
     const data = await response.json()

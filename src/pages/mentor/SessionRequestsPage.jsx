@@ -278,7 +278,7 @@ export default function SessionRequestsPage() {
       toast.success("Session accepted successfully, check the invitation we sent to your calendar")
     } catch (error) {
       console.error("Failed to accept request:", error)
-      toast.error("Failed to accept session request")
+      toast.error(`Failed to accept session request: ${error.message}`)
     }
   }
 
