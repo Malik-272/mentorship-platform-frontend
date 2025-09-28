@@ -387,12 +387,13 @@ export default function ServiceBookingPage() {
                       value={agenda}
                       onChange={(e) => setAgenda(e.target.value)}
                       rows={6}
+                      maxLength={1000}
                       required
                       className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white resize-none"
                       placeholder="Please provide details about what you'd like to cover, any specific questions you have, or goals for this session..."
                     />
                     <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                      {agenda.length}/500 characters
+                      {agenda.length}/1000 characters
                     </p>
                   </div>
 
