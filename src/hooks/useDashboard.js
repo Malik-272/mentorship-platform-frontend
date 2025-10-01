@@ -3,27 +3,7 @@ import { useAuth } from "../context/AuthContext"
 import { communitiesApi } from "../services/communitiesApi"
 import { userReportsApi } from "./useUserReports"
 import { bannedUsersApi, useBannedUsers } from "./useBannedUsers"
-
-// API functions
-// const fetchUserData = async () => {
-//   const response = await fetch("/api/user/profile", {
-//     headers: { "Content-Type": "application/json" },
-//   })
-//   if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
-//   const data = await response.json()
-//   if (data.status !== "Success") throw new Error(data.message || "Failed to fetch user data")
-//   return data.data
-// }
-
-// const fetchCommunityMemberships = async () => {
-//   const response = await fetch("/api/communities/my/memberships", {
-//     headers: { "Content-Type": "application/json" },
-//   })
-//   if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
-//   const data = await response.json()
-//   if (data.status !== "Success") throw new Error(data.message || "Failed to fetch memberships")
-//   return data.data || []
-// }
+import { servicesApi } from "./useServices"
 
 const fetchSessionRequests = async () => {
   const response = await fetch("http://localhost:3000/api/v1/dashboard/mentee/session-requests", {
@@ -71,34 +51,6 @@ const fetchTodayEvents = async () => {
 
 }
 
-// const fetchRoleDashboardData = async (role) => {
-//   let endpoint = ""
-//   switch (role) {
-//     case "MENTEE":
-//       endpoint = "/api/dashboard/mentee"
-//       break
-//     case "MENTOR":
-//       endpoint = "/api/dashboard/mentor"
-//       break
-//     case "COMMUNITY_MANAGER":
-//       endpoint = "/api/dashboard/community-manager"
-//       break
-//     case "ADMIN":
-//       endpoint = "/api/dashboard/admin"
-//       break
-//     default:
-//       throw new Error("Invalid user role")
-//   }
-
-//   const response = await fetch(endpoint, {
-//     headers: { "Content-Type": "application/json" },
-//   })
-//   if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
-//   const data = await response.json()
-//   if (data.status !== "Success") throw new Error(data.message || "Failed to fetch dashboard data")
-//   return data.data
-// }
-
 const searchUsersAndCommunities = async (query) => {
   const response = await fetch(`http://localhost:3000/api/v1/dashboard/search?query=${encodeURIComponent(query)}`, {
     headers: { "Content-Type": "application/json" },
@@ -120,11 +72,6 @@ export function useDashboard() {
   // Main dashboard queries using useQueries for parallel execution
   const queries = useQueries({
     queries: [
-      // {
-      //   queryKey: ["user-data"],
-      //   queryFn: getUserProfile(user.id),
-      //   enabled: !!user,
-      // },
       {
         queryKey: ["user-data", user?.id],
         queryFn: () => getUserProfile(user.id),
@@ -164,20 +111,29 @@ export function useDashboard() {
         queryKey: ["bannedUsers"],
         queryFn: bannedUsersApi.getBannedUsers,
         enabled: !!user && user.role === "ADMIN",
-      }
-      // {
-      //   queryKey: ["dashboard-data", user?.role],
-      //   queryFn: () => fetchRoleDashboardData(user.role),
-      //   enabled: !!user,
-      // },
+      },
+      {
+        queryKey: ["mentorServices"],
+        queryFn: servicesApi.getMentorServices,
+        enabled: !!user && user.role == "MENTOR"
+      },
     ],
   })
   console.log("Queries", queries)
-  const [userDataQuery, membershipsQuery, sessionRequestsQuery, todayEventsQuery, myCommunity, joinRequestsQuery, pendingReportsQuery, bannedUsersQuery, dashboardDataQuery] = queries
+  const [
+    userDataQuery,
+    membershipsQuery,
+    sessionRequestsQuery,
+    todayEventsQuery,
+    myCommunity,
+    joinRequestsQuery,
+    pendingReportsQuery,
+    bannedUsersQuery,
+    mentorServicesQuery,
+  ] = queries
 
   // Combine all data
   const dashboardData = {
-    // ...dashboardDataQuery.data,
     userData: userDataQuery.data,
     communities: membershipsQuery.data,
     sessionRequests: sessionRequestsQuery.data,
@@ -186,6 +142,7 @@ export function useDashboard() {
     joinRequests: joinRequestsQuery.data,
     userReports: pendingReportsQuery.data,
     bannedUsers: bannedUsersQuery.data,
+    mentorServices: mentorServicesQuery.data,
   }
 
   // Overall loading state
@@ -215,8 +172,7 @@ export function useDashboard() {
       userData: userDataQuery,
       memberships: membershipsQuery,
       sessionRequests: sessionRequestsQuery,
-      todayEvents: todayEventsQuery,
-      dashboardData: dashboardDataQuery,
+      todayEvents: todayEventsQuery
     },
   }
 }

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import {
   useGetCommunityJoinRequests,
@@ -278,9 +278,19 @@ const handleCancelRemove = () => {
                             )}
                           </div>
                           <div>
-                            <h3 className="font-semibold text-gray-900 dark:text-white">
-                              {request.user.name}
-                            </h3>
+                            <Link
+                            to={`/profile/${request.userId}`}
+                            >
+                            <div className="flex items-center gap-2">
+                              <h3 className="font-semibold text-gray-900 hover:underline dark:text-white">
+                                {request.user.name}
+                              </h3>
+                              <div className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400">
+                                {getRoleIcon(request.user.role)}
+                                <span>{getRoleLabel(request.user.role)}</span>
+                              </div>
+                            </div>
+                            </Link>
                             <p className="text-sm text-gray-600 dark:text-gray-400">
                               {request.user.headline || "No headline provided"}
                             </p>
@@ -371,9 +381,13 @@ const handleCancelRemove = () => {
                           </div>
                           <div>
                             <div className="flex items-center gap-2">
-                              <h3 className="font-semibold text-gray-900 dark:text-white">
+                              <Link
+                              to={`/profile/${member.id}`}
+                              >
+                              <h3 className="font-semibold text-gray-900 hover:underline dark:text-white">
                                 {member.name}
                               </h3>
+                              </Link>
                               {getRoleIcon(member.role)}
                               <span className="text-sm text-gray-600 dark:text-gray-400">
                                 {getRoleLabel(member.role)}
