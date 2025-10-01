@@ -21,9 +21,9 @@ const DashboardCard = ({ title, icon: Icon, children, onClick, className = "", t
 
 export default function MentorDashboard({ data }) {
   const navigate = useNavigate();
-  const { communities = [], userData = {}, todayEvents = [] } = data || {};
+  const { communities = [], userData = {}, todayEvents = [], mentorServices = [] } = data || {};
   const profileSetup = userData?.user;
-  const services = profileSetup?.services || [];
+  const services = mentorServices || [];
   const profileSteps = [
     { key: "hasImage", label: "Profile Image", completed: !!profileSetup?.imageUrl },
     { key: "hasBio", label: "Bio", completed: !!profileSetup?.bio },
@@ -53,7 +53,7 @@ export default function MentorDashboard({ data }) {
                   <p className="text-xs text-gray-500 dark:text-gray-400">{service.sessionTime} minutes</p>
                 </div>
                 <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                  {service.acceptedRequestsCount || 0} sessions
+                  {service.pendingRequestsCount || 0} requests
                 </span>
               </div>
             ))}
