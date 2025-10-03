@@ -81,6 +81,7 @@ function App() {
       <ReactQueryDevtools initialIsOpen={false} />
       <ThemeProvider defaultTheme="system" storageKey="growtly-theme">
         <AuthProvider>
+          <Router>
           <Toaster position="top-right"
             toastOptions={{
               success: {
@@ -352,6 +353,7 @@ function App() {
               <Route path="*" element={<NotFoundPage />} />
             </Route>
           </Routes>
+          </Router>
         </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>
