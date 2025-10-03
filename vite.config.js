@@ -3,7 +3,7 @@ import react from "@vitejs/plugin-react";
 import eslint from "vite-plugin-eslint";
 // https://vite.dev/config/
 export default defineConfig({
-  base: "/mentorship-platform-frontend/",
+  base: "/mentorship-platform-frontend",
   plugins: [react(), eslint()],
   // server: {
   //   proxy: {

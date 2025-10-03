@@ -1,6 +1,6 @@
 {
   "name": "mentorship-platform",
-  "private": true,
+  "homepage": "https://malik-272.github.io/mentorship-platform-frontend/",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
