@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-const API_BASE_URL = "https://mentorship-platform-api-production.up.railway.app:3000/api/v1"
+const API_BASE_URL = "https://mentorship-platform-api-production.up.railway.app/api/v1"
 
 // Mock API functions - replace with actual API calls
 const sessionRequestsApi = {
