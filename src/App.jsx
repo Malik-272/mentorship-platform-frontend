@@ -81,279 +81,277 @@ function App() {
       <ReactQueryDevtools initialIsOpen={false} />
       <ThemeProvider defaultTheme="system" storageKey="growtly-theme">
         <AuthProvider>
-          <Router>
-            <Toaster position="top-right"
-              toastOptions={{
-                success: {
-                  iconTheme: {
-                    primary: "#7C3AED",   // blue checkmark
-                    secondary: "#EFF6FF", // light blue background
-                  },
+          <Toaster position="top-right"
+            toastOptions={{
+              success: {
+                iconTheme: {
+                  primary: "#7C3AED",   // blue checkmark
+                  secondary: "#EFF6FF", // light blue background
                 },
-              }}
+              },
+            }}
+          />
+          <Routes>
+            {/* Public-only Auth Routes (redirect if authenticated) */}
+            <Route
+              path="/signup"
+              element={
+                <PublicOnlyRoute>
+                  <SignupPage />
+                </PublicOnlyRoute>
+              }
             />
-            <Routes>
-              {/* Public-only Auth Routes (redirect if authenticated) */}
+            <Route
+              path="/successful-registration"
+              element={
+                <PartialAuthRoute>
+                  <SignupConfirmationPage />
+                </PartialAuthRoute>
+              }
+            />
+            <Route
+              path="/login"
+              element={
+                <PublicOnlyRoute>
+                  <LoginPage />
+                </PublicOnlyRoute>
+              }
+            />
+            <Route
+              path="/forgot-password"
+              element={
+                <PublicOnlyRoute>
+                  <ForgotPasswordPage />
+                </PublicOnlyRoute>
+              }
+            />
+            <Route
+              path="/reset-password"
+              element={
+                <PublicOnlyRoute>
+                  <ResetPasswordPage />
+                </PublicOnlyRoute>
+              }
+            />
+            <Route path="/2fa-verification" element={<TwoFactorPage />} />
+
+            {/* Partial auth only route - for email confirmation */}
+            <Route
+              path="/confirm-email"
+              element={
+                <PartialAuthRoute>
+                  <ConfirmEmailPage />
+                </PartialAuthRoute>
+              }
+            />
+
+            {/* Main App Routes (with AppLayout) */}
+
+            <Route element={<AppLayout />}>
+              {/* Public routes */}
+              <Route path="/" element={
+                <PublicOnlyRoute>
+                  <LandingPage />
+                </PublicOnlyRoute>
+              } />
+
+              {/* Protected dashboard route - requires full authentication */}
+
               <Route
-                path="/signup"
+                path="dashboard"
                 element={
-                  <PublicOnlyRoute>
-                    <SignupPage />
-                  </PublicOnlyRoute>
+                  <FullProtectedRoute>
+                    {/* <div className="p-8 text-center">
+                      Dashboard coming soon...
+                    </div> */}
+                    <DashboardPage />
+                  </FullProtectedRoute>
                 }
               />
               <Route
-                path="/successful-registration"
+                path="/profile/:id"
                 element={
-                  <PartialAuthRoute>
-                    <SignupConfirmationPage />
-                  </PartialAuthRoute>
+                  <FullProtectedRoute>
+                    <UserProfilePage />
+                  </FullProtectedRoute>
                 }
               />
               <Route
-                path="/login"
+                path="my/settings"
                 element={
-                  <PublicOnlyRoute>
-                    <LoginPage />
-                  </PublicOnlyRoute>
+                  <FullProtectedRoute>
+                    <SettingsPage />
+                  </FullProtectedRoute>
                 }
-              />
-              <Route
-                path="/forgot-password"
-                element={
-                  <PublicOnlyRoute>
-                    <ForgotPasswordPage />
-                  </PublicOnlyRoute>
-                }
-              />
-              <Route
-                path="/reset-password"
-                element={
-                  <PublicOnlyRoute>
-                    <ResetPasswordPage />
-                  </PublicOnlyRoute>
-                }
-              />
-              <Route path="/2fa-verification" element={<TwoFactorPage />} />
+              >
+                <Route index element={<Navigate to="personal" replace />} />
 
-              {/* Partial auth only route - for email confirmation */}
-              <Route
-                path="/confirm-email"
-                element={
-                  <PartialAuthRoute>
-                    <ConfirmEmailPage />
-                  </PartialAuthRoute>
-                }
-              />
-
-              {/* Main App Routes (with AppLayout) */}
-
-              <Route element={<AppLayout />}>
-                {/* Public routes */}
-                <Route path="/" element={
-                  <PublicOnlyRoute>
-                    <LandingPage />
-                  </PublicOnlyRoute>
-                } />
-
-                {/* Protected dashboard route - requires full authentication */}
-
-                <Route
-                  path="dashboard"
-                  element={
-                    <FullProtectedRoute>
-                      {/* <div className="p-8 text-center">
-                        Dashboard coming soon...
-                      </div> */}
-                      <DashboardPage />
-                    </FullProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/profile/:id"
-                  element={
-                    <FullProtectedRoute>
-                      <UserProfilePage />
-                    </FullProtectedRoute>
-                  }
-                />
-                <Route
-                  path="my/settings"
-                  element={
-                    <FullProtectedRoute>
-                      <SettingsPage />
-                    </FullProtectedRoute>
-                  }
-                >
-                  <Route index element={<Navigate to="personal" replace />} />
-
-                  {/* Subroutes */}
-                  <Route path="personal" element={<PersonalInfoSection />} />
-                  <Route path="security" element={<SecuritySection />} />
-                  <Route path="connections" element={<ConnectionsSection />} />
-                </Route>
-                <Route
-                  path="my/communities"
-                  element={
-                    <FullProtectedRouteWithRole
-                      roles={["MENTEE", "MENTOR"]}
-                      fallback={<UnauthorizedAccessFallback />}
-                    >
-                      <UserCommunitiesPage />
-                    </FullProtectedRouteWithRole>
-                  }
-                />
-                <Route
-                  path="/communities/create"
-                  element={
-                    <FullProtectedRouteWithRole
-                      roles={["COMMUNITY_MANAGER"]}
-                      fallback={<CommunityManagerOnlyFallback />}
-                    >
-                      <CreateCommunityPage />
-                    </FullProtectedRouteWithRole>
-                  }
-                />
-                <Route
-                  path="/communities/my/manage"
-                  element={
-                    <FullProtectedRouteWithRole
-                      roles={["COMMUNITY_MANAGER"]}
-                      fallback={<CommunityManagerOnlyFallback />}
-                    >
-                      <ManageCommunityPage />
-                    </FullProtectedRouteWithRole>
-                  }
-                />
-                <Route
-                  path="/communities/my/settings"
-                  element={
-                    <FullProtectedRouteWithRole
-                      roles={["COMMUNITY_MANAGER"]}
-                      fallback={<CommunityManagerOnlyFallback />}
-                    >
-                      <CommunitySettingsPage />
-                    </FullProtectedRouteWithRole>
-                  }
-                />
-                <Route
-                  path="/communities/:id"
-                  element={
-                    <FullProtectedRoute>
-                      <CommunityPage />
-                    </FullProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/services/create"
-                  element={
-                    <FullProtectedRouteWithRole
-                      roles={["MENTOR"]}
-                      fallback={<UnauthorizedAccessFallback />}
-                    >
-                      <CreateServicePage />
-                    </FullProtectedRouteWithRole>
-                  }
-                />
-                <Route
-                  path="/my/services/:id"
-                  element={
-                    <FullProtectedRouteWithRole
-                      roles={["MENTOR"]}
-                      fallback={<UnauthorizedAccessFallback />}
-                    >
-                      <ServiceManagementPage />
-                    </FullProtectedRouteWithRole>
-                  }
-                />
-                <Route
-                  path="my/services"
-                  element={
-                    <FullProtectedRouteWithRole
-                      roles={["MENTOR"]}
-                      fallback={<UnauthorizedAccessFallback />}
-                    >
-                      <MentorServicesPage />
-                    </FullProtectedRouteWithRole>
-                  }
-                />
-                <Route
-                  path="my/services/:id/session-requests"
-                  element={
-                    <FullProtectedRouteWithRole
-                      roles={["MENTOR"]}
-                      fallback={<UnauthorizedAccessFallback />}
-                    >
-                      <SessionRequestsPage />
-                    </FullProtectedRouteWithRole>
-                  }
-                />
-                <Route
-                  path="/users/:userId/services/:serviceId/book"
-                  element={
-                    <FullProtectedRouteWithRole
-                      roles={["MENTEE"]}
-                      fallback={<UnauthorizedAccessFallback />}
-                    >
-                      <ServiceBookingPage />
-                    </FullProtectedRouteWithRole>
-                  }
-                />
-                <Route
-                  path="my/session-requests"
-                  element={
-                    <FullProtectedRouteWithRole
-                      roles={["MENTEE"]}
-                      fallback={<UnauthorizedAccessFallback />}
-                    >
-                      <MenteeSessionRequestsPage />
-                    </FullProtectedRouteWithRole>
-                  }
-                />
-                <Route
-
-                  path="/banned"
-                  element={
-                    <BannedUserPage />
-                  } />
-                <Route
-                  path="management/user-reports"
-                  element={
-                    <FullProtectedRouteWithRole
-                      roles={["ADMIN"]}
-                      fallback={<UnauthorizedAccessFallback />}
-                    >
-                      <UserReportsPage />
-                    </FullProtectedRouteWithRole>
-
-                  }
-                />
-                <Route
-                  path="management/banned-users"
-                  element={
-                    <FullProtectedRouteWithRole
-                      roles={["ADMIN"]}
-                      fallback={<UnauthorizedAccessFallback />}
-                    >
-                      <BannedUsersPage />
-                    </FullProtectedRouteWithRole>
-                  }
-                />
-                <Route
-                  path="management/users"
-                  element={
-                    <FullProtectedRouteWithRole
-                      roles={["ADMIN"]}
-                      fallback={<UnauthorizedAccessFallback />}
-                    >
-                      <UserPreviewPage />
-                    </FullProtectedRouteWithRole>
-                  }
-                />
-                <Route path="*" element={<NotFoundPage />} />
+                {/* Subroutes */}
+                <Route path="personal" element={<PersonalInfoSection />} />
+                <Route path="security" element={<SecuritySection />} />
+                <Route path="connections" element={<ConnectionsSection />} />
               </Route>
-            </Routes>
-          </Router>
+              <Route
+                path="my/communities"
+                element={
+                  <FullProtectedRouteWithRole
+                    roles={["MENTEE", "MENTOR"]}
+                    fallback={<UnauthorizedAccessFallback />}
+                  >
+                    <UserCommunitiesPage />
+                  </FullProtectedRouteWithRole>
+                }
+              />
+              <Route
+                path="/communities/create"
+                element={
+                  <FullProtectedRouteWithRole
+                    roles={["COMMUNITY_MANAGER"]}
+                    fallback={<CommunityManagerOnlyFallback />}
+                  >
+                    <CreateCommunityPage />
+                  </FullProtectedRouteWithRole>
+                }
+              />
+              <Route
+                path="/communities/my/manage"
+                element={
+                  <FullProtectedRouteWithRole
+                    roles={["COMMUNITY_MANAGER"]}
+                    fallback={<CommunityManagerOnlyFallback />}
+                  >
+                    <ManageCommunityPage />
+                  </FullProtectedRouteWithRole>
+                }
+              />
+              <Route
+                path="/communities/my/settings"
+                element={
+                  <FullProtectedRouteWithRole
+                    roles={["COMMUNITY_MANAGER"]}
+                    fallback={<CommunityManagerOnlyFallback />}
+                  >
+                    <CommunitySettingsPage />
+                  </FullProtectedRouteWithRole>
+                }
+              />
+              <Route
+                path="/communities/:id"
+                element={
+                  <FullProtectedRoute>
+                    <CommunityPage />
+                  </FullProtectedRoute>
+                }
+              />
+              <Route
+                path="/services/create"
+                element={
+                  <FullProtectedRouteWithRole
+                    roles={["MENTOR"]}
+                    fallback={<UnauthorizedAccessFallback />}
+                  >
+                    <CreateServicePage />
+                  </FullProtectedRouteWithRole>
+                }
+              />
+              <Route
+                path="/my/services/:id"
+                element={
+                  <FullProtectedRouteWithRole
+                    roles={["MENTOR"]}
+                    fallback={<UnauthorizedAccessFallback />}
+                  >
+                    <ServiceManagementPage />
+                  </FullProtectedRouteWithRole>
+                }
+              />
+              <Route
+                path="my/services"
+                element={
+                  <FullProtectedRouteWithRole
+                    roles={["MENTOR"]}
+                    fallback={<UnauthorizedAccessFallback />}
+                  >
+                    <MentorServicesPage />
+                  </FullProtectedRouteWithRole>
+                }
+              />
+              <Route
+                path="my/services/:id/session-requests"
+                element={
+                  <FullProtectedRouteWithRole
+                    roles={["MENTOR"]}
+                    fallback={<UnauthorizedAccessFallback />}
+                  >
+                    <SessionRequestsPage />
+                  </FullProtectedRouteWithRole>
+                }
+              />
+              <Route
+                path="/users/:userId/services/:serviceId/book"
+                element={
+                  <FullProtectedRouteWithRole
+                    roles={["MENTEE"]}
+                    fallback={<UnauthorizedAccessFallback />}
+                  >
+                    <ServiceBookingPage />
+                  </FullProtectedRouteWithRole>
+                }
+              />
+              <Route
+                path="my/session-requests"
+                element={
+                  <FullProtectedRouteWithRole
+                    roles={["MENTEE"]}
+                    fallback={<UnauthorizedAccessFallback />}
+                  >
+                    <MenteeSessionRequestsPage />
+                  </FullProtectedRouteWithRole>
+                }
+              />
+              <Route
+
+                path="/banned"
+                element={
+                  <BannedUserPage />
+                } />
+              <Route
+                path="management/user-reports"
+                element={
+                  <FullProtectedRouteWithRole
+                    roles={["ADMIN"]}
+                    fallback={<UnauthorizedAccessFallback />}
+                  >
+                    <UserReportsPage />
+                  </FullProtectedRouteWithRole>
+
+                }
+              />
+              <Route
+                path="management/banned-users"
+                element={
+                  <FullProtectedRouteWithRole
+                    roles={["ADMIN"]}
+                    fallback={<UnauthorizedAccessFallback />}
+                  >
+                    <BannedUsersPage />
+                  </FullProtectedRouteWithRole>
+                }
+              />
+              <Route
+                path="management/users"
+                element={
+                  <FullProtectedRouteWithRole
+                    roles={["ADMIN"]}
+                    fallback={<UnauthorizedAccessFallback />}
+                  >
+                    <UserPreviewPage />
+                  </FullProtectedRouteWithRole>
+                }
+              />
+              <Route path="*" element={<NotFoundPage />} />
+            </Route>
+          </Routes>
         </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>
