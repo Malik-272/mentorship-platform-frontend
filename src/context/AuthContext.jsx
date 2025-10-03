@@ -61,6 +61,8 @@ export const AuthProvider = ({ children }) => {
       }
     }
 
+    console.log(decoded);
+
     return decoded ? (decoded.partial ? "partial" : "full") : "none";
   };
 
