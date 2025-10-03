@@ -15,7 +15,6 @@ export default function UserReportsPage() {
   const [activeTab, setActiveTab] = useState("pending")
   const [openDropdown, setOpenDropdown] = useState(null)
 
-  // console.log("reportsData", reportsData)
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",

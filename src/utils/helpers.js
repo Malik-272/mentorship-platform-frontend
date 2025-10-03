@@ -24,7 +24,6 @@ export function transformBackendData(days) {
 }
 
 export function calculateDuration(startTime, endTime) {
-  console.log(startTime, endTime);
 
   const [startHour, startMinute] = startTime.split(":").map(Number);
   const [endHour, endMinute] = endTime.split(":").map(Number);

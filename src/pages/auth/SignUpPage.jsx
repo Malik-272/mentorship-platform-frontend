@@ -236,33 +236,6 @@ export default function SignupPage() {
               </div>
             )}
           </form>
-          {/* <div className="mt-6">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300 dark:border-gray-600" />
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">
-                  By signing up, you agree to our
-                </span>
-              </div>
-            </div>
-            <div className="mt-2 text-center">
-              <Link
-                to="/terms"
-                className="text-sm text-blue-600 hover:text-blue-500"
-              >
-                Terms of Service
-              </Link>
-              <span className="text-gray-500 dark:text-gray-400"> and </span>
-              <Link
-                to="/privacy"
-                className="text-sm text-blue-600 hover:text-blue-500"
-              >
-                Privacy Policy
-              </Link>
-            </div>
-          </div> */}
         </div>
       </div>
     </div>

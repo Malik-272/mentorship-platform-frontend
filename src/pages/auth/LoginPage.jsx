@@ -18,7 +18,6 @@ export default function LoginPage() {
   } = useForm();
 
   const onSubmit = async (data) => {
-    console.log("Login data:", data)
     try {
       const result = await loginMutation.mutateAsync(data);
 
@@ -32,7 +31,6 @@ export default function LoginPage() {
         });
       } else {
         // Fully authenticated user
-        console.log("Login successful:", status);
         navigate("/dashboard");
       }
     } catch (error) {
@@ -94,17 +92,6 @@ export default function LoginPage() {
             />
 
             <div className="flex items-center justify-between">
-              {/* <div className="flex items-center">
-                <input
-                  id="remember-me"
-                  name="remember-me"
-                  type="checkbox"
-                  className="h-4 w-4 text-blue-600 dark:bg-gray-700 dark:border-gray-600 focus:ring-blue-500 border-gray-300 rounded"
-                />
-                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900 dark:text-gray-200">
-                  Remember me
-                </label>
-              </div> */}
 
               <div className="text-sm">
                 <Link

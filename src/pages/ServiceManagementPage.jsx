@@ -84,12 +84,9 @@ export default function ServiceManagementPage() {
     error: serviceError,
     refetch: refetchService,
   } = useGetMyService(serviceId);
-  console.log("serviceData", service);
 
   // const service = serviceData?.data;
-  console.log("service?.days:", service?.days);
   const transformedAvailability = transformBackendData(service?.days);
-  console.log("transformedAvailability:", transformedAvailability);
 
   const {
     register,

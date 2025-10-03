@@ -11,7 +11,6 @@ export default function ConfirmEmailPage() {
   useEffect(() => {
     if (code) {
       mutate({ code }); // Automatically send confirmation request
-      console.log("Confirming email with code:", code);
     }
   }, [code, mutate]);
 

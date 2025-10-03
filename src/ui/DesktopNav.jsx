@@ -36,7 +36,6 @@ function DesktopNav() {
     });
   };
 
-  console.log("DesktopNav data:", data);
   return (
     <>
       {/* Desktop Navigation */}

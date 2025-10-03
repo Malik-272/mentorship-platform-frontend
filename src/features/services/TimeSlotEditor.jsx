@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Check, X, Edit2, Loader2, Moon } from "lucide-react";
-import { set } from "react-hook-form";
 
 const TIME_OPTIONS = [];
 for (let hour = 0; hour < 24; hour++) {

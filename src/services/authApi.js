@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:3000/api/v1";
+const API_BASE_URL = "https://mentorship-platform-api-production.up.railway.app:3000/api/v1";
 
 // Auth API functions
 export const authApi = {
@@ -78,7 +78,6 @@ export const authApi = {
 
   // Login
   login: async (credentials) => {
-    console.log("API: Sending login request with credentials:", credentials)
     try {
       const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: "POST",
@@ -124,7 +123,6 @@ export const authApi = {
 
   // Forgot Password
   forgotPassword: async (email) => {
-    console.log("API: Sending forgot password request for email:", email);
     try {
       const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
         method: "POST",
@@ -136,7 +134,6 @@ export const authApi = {
 
       const data = await response.json();
 
-      console.log("API: Forgot password response:", data);
       if (!response.ok) {
         throw new Error(data.message || "Failed to send reset email");
       }
@@ -203,7 +200,6 @@ export const authApi = {
 
   // confirm email
   confirmEmail: async (code) => {
-    console.log("API: confirm code:", code);
     try {
       const response = await fetch(`${API_BASE_URL}/auth/confirm-email`, {
         method: "POST",
@@ -236,7 +232,6 @@ export const authApi = {
 
   // Verify 2FA
   verify2FA: async (code) => {
-    console.log("API: Verifying 2FA code:", code);
     try {
       const response = await fetch(`${API_BASE_URL}/auth/verify-2fa`, {
         method: "POST",

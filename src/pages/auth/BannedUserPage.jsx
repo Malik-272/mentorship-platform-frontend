@@ -39,15 +39,6 @@ export default function BannedUserFeedback() {
               You have been banned from accessing the platform
             </h2>
 
-            {/* <div className="rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 p-4 md:p-5 mb-6">
-              <p className="text-red-800 dark:text-red-200 font-medium mb-1">
-                Ban reason
-              </p>
-              <p className="text-red-700 dark:text-red-300">
-                {banReason}
-              </p>
-            </div> */}
-
             <p className="text-gray-700 dark:text-gray-200 mb-8">
               If you believe this is a mistake or you’d like to request a review,
               please submit an appeal by emailing{" "}

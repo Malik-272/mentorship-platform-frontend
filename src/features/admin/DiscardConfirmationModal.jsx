@@ -101,10 +101,6 @@ export default function DiscardConfirmationModal({ report, onClose, onSuccess })
                 <p className="font-medium text-gray-900 dark:text-white mt-1">{report.violation}</p>
               </div>
               {report.additionalDetails && (
-                // <div>
-                //   <span className="text-gray-600 dark:text-gray-300">Additional Details:</span>
-                //   <p className="font-medium text-gray-900 dark:text-white mt-1">{report.additionalDetails}</p>
-                // </div>
                 <div>
                   <span className="text-gray-600 dark:text-gray-300">Additional Details:</span>
                   <p className="font-medium text-gray-900 dark:text-white mt-1 break-words whitespace-pre-line">

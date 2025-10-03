@@ -75,7 +75,6 @@ export default function ServiceBookingPage() {
     if (!slotsData) return;
 
     const dates = [];
-    console.log("slotsData", slotsData);
     // Get dates that have available slots
     Object.keys(slotsData).forEach((dateString) => {
       const date = new Date(dateString);
@@ -94,7 +93,6 @@ export default function ServiceBookingPage() {
 
     // Sort dates chronologically
     dates.sort((a, b) => a - b);
-    console.log("dates", dates);
     setAvailableDates(dates);
   }, [slotsData]);
   // Fetch mentor data when service loads
@@ -161,7 +159,6 @@ export default function ServiceBookingPage() {
     setSubmitStatus(null);
 
     try {
-      console.log("selectedDate", selectedDate);
       const result = await bookSessionMutation.mutateAsync({
         date: selectedDate.toLocaleDateString("en-CA"),
         startTime: selectedSlot,

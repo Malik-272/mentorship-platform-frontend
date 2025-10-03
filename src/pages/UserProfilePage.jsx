@@ -68,7 +68,6 @@ export default function UserProfilePage() {
   // const user = { ...profileData?.user, ...currentUser?.user };
   const user = { ...profileData?.user };
   const isAdminProfile = user?.role === "ADMIN";
-  console.log("user:", user);
 
   return (
     // <ProtectedRoute requireAuth={true} requireVerification={true}>
@@ -335,7 +334,6 @@ function ServicesSection({ user, isOwnProfile }) {
   // For own profile, use the mentor services hook
   // const { data: services, isLoading, error } = useGetMentorServices();
   const services = user?.services || [];
-  console.log("services", services);
   // For other profiles, we'll use the services from the user object (when available)
   // This would need to be updated when the API provides services in the user profile response
 
@@ -483,47 +481,6 @@ function ProfileSidebar({ user }) {
           </div>
         </div>
       </div>
-
-      {/* Stats (if applicable for mentors) */}
-      {/* {user?.role === "mentor" && user?.stats && (
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-            Mentoring Stats
-          </h3>
-          <div className="space-y-3">
-            {user.stats.totalSessions && (
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-600 dark:text-gray-400">
-                  Total Sessions
-                </span>
-                <span className="text-sm font-medium text-gray-900 dark:text-white">
-                  {user.stats.totalSessions}
-                </span>
-              </div>
-            )}
-            {user.stats.rating && (
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-600 dark:text-gray-400">
-                  Rating
-                </span>
-                <span className="text-sm font-medium text-gray-900 dark:text-white">
-                  ⭐ {user.stats.rating}/5
-                </span>
-              </div>
-            )}
-            {user.stats.responseTime && (
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-600 dark:text-gray-400">
-                  Response Time
-                </span>
-                <span className="text-sm font-medium text-gray-900 dark:text-white">
-                  {user.stats.responseTime}
-                </span>
-              </div>
-            )}
-          </div>
-        </div>
-      )} */}
     </div>
   );
 }

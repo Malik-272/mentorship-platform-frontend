@@ -43,8 +43,6 @@ export const AuthProvider = ({ children }) => {
     cacheTime: 10 * 60 * 1000,
   });
 
-  console.log(" user:", user);
-
   const getUserStatus = () => {
     if (document.cookie === "") {
       return "none";
@@ -119,7 +117,6 @@ export const AuthProvider = ({ children }) => {
     }
 
     fetchData();
-    // getUserStatus();
   }, [refetch]);
 
   const login = useMutation({
@@ -148,7 +145,6 @@ export const AuthProvider = ({ children }) => {
   const logout = useMutation({
     mutationFn: authApi.logout,
     onSuccess: () => {
-      console.log("Logout successful");
       queryClient.clear();
 
       dispatch({ type: "RESET" });

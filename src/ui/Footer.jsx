@@ -1,7 +1,6 @@
 import { footerData } from "../data/navigationData";
 import Logo from "./Logo";
 import { Globe } from "lucide-react";
-import { Link } from "react-router-dom";
 function Footer() {
   return (
     <>
@@ -28,40 +27,6 @@ function Footer() {
                 </span>
               </div>
             </div>
-
-            {/* Quick Links */}
-            {/* <div>
-              <h3 className="text-lg font-semibold mb-4">Platform</h3>
-              <ul className="space-y-2">
-                {footerData.links.platform.map((link) => (
-                  <li key={link.name}>
-                    <Link
-                      to={link.href}
-                      className="text-gray-300 dark:text-gray-400 hover:text-white transition-colors"
-                    >
-                      {link.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div> */}
-
-            {/* Support */}
-            {/* <div>
-              <h3 className="text-lg font-semibold mb-4">Support</h3>
-              <ul className="space-y-2">
-                {footerData.links.support.map((link) => (
-                  <li key={link.name}>
-                    <Link
-                      to={link.href}
-                      className="text-gray-300 dark:text-gray-400 hover:text-white transition-colors"
-                    >
-                      {link.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div> */}
           </div>
 
           <div className="border-t border-gray-800 dark:border-gray-700 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">

@@ -83,7 +83,6 @@ export default function PersonalInfoSection() {
   const deleteAvatarMutation = useDeleteAvatar();
 
   const onSubmit = async (data) => {
-    console.log("Submitting profile data:", data);
     try {
       const allowedFields = ["name", "headline", "bio", "country", "skills", "timezone"];
       const filteredData = {};

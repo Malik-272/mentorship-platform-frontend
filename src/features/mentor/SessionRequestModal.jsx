@@ -1,21 +1,5 @@
 import { X, User, Calendar, Clock, Users, MessageSquare, ExternalLink, Check, Ban } from "lucide-react"
 import { formatDateTime } from "../../utils/formating"
-// const formatDateTime = (date, time) => {
-//   const dateObj = new Date(`${date}T${time}`)
-//   return {
-//     date: dateObj.toLocaleDateString("en-US", {
-//       weekday: "long",
-//       month: "long",
-//       day: "numeric",
-//       year: "numeric",
-//     }),
-//     time: dateObj.toLocaleTimeString("en-US", {
-//       hour: "2-digit",
-//       minute: "2-digit",
-//       hour12: true,
-//     }),
-//   }
-// }
 
 const formatDuration = (minutes) => {
   if (minutes < 60) {
