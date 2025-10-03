@@ -100,8 +100,6 @@ export default function MentorServicesPage() {
 
   const deleteServiceMutation = useDeleteService()
 
-  console.log("services: ", services)
-
   const handleDeleteService = async (serviceId) => {
     try {
       await deleteServiceMutation.mutateAsync(serviceId)

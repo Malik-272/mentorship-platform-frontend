@@ -47,7 +47,6 @@ export default function DateExceptions({
     toast.error("You already added availability for this date.");
     return;
   }
-    console.log("exceptions", exceptions);
     const updatedExceptions = [
       ...exceptions,
       {
@@ -141,10 +140,8 @@ export default function DateExceptions({
   };
 
   const removeTimeSlotFromException = async (exceptionIndex, slotIndex) => {
-    console.log("removeTimeSlotFromException");
     const exception = exceptions[exceptionIndex];
     const slot = exception.timeSlots[slotIndex];
-    console.log(slot.id);
     // In manage mode, remove from backend
     if (pageType === "manage" && slot.id) {
       try {
@@ -227,7 +224,6 @@ export default function DateExceptions({
   };
 
   const removeTimeSlotFromEditingException = (slotIndex) => {
-    console.log("removeTimeSlotFromEditingException");
     if (!editingExceptionData) return;
 
     const newTimeSlots = [...editingExceptionData.timeSlots];
@@ -278,7 +274,6 @@ export default function DateExceptions({
           duration: calculateDuration(slot.startTime, slot.endTime),
         });
       }
-      console.log("Newly added slot:", data);
       setNewException({
         ...newException,
         timeSlots: [
@@ -342,7 +337,6 @@ export default function DateExceptions({
   };
 
   const removeTimeSlotFromNewException = async (index) => {
-    console.log("removeTimeSlotFromNewException");
     const newTimeSlots = [...newException.timeSlots];
 
     newTimeSlots.splice(index, 1);

@@ -37,7 +37,6 @@ const ManageCommunityPage = () => {
     isLoading: checkingCommunity,
     error: communityError,
   } = useGetMyCommunity();
-  console.log("Existing Community:", existingCommunity);
   // Redirect to community creation if no community exists
   useEffect(() => {
     if (!checkingCommunity && !existingCommunity?.community) {

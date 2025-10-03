@@ -1,6 +1,4 @@
-// import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-// const API_BASE_URL = "http://localhost:3000/api/v1";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 // Custom hooks
 import { communitiesApi } from "../services/communitiesApi";

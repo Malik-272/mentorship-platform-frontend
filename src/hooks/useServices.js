@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-const API_BASE_URL = "http://localhost:3000/api/v1";
+const API_BASE_URL = "https://mentorship-platform-api-production.up.railway.app:3000/api/v1";
 
 // Services API functions
 const servicesApi = {
@@ -57,7 +57,6 @@ const servicesApi = {
     }
 
     const data = await response.json();
-    console.log(data);
     return data.data;
   },
 

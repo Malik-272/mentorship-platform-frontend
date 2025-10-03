@@ -19,8 +19,6 @@ import LoadingSpinner from "../ui/LoadingSpinner";
 export default function CreateCommunityPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  // const [imagePreview, setImagePreview] = useState(null);
-  // const [imageFile, setImageFile] = useState(null);
 
   // Check if user already has a community
   const { data: existingCommunity, isLoading: checkingExisting } =
@@ -64,36 +62,6 @@ export default function CreateCommunityPage() {
     }
   }, [watchName, setValue]);
 
-  // const handleImageUpload = (event) => {
-  //   const file = event.target.files[0];
-  //   if (file) {
-  //     // Validate file type
-  //     if (!file.type.startsWith("image/")) {
-  //       alert("Please select an image file");
-  //       return;
-  //     }
-
-  //     // Validate file size (max 5MB)
-  //     if (file.size > 5 * 1024 * 1024) {
-  //       alert("Image size must be less than 5MB");
-  //       return;
-  //     }
-
-  //     setImageFile(file);
-
-  //     // Create preview
-  //     const reader = new FileReader();
-  //     reader.onload = (e) => {
-  //       setImagePreview(e.target.result);
-  //     };
-  //     reader.readAsDataURL(file);
-  //   }
-  // };
-
-  // const removeImage = () => {
-  //   setImageFile(null);
-  //   setImagePreview(null);
-  // };
 
   const onSubmit = async (data) => {
     try {
@@ -141,48 +109,6 @@ export default function CreateCommunityPage() {
         {/* Form */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-8">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            {/* Community Image Upload */}
-            {/* <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3">
-                Community Image
-              </label>
-
-              {imagePreview ? (
-                <div className="relative">
-                  <img
-                    src={imagePreview || "/placeholder.svg"}
-                    alt="Community preview"
-                    className="w-full h-48 object-cover rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600"
-                  />
-                  <button
-                    type="button"
-                    onClick={removeImage}
-                    className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
-              ) : (
-                <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center hover:border-gray-400 dark:hover:border-gray-500 transition-colors">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    className="hidden"
-                    id="community-image"
-                  />
-                  <label htmlFor="community-image" className="cursor-pointer">
-                    <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                    <p className="text-gray-600 dark:text-gray-300 mb-2">
-                      Click to upload community image
-                    </p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      PNG, JPG, GIF up to 5MB
-                    </p>
-                  </label>
-                </div>
-              )}
-            </div> */}
 
             {/* Community Name */}
             <FormField

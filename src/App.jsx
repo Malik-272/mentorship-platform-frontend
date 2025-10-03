@@ -350,17 +350,6 @@ function App() {
                     </FullProtectedRouteWithRole>
                   }
                 />
-                {/* <Route
-                  path="/dashboard"
-                  element={
-                    <FullProtectedRouteWithRole
-                      roles={["MENTEE", "MENTOR", "COMMUNITY_MANAGER", "ADMIN"]}
-                      fallback={<UnauthorizedAccessFallback />}
-                    >
-                      <DashboardPage />
-                    </FullProtectedRouteWithRole>
-                  }
-                /> */}
                 <Route path="*" element={<NotFoundPage />} />
               </Route>
             </Routes>
@@ -368,7 +357,6 @@ function App() {
         </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>
-    // </ProtectedRoute>
   );
 }
 

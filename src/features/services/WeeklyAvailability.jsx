@@ -59,7 +59,6 @@ export default function WeeklyAvailability({
           ],
         };
       }
-      console.log("New availability after adding slot:", newAvailability);
       onChange(newAvailability);
       setAddingSlotForDay(null);
     } catch (error) {
@@ -114,7 +113,6 @@ export default function WeeklyAvailability({
   const removeTimeSlot = async (day, index) => {
     try{
       const newSlots = [...(availability[day] || [])];
-      console.log("New slots: ", newSlots)
       const slotIdToRemove = newSlots[index]?.id;
 
       if (pageType === "manage") {

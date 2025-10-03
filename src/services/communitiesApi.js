@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:3000/api/v1";
+const API_BASE_URL = "https://mentorship-platform-api-production.up.railway.app:3000/api/v1";
 
 // Communities API functions
 export const communitiesApi = {
@@ -59,7 +59,6 @@ export const communitiesApi = {
     return response.json();
   },
   updateCommunity: async (payload) => {
-    console.log("payload:         ", JSON.stringify(payload));
     const response = await fetch(`${API_BASE_URL}/communities/my`, {
       method: "PATCH",
       credentials: "include",

@@ -33,25 +33,6 @@ export default function CommunitySettingsPage() {
   const uploadCommunityImageMutation = useUploadCommunityImage();
   const deleteCommunityImageMutation = useDeleteCommunityImage();
 
-
-  // Check authentication and role
-  //   useEffect(() => {
-  //     if (!isLoadingAuth) {
-  //       if (status === "none") {
-  //         navigate("/login");
-  //         return;
-  //       }
-  //       if (status === "partial") {
-  //         navigate("/confirm-email");
-  //         return;
-  //       }
-  //       if (currentUser?.user?.role !== "COMMUNITY_MANAGER") {
-  //         navigate("/dashboard");
-  //         return;
-  //       }
-  //     }
-  //   }, [status, currentUser, isLoadingAuth, navigate]);
-
   // Fetch community data
   const {
     data: communityData,
@@ -144,7 +125,6 @@ export default function CommunitySettingsPage() {
       toast.success('Community image removed successfully');
     }
     catch(error){
-      console.log(error.message)
       toast.error('Failed to remove community image');
     }
   };

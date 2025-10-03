@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-const API_BASE_URL = "http://localhost:3000/api/v1";
+const API_BASE_URL = "https://mentorship-platform-api-production.up.railway.app:3000/api/v1";
 
 // API functions for banned users management
 export const bannedUsersApi = {

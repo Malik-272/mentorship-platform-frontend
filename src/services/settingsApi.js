@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:3000/api/v1";
+const API_BASE_URL = "https://mentorship-platform-api-production.up.railway.app:3000/api/v1";
 
 // Settings API functions
 export const settingsApi = {
@@ -17,7 +17,6 @@ export const settingsApi = {
     return response.json();
   },
   updateProfile: async (profileData) => {
-    console.log(profileData);
     const response = await fetch(`${API_BASE_URL}/users/me`, {
       method: "PATCH",
       headers: {
@@ -42,7 +41,6 @@ export const settingsApi = {
       body: formData,
     });
 
-    console.log("Avatar upload response:", response);
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || "Failed to upload avatar");
