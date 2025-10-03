@@ -1,6 +1,6 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 
-const API_BASE_URL = "https://mentorship-platform-api-production.up.railway.app:3000/api/v1";
+const API_BASE_URL = "https://mentorship-platform-api-production.up.railway.app/api/v1";
 
 // Profile API functions
 const profileApi = {
