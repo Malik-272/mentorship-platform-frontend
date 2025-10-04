@@ -44,6 +44,7 @@ export const AuthProvider = ({ children }) => {
   });
 
   const getUserStatus = useCallback(() => {
+    console.log('COOKIE', document.cookie)
     if (document.cookie === "") {
       return "none";
     }
