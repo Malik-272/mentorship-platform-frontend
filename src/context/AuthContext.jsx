@@ -27,7 +27,6 @@ export const authReducer = (state, action) => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const token = localStorage.getItem("token");
   const queryClient = useQueryClient();
   const [state, dispatch] = useReducer(authReducer, authInitialState);
 
@@ -45,44 +44,31 @@ export const AuthProvider = ({ children }) => {
   });
 
   const getUserStatus = useCallback(() => {
-    if (token === "") {
+    const token = localStorage.getItem("token");
+    if (!token) {
       return "none";
     }
-    let decoded = null;
-    const tokenCookie = token
-      .split("; ")
-      .find((row) => row.startsWith("token="));
-
-    if (tokenCookie) {
-      const token = tokenCookie.split("=")[1];
-      try {
-        decoded = jwtDecode(token);
-      } catch (err) {
-        console.error("Failed to decode token:", err);
-      }
+    let decoded;
+    try {
+      decoded = jwtDecode(token);
+    } catch (err) {
+      console.error("Failed to decode token:", err);
     }
-
     console.log(decoded);
 
     return decoded ? (decoded.partial ? "partial" : "full") : "none";
   }, []);
 
   const checkIfUserBanned = useCallback(() => {
-    if (token === "") {
+    const token = localStorage.getItem("token");
+    if (!token) {
       return false;
     }
     let decoded = null;
-    const tokenCookie = token
-      .split("; ")
-      .find((row) => row.startsWith("token="));
-
-    if (tokenCookie) {
-      const token = tokenCookie.split("=")[1];
-      try {
-        decoded = jwtDecode(token);
-      } catch (err) {
-        console.error("Failed to decode token:", err);
-      }
+    try {
+      decoded = jwtDecode(token);
+    } catch (err) {
+      console.error("Failed to decode token:", err);
     }
 
     return decoded ? (decoded.banned ? true : false) : false;
@@ -126,10 +112,11 @@ export const AuthProvider = ({ children }) => {
   const login = useMutation({
     mutationFn: authApi.login,
     onSuccess: async (data) => {
+      localStorage.setItem('token', data.token);
       queryClient.invalidateQueries(["currentUser"]);
       const { data: user } = await refetch();
       dispatch({ type: "SET_STATUS", payload: getUserStatus() });
-      dispatch({ type: "SET_BANNED", payload: checkIfUserBanned() })
+      dispatch({ type: "SET_BANNED", payload: checkIfUserBanned() });
       dispatch({ type: "SET_USER", payload: user });
     },
   });
@@ -150,18 +137,11 @@ export const AuthProvider = ({ children }) => {
     mutationFn: authApi.logout,
     onSuccess: () => {
       queryClient.clear();
-
       dispatch({ type: "RESET" });
-
-      // document.cookie =
-      //   "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-
-      localStorage.setItem("token", "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;")
+      localStorage.removeItem("token");
     },
     onError: () => {
-      // document.cookie =
-      //   "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-      localStorage.setItem("token", "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;")
+      localStorage.removeItem("token");
       queryClient.clear();
     },
   });
