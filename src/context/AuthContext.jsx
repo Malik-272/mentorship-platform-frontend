@@ -54,7 +54,6 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       console.error("Failed to decode token:", err);
     }
-    console.log(decoded);
 
     return decoded ? (decoded.partial ? "partial" : "full") : "none";
   }, []);
@@ -123,7 +122,10 @@ export const AuthProvider = ({ children }) => {
 
   const signup = useMutation({
     mutationFn: authApi.signup,
-    onSuccess: async () => {
+    onSuccess: async (data) => {
+      if (data.token){
+        localStorage.setItem('token', data.token);
+      }
       dispatch({ type: "SET_STATUS", payload: "partial" });
       const { data: user } = await refetch();
       dispatch({
@@ -141,6 +143,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.removeItem("token");
     },
     onError: () => {
+      dispatch({ type: "RESET" });
       localStorage.removeItem("token");
       queryClient.clear();
     },
@@ -148,9 +151,15 @@ export const AuthProvider = ({ children }) => {
 
   const confirmEmail = useMutation({
     mutationFn: ({ code }) => authApi.confirmEmail(code),
-    onSuccess: () => {
+    onSuccess: async (data) => {
+      if (data.token){
+        localStorage.setItem('token', data.token);
+      }
       queryClient.invalidateQueries(["currentUser"]);
-      dispatch({ type: "SET_STATUS", payload: "full" });
+      const { data: user } = await refetch();
+      dispatch({ type: "SET_STATUS", payload: getUserStatus() });
+      dispatch({ type: "SET_BANNED", payload: checkIfUserBanned() });
+      dispatch({ type: "SET_USER", payload: user });
     },
   });
 
