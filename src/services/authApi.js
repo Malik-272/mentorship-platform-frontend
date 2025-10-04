@@ -59,8 +59,9 @@ export const authApi = {
         throw new Error(
           data.message || `HTTP error! status: ${response.status}`
         );
-      }
 
+      }
+      localStorage.setItem("token", data.token);
       return data;
     } catch (error) {
       console.error("API: Signup request failed:", error);
@@ -93,6 +94,10 @@ export const authApi = {
       if (!response.ok) {
         throw new Error(data.message || "Login failed");
       }
+
+      // store the localstorage token
+      localStorage.setItem("token", data.token);
+
       return data;
     } catch (error) {
       console.error("API: Login request failed:", error);
