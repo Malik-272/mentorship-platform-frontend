@@ -27,6 +27,7 @@ export const authReducer = (state, action) => {
 };
 
 export const AuthProvider = ({ children }) => {
+  const token = localStorage.getItem("token");
   const queryClient = useQueryClient();
   const [state, dispatch] = useReducer(authReducer, authInitialState);
 
@@ -44,11 +45,11 @@ export const AuthProvider = ({ children }) => {
   });
 
   const getUserStatus = useCallback(() => {
-    if (document.cookie === "") {
+    if (token === "") {
       return "none";
     }
     let decoded = null;
-    const tokenCookie = document.cookie
+    const tokenCookie = token
       .split("; ")
       .find((row) => row.startsWith("token="));
 
@@ -67,11 +68,11 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const checkIfUserBanned = useCallback(() => {
-    if (document.cookie === "") {
+    if (token === "") {
       return false;
     }
     let decoded = null;
-    const tokenCookie = document.cookie
+    const tokenCookie = token
       .split("; ")
       .find((row) => row.startsWith("token="));
 
@@ -152,12 +153,15 @@ export const AuthProvider = ({ children }) => {
 
       dispatch({ type: "RESET" });
 
-      document.cookie =
-        "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      // document.cookie =
+      //   "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+      localStorage.setItem("token", "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;")
     },
     onError: () => {
-      document.cookie =
-        "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      // document.cookie =
+      //   "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      localStorage.setItem("token", "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;")
       queryClient.clear();
     },
   });
