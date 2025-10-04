@@ -1,6 +1,6 @@
 // src/context/AuthContext.jsx
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { createContext, useContext, useEffect, useReducer } from "react";
+import { createContext, useCallback, useContext, useEffect, useReducer } from "react";
 import { jwtDecode } from "jwt-decode";
 import { authApi } from "../services/authApi";
 
@@ -43,10 +43,55 @@ export const AuthProvider = ({ children }) => {
     cacheTime: 10 * 60 * 1000,
   });
 
-  const getUserStatus = () => {
+  // const getUserStatus = () => {
+  //   if (document.cookie === "") {
+  //     return "none";
+  //   }
+  //   let decoded = null;
+  //   const tokenCookie = document.cookie
+  //     .split("; ")
+  //     .find((row) => row.startsWith("token="));
+
+  //   if (tokenCookie) {
+  //     const token = tokenCookie.split("=")[1];
+  //     try {
+  //       decoded = jwtDecode(token);
+  //     } catch (err) {
+  //       console.error("Failed to decode token:", err);
+  //     }
+  //   }
+
+  //   console.log(decoded);
+
+  //   return decoded ? (decoded.partial ? "partial" : "full") : "none";
+  // };
+
+  // const checkIfUserBanned = () => {
+  //   if (document.cookie === "") {
+  //     return false;
+  //   }
+  //   let decoded = null;
+  //   const tokenCookie = document.cookie
+  //     .split("; ")
+  //     .find((row) => row.startsWith("token="));
+
+  //   if (tokenCookie) {
+  //     const token = tokenCookie.split("=")[1];
+  //     try {
+  //       decoded = jwtDecode(token);
+  //     } catch (err) {
+  //       console.error("Failed to decode token:", err);
+  //     }
+  //   }
+
+  //   return decoded ? (decoded.banned ? true : false) : false;
+  // };
+
+  const getUserStatus = useCallback(() => {
     if (document.cookie === "") {
       return "none";
     }
+
     let decoded = null;
     const tokenCookie = document.cookie
       .split("; ")
@@ -61,15 +106,14 @@ export const AuthProvider = ({ children }) => {
       }
     }
 
-    console.log(decoded);
-
     return decoded ? (decoded.partial ? "partial" : "full") : "none";
-  };
+  }, []);
 
-  const checkIfUserBanned = () => {
+  const checkIfUserBanned = useCallback(() => {
     if (document.cookie === "") {
       return false;
     }
+
     let decoded = null;
     const tokenCookie = document.cookie
       .split("; ")
@@ -84,8 +128,8 @@ export const AuthProvider = ({ children }) => {
       }
     }
 
-    return decoded ? (decoded.banned ? true : false) : false;
-  };
+    return decoded ? !!decoded.banned : false;
+  }, []);
 
   useEffect(() => {
     async function fetchData() {
