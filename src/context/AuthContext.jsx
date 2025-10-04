@@ -106,9 +106,9 @@ export const AuthProvider = ({ children }) => {
           type: "SET_STATUS",
           payload: userStatus,
         });
-      } else if (!user && checkIfUserBanned()){
-          dispatch({ type: "SET_STATUS", payload: userStatus })
-          dispatch({ type: "SET_BANNED", payload: true });
+      } else if (!user && checkIfUserBanned()) {
+        dispatch({ type: "SET_STATUS", payload: userStatus })
+        dispatch({ type: "SET_BANNED", payload: true });
       } else {
         dispatch({ type: "SET_USER", payload: null });
         dispatch({
@@ -119,7 +119,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     fetchData();
-  }, [refetch]);
+  }, [refetch, getUserStatus, checkIfUserBanned, dispatch]);
 
   const login = useMutation({
     mutationFn: authApi.login,
