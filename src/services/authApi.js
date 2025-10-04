@@ -46,7 +46,7 @@ export const authApi = {
     try {
       const response = await fetch(`${API_BASE_URL}/auth/signup`, {
         method: "POST",
-        // credentials: "include",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
