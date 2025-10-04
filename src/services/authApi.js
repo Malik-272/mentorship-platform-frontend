@@ -14,6 +14,7 @@ export const authApi = {
 
     if (!response.ok) {
       if (response.status === 401) {
+        localStorage.removeItem("token");
         throw new Error("Not authenticated");
       }
       const error = await response.json();
@@ -61,7 +62,6 @@ export const authApi = {
         );
 
       }
-      localStorage.setItem("token", data.token);
       return data;
     } catch (error) {
       console.error("API: Signup request failed:", error);
@@ -94,9 +94,6 @@ export const authApi = {
       if (!response.ok) {
         throw new Error(data.message || "Login failed");
       }
-
-      // store the localstorage token
-      localStorage.setItem("token", data.token);
 
       return data;
     } catch (error) {
