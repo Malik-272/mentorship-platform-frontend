@@ -3,6 +3,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { createContext, useCallback, useContext, useEffect, useReducer } from "react";
 import { jwtDecode } from "jwt-decode";
 import { authApi } from "../services/authApi";
+import toast from "react-hot-toast";
+import detectPrivateSession from "../features/Authenticaion/checkPrivateSession";
 
 const AuthContext = createContext();
 export const authInitialState = {
@@ -71,6 +73,15 @@ export const AuthProvider = ({ children }) => {
     }
 
     return decoded ? (decoded.banned ? true : false) : false;
+  }, []);
+
+  // Private session detection
+  useEffect(() => {
+    detectPrivateSession().then(isPrivate => {
+      if (isPrivate) {
+        toast.warning("⚠️ Incognito/inPrivate mode may prevent login from working correctly.");
+      }
+    });
   }, []);
 
 
