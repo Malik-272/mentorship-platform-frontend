@@ -12,6 +12,7 @@
   "dependencies": {
     "@tanstack/react-query": "^5.81.2",
     "@tanstack/react-query-devtools": "^5.83.0",
+    "detectincognitojs": "^1.6.2",
     "i18n-iso-countries": "^7.14.0",
     "intl": "^1.2.5",
     "jwt-decode": "^4.0.0",
