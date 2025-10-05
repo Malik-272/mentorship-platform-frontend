@@ -117,7 +117,7 @@ export default function UserPreviewPage() {
           {user.basicDetails.role === "MENTOR" && (
             <>
               <UserServices user={user} />
-              <UserCommunities user={user} />
+              {/* <UserCommunities user={user} /> */}
             </>
           )}
 
