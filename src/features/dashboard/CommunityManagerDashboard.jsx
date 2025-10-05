@@ -108,7 +108,7 @@ export default function CommunityManagerDashboard({ data }) {
         titleIconColor="text-green-600"
         onClick={() => navigate("/communities/my/manage")}
       >
-        {joinRequests?.joinRequests.length > 0 ? (
+        {joinRequests?.joinRequests && joinRequests?.joinRequests?.length > 0 ? (
           <div className="space-y-4">
             {joinRequests?.joinRequests.slice(0, 5).map((request) => (
               <div key={request.id} className="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-gray-700">
