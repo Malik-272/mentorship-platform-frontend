@@ -79,7 +79,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     detectPrivateSession().then(isPrivate => {
       if (isPrivate) {
-        toast.warning("⚠️ Incognito/inPrivate mode may prevent login from working correctly.");
+        toast.error("⚠️ Incognito/inPrivate mode may prevent login from working correctly.");
       }
     });
   }, []);
