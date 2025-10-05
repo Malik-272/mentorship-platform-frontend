@@ -5,6 +5,7 @@ import { jwtDecode } from "jwt-decode";
 import { authApi } from "../services/authApi";
 import toast from "react-hot-toast";
 import detectPrivateSession from "../features/Authenticaion/checkPrivateSession";
+import detectIncognito from "detectincognitojs";
 
 const AuthContext = createContext();
 export const authInitialState = {
@@ -77,9 +78,9 @@ export const AuthProvider = ({ children }) => {
 
   // Private session detection
   useEffect(() => {
-    detectPrivateSession().then(isPrivate => {
-      if (isPrivate) {
-        toast.error("⚠️ Incognito/inPrivate mode may prevent login from working correctly.");
+    detectIncognito().then(result => {
+      if (result.isPrivate) {
+        toast.error(`⚠️${result.browserName} Private mode may prevent authentication from working correctly due to security restrictions.`);
       }
     });
   }, []);
