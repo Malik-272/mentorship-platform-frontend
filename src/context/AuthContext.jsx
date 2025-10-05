@@ -4,7 +4,6 @@ import { createContext, useCallback, useContext, useEffect, useReducer } from "r
 import { jwtDecode } from "jwt-decode";
 import { authApi } from "../services/authApi";
 import toast from "react-hot-toast";
-import detectPrivateSession from "../features/Authenticaion/checkPrivateSession";
 import detectIncognito from "detectincognitojs";
 
 const AuthContext = createContext();
