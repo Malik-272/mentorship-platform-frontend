@@ -5,8 +5,9 @@ import {
 import LoadingSpinner from "../../ui/LoadingSpinner";
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const REDIRECT_URI = encodeURIComponent(
-  "https://mentorship-platform-api-production.up.railway.app/api/v1/auth/google-callback"
+  `${BASE_URL}/auth/google-callback`
 );
 const SCOPE = encodeURIComponent(
   "openid email profile https://www.googleapis.com/auth/calendar"

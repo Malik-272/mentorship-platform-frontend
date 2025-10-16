@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 // --- API Logic ---
 // (Your API functions remain the same)
-const API_BASE_URL = "https://mentorship-platform-api-production.up.railway.app/api/v1";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const fetchUserPreview = async (userId) => {
   const response = await fetch(`${API_BASE_URL}/admin/user-preview/${userId}`, {

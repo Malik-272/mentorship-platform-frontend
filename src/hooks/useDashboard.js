@@ -5,8 +5,10 @@ import { userReportsApi } from "./useUserReports"
 import { bannedUsersApi, useBannedUsers } from "./useBannedUsers"
 import { servicesApi } from "./useServices"
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const fetchSessionRequests = async () => {
-  const response = await fetch("https://mentorship-platform-api-production.up.railway.app/api/v1/dashboard/mentee/session-requests", {
+  const response = await fetch(`${API_BASE_URL}/dashboard/mentee/session-requests`, {
     headers: { "Content-Type": "application/json" },
     credentials: "include",
   })
@@ -17,7 +19,7 @@ const fetchSessionRequests = async () => {
 }
 
 const getUserProfile = async (userId) => {
-  const response = await fetch(`https://mentorship-platform-api-production.up.railway.app/api/v1/users/${userId}`, {
+  const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
     method: "GET",
     credentials: "include",
     headers: {
@@ -40,7 +42,7 @@ const getUserProfile = async (userId) => {
 };
 
 const fetchTodayEvents = async () => {
-  const response = await fetch("https://mentorship-platform-api-production.up.railway.app/api/v1/dashboard/today-events", {
+  const response = await fetch(`${API_BASE_URL}/dashboard/today-events`, {
     headers: { "Content-Type": "application/json" },
     credentials: "include",
   })
@@ -52,7 +54,7 @@ const fetchTodayEvents = async () => {
 }
 
 const searchUsersAndCommunities = async (query) => {
-  const response = await fetch(`https://mentorship-platform-api-production.up.railway.app/api/v1/dashboard/search?query=${encodeURIComponent(query)}`, {
+  const response = await fetch(`${API_BASE_URL}/dashboard/search?query=${encodeURIComponent(query)}`, {
     headers: { "Content-Type": "application/json" },
     credentials: "include",
   })
