@@ -8,8 +8,8 @@ export const socket = io(SOCKET_URL, {
   auth: {
     token: localStorage.getItem('token'),
   },
-  withCredentials: true, // important if your backend uses cookies for auth
-  autoConnect: false,    // you can control when it connects (recommended)
+  withCredentials: true,
+  autoConnect: false,
   retries: 5,
 });
 
