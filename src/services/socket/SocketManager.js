@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { connectSocket, socket } from "./socket";
-import toast from "react-hot-toast";
 import { useNotificationContext } from "../../context/NotificationContext";
+import toast from "react-hot-toast";
 
 export default function SocketManager({ children }) {
   const { status } = useAuth();
@@ -12,12 +12,12 @@ export default function SocketManager({ children }) {
   } = useNotificationContext();
 
   useEffect(() => {
-    if (status == "full") {
-      connectSocket();
+    if (status != "full"){
+      return;
+    }
+    connectSocket();
 
-      socket.on('connect', () => {
-        toast.success(`Connected to server successfully: ${socket.id}`);
-      });
+    const handleSuccessfulConnection = () => {
 
       // updates the bell icon red dot indicator
       socket.on("updateNewNotifications", (newNotifications) => {
@@ -29,13 +29,16 @@ export default function SocketManager({ children }) {
         setNotifications((prev) => [notification, ...prev]);
         setNewNotifications(true);
       });
+    };
 
-      return () => {
-        socket.off("notification");
-        socket.off("updateNewNotifications");
-        socket.disconnect();
-      };
-    }
+    socket.on('connect', handleSuccessfulConnection);
+
+    return () => {
+      socket.off('connect');
+      socket.off("notification");
+      socket.off("updateNewNotifications");
+      socket.disconnect();
+    };
   }, [status, setNewNotifications, setNotifications]);
 
   return children;
