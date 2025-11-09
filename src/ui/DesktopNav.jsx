@@ -6,6 +6,7 @@ import { navigationData, roleBasedNavigation } from "../data/navigationData";
 import { SimpleThemeToggle } from "./ThemeToggle";
 import { LogOut, User } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import Notifications from "./Notifications";
 
 function DesktopNav() {
   const location = useLocation();
@@ -75,6 +76,7 @@ function DesktopNav() {
       {/* Desktop Auth Buttons & Theme Toggle */}
       <div className="hidden md:flex items-center space-x-3">
         <SimpleThemeToggle />
+        <Notifications/>
         {isLoading ? (
           <div className="w-20 h-8 bg-muted rounded-lg animate-pulse"></div>
         ) : isAuthenticated ? (
